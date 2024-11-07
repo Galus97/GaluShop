@@ -5,8 +5,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@ToString
 public class Product {
 
     @Id
@@ -21,5 +30,10 @@ public class Product {
 
     @Min(1)
     private Double price;
-}
 
+    @NotBlank
+    private String category;
+
+    @Min(1)
+    private Integer categoryId;
+}
