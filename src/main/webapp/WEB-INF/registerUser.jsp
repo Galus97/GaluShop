@@ -10,19 +10,16 @@
 
 <form:form action="/registerUser" method="post" modelAttribute="user">
     <label>
-        <form:input path="firstName" type="text"/>
+        Imię: <form:input path="firstName" type="text"/>
     </label>
     <label>
-        <form:input path="lastName" type="text"/>
+        Nazwisko: <form:input path="lastName" type="text"/>
     </label>
     <label>
-        <form:input path="email" type="text"/>
+        E-mail: <form:input path="email" type="text"/>
     </label>
     <label>
-        <form:input path="password" type="password"/>
-    </label>
-    <label>
-        <form:input path="repeatPassword" type="password"/>
+        Hasło: <form:input path="password" type="password"/>
     </label>
 
 </form:form>
