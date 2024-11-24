@@ -10,7 +10,7 @@
 
 <div class="login-container">
 
-    <form:form method="get" action="/loginUser" class="form">
+    <form:form method="post" action="/loginUser" class="form">
 
     <label class="label">
         Podaj nazwę użytkownika:
