@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<form:form>
+<form:form action="/registerUser" method="post" modelAttribute="user">
     <label>
         <form:input path="firstName" type="text"/>
     </label>
