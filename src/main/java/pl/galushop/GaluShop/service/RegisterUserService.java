@@ -6,6 +6,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -29,14 +30,14 @@ public class RegisterUserService {
         return errors;
     }
 
-    private User saveNewUserToDatabase(User user) throws Exception{
+    private User saveNewUserToDatabase(User user) throws ValidationException{
         List<String> validationFailures = validateUserErrors(user);
         if(validationFailures.isEmpty()){
             user.setUserId(null);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         } else {
-            throw new Exception();
+            throw new ValidationException(validationFailures);
         }
     }
 }
