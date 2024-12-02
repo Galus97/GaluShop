@@ -33,7 +33,7 @@ public class User {
     @Email
     private String email;
 
-    @Min(5)
+    @Size(min = 5)
     private String password;
 
     private boolean enabled;
