@@ -21,21 +21,20 @@ public class RegisterUserService {
     private final PasswordEncoder passwordEncoder;
 
     private List<String> validateUserErrors(User user){
-        List<String> errors = null;
+        List<String> errors = new ArrayList<>();
         Optional<User> userExistByEmail = userRepository.findByEmail(user.getEmail());
         if(userExistByEmail.isPresent()){
-            errors = new ArrayList<>();
             errors.add("Ten adres email jest już używany. Wpisz inny adres email");
         }
         return errors;
     }
 
-    private User saveNewUserToDatabase(User user) throws ValidationException{
+    public void saveNewUserToDatabase(User user) throws ValidationException{
         List<String> validationFailures = validateUserErrors(user);
         if(validationFailures.isEmpty()){
             user.setUserId(null);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
-            return userRepository.save(user);
+            userRepository.save(user);
         } else {
             throw new ValidationException(validationFailures);
         }
