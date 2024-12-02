@@ -21,6 +21,13 @@
     <label>
         Hasło: <form:input path="password" type="password"/>
     </label>
+    <label class="label">
+        <input type="submit" value="Zaloguj się" class="button-submit">
+    </label>
+    <br>
+    <label class="label">
+        <input type="reset" value="Usuń wartości" class="button-reset">
+    </label>
 
 </form:form>
 
