@@ -38,6 +38,6 @@ public class RegisterUserController {
             bindingResult.rejectValue("email", "", errors.get(0));
         }
 
-        return "redirect:login";
+        return "redirect:loginUser";
     }
 }
