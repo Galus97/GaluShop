@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.RegisterValidator;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.repository.UserRepository;
@@ -19,18 +20,10 @@ import java.util.Optional;
 public class RegisterUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    private List<String> validateUserErrors(User user){
-        List<String> errors = new ArrayList<>();
-        Optional<User> userExistByEmail = userRepository.findByEmail(user.getEmail());
-        if(userExistByEmail.isPresent()){
-            errors.add("Ten adres email jest już używany. Wpisz inny adres email");
-        }
-        return errors;
-    }
+    private final RegisterValidator registerValidator;
 
     public void saveNewUserToDatabase(User user) throws ValidationException{
-        List<String> validationFailures = validateUserErrors(user);
+        List<String> validationFailures = registerValidator.validateUserErrors(user);
         if(validationFailures.isEmpty()){
             user.setUserId(null);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
