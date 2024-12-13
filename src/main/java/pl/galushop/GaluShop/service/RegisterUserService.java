@@ -22,7 +22,7 @@ public class RegisterUserService {
     private final PasswordEncoder passwordEncoder;
     private final RegisterValidator registerValidator;
 
-    public void saveNewUserToDatabase(User user) throws ValidationException{
+    public void saveNewUser(User user) throws ValidationException{
         List<String> validationFailures = registerValidator.validateUserErrors(user);
         if(validationFailures.isEmpty()){
             user.setUserId(null);
