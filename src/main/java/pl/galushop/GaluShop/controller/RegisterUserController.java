@@ -32,7 +32,7 @@ public class RegisterUserController {
         }
 
         try {
-            registerUserService.saveNewUserToDatabase(user);
+            registerUserService.saveNewUser(user);
         } catch (ValidationException exception) {
             List<String> errors = exception.getValidationErrors();
             bindingResult.rejectValue("email", "", errors.get(0));
