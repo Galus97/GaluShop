@@ -19,7 +19,7 @@ public class RegisterUserController {
     private final RegisterUserService registerUserService;
 
     @GetMapping("/registerUser")
-    public String showRegisterPage(Model model){
+    public String showRegisterUserPage(Model model){
         model.addAttribute("user", new User());
         return "registerUser";
     }
