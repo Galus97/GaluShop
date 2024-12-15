@@ -26,12 +26,12 @@ public class SpringSecurity {
                 )
                 .formLogin((form) -> form
                         .loginPage("/loginUser")
-                        .defaultSuccessUrl("/panel")
+                        .defaultSuccessUrl("/userPanel")
                         .permitAll()
                 )
                 .formLogin((form) -> form
                         .loginPage("/loginEmployee")
-                        .defaultSuccessUrl("/panelEmployee")
+                        .defaultSuccessUrl("/employeePanel")
                         .permitAll()
 
                 )
