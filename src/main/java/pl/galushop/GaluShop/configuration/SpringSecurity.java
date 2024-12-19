@@ -25,7 +25,7 @@ public class SpringSecurity {
                         .requestMatchers("/loginUser", "/registerUser").permitAll()
                         .requestMatchers("/loginEmployee", "/registerEmployee").permitAll()
                         .requestMatchers("/userPanel").hasRole("USER")
-                        .requestMatchers("employeePanel").hasRole("EMPLOYEE")
+                        .requestMatchers("/employeePanel").hasRole("EMPLOYEE")
                         .anyRequest().permitAll()
                 )
                 .formLogin((form) -> form
