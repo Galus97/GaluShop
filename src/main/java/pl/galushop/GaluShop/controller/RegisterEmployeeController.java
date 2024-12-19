@@ -36,6 +36,6 @@ public class RegisterEmployeeController {
             bindingResult.rejectValue("email", "", errors.get(0));
         }
 
-        return "redirect:loginEmployee";
+        return "redirect:login";
     }
 }
