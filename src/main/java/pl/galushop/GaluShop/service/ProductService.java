@@ -12,6 +12,14 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public void saveProductToDatabase(Product product){
-        productRepository.save(product);
+        if (product != null) {
+            productRepository.save(product);
+        }
+    }
+
+    public void deleteProduct(Long id){
+        if(productRepository.findByProductId(id) != null){
+            productRepository.findByProductId(id);
+        }
     }
 }
