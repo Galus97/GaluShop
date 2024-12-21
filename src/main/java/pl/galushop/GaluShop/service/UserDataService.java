@@ -10,4 +10,9 @@ import pl.galushop.GaluShop.repository.UserDataRepository;
 public class UserDataService {
     private final UserDataRepository userDataRepository;
 
+    public void saveUserDataToDatabase(UserData userData){
+        if(userData != null){
+            userDataRepository.save(userData);
+        }
+    }
 }
