@@ -11,4 +11,9 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
+    public void saveOrderToDatabase(Order order){
+        if(order != null){
+            orderRepository.save(order);
+        }
+    }
 }
