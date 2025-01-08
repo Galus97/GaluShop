@@ -19,7 +19,7 @@ public class OrderAddController {
     private final ProductService productService;
 
     @GetMapping("/addOrder")
-    public String getOrderAdd(){
+    public String getOrderAdd() {
         Order order = new Order();
 
         Product product = productService.findProductById(1L);

@@ -10,7 +10,7 @@ public class CurrentEmployee extends User {
     private final Employee employee;
 
     public CurrentEmployee(String username, String password, java.util.Collection<?
-            extends GrantedAuthority> authorities, Employee employee){
+            extends GrantedAuthority> authorities, Employee employee) {
 
         super(username, password, authorities);
         this.employee = employee;

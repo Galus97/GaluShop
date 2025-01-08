@@ -11,7 +11,7 @@ public class ProductImagesService {
 
     private final ProductImagesRepository productImagesRepository;
 
-    public void saveProductImagesToDatabase(ProductImages productImages){
+    public void saveProductImagesToDatabase(ProductImages productImages) {
         productImagesRepository.save(productImages);
     }
 }

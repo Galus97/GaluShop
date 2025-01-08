@@ -19,14 +19,14 @@ public class RegisterUserController {
     private final RegisterUserService registerUserService;
 
     @GetMapping("/registerUser")
-    public String showRegisterUserPage(Model model){
+    public String showRegisterUserPage(Model model) {
         model.addAttribute("user", new User());
         return "registerUser";
     }
 
     @PostMapping("/registerUser")
-    public String saveNewUser(@Valid User user, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public String saveNewUser(@Valid User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             System.out.println("(bindingResult.hasErrors() -- " + bindingResult.getAllErrors());
             return "registerUser";
         }

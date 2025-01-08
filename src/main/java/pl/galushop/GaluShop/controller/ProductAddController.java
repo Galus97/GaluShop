@@ -8,9 +8,6 @@ import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.service.ProductImagesService;
 import pl.galushop.GaluShop.service.ProductService;
 
-import java.util.Arrays;
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class ProductAddController {

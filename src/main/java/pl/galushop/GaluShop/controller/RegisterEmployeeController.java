@@ -19,14 +19,14 @@ public class RegisterEmployeeController {
     private final RegisterEmployeeService registerEmployeeService;
 
     @GetMapping("/registerEmployee")
-    public String showRegisterEmployeePage(Model model){
+    public String showRegisterEmployeePage(Model model) {
         model.addAttribute("employee", new Employee());
         return "registerEmployee";
     }
 
     @PostMapping("/registerEmployee")
-    public String saveNewEmployee(@Valid Employee employee, BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
+    public String saveNewEmployee(@Valid Employee employee, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "registerEmployee";
         }
         try {

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class EmployeePanelController {
 
     @GetMapping("/employeePanel")
-    public String showPanelPage(){
+    public String showPanelPage() {
         return "employeePanel";
     }
 }

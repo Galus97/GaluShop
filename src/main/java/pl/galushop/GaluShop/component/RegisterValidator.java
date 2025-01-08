@@ -22,16 +22,16 @@ public class RegisterValidator {
     public List<String> validateUserErrors(Object object) {
         List<String> errors = new ArrayList<>();
 
-        if(object instanceof User user) {
+        if (object instanceof User user) {
             Optional<User> userExistByEmail = userRepository.findByEmail(user.getEmail());
             if (userExistByEmail.isPresent()) {
                 errors.add(ERROR_MESSAGE);
             }
         }
 
-        if(object instanceof Employee employee){
+        if (object instanceof Employee employee) {
             Optional<Employee> employeeExistByEmail = employeeRepository.findByEmail(employee.getEmail());
-            if(employeeExistByEmail.isPresent()){
+            if (employeeExistByEmail.isPresent()) {
                 errors.add(ERROR_MESSAGE);
             }
         }

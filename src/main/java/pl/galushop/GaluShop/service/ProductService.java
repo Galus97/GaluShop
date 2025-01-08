@@ -13,20 +13,20 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public void saveProductToDatabase(Product product){
+    public void saveProductToDatabase(Product product) {
         if (product != null) {
             productRepository.save(product);
         }
     }
 
-    public void deleteProduct(Long id){
-        if(productRepository.findByProductId(id) != null){
+    public void deleteProduct(Long id) {
+        if (productRepository.findByProductId(id) != null) {
             productRepository.delete(productRepository.findByProductId(id));
         }
     }
 
-    public Product findProductById(Long id){
-        if(id != null && id > 0){
+    public Product findProductById(Long id) {
+        if (id != null && id > 0) {
             return productRepository.findByProductId(id);
         } else {
             throw new NoSuchElementException();
