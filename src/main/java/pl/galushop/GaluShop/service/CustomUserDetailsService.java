@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmail(email);
-        if(optionalUser.isPresent()) {
+        if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             return new CurrentUser(
                     user.getEmail(),
@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")), user);
         }
         Optional<Employee> optionalEmployee = employeeRepository.findByEmail(email);
-        if(optionalEmployee.isPresent()){
+        if (optionalEmployee.isPresent()) {
             Employee employee = optionalEmployee.get();
             return new CurrentEmployee(
                     employee.getEmail(),

@@ -9,7 +9,7 @@ public class CurrentUser extends User {
     private final pl.galushop.GaluShop.entity.User user;
 
     public CurrentUser(String username, String password, java.util.Collection<?
-            extends GrantedAuthority> authorities, pl.galushop.GaluShop.entity.User user){
+            extends GrantedAuthority> authorities, pl.galushop.GaluShop.entity.User user) {
 
         super(username, password, authorities);
         this.user = user;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class UserPanelController {
 
     @GetMapping("/userPanel")
-    public String showPanelPage(){
+    public String showPanelPage() {
         return "userPanel";
     }
 }
