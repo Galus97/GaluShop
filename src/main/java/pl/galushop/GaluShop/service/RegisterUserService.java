@@ -1,6 +1,5 @@
 package pl.galushop.GaluShop.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,9 +18,9 @@ public class RegisterUserService {
     private final PasswordEncoder passwordEncoder;
     private final RegisterValidator registerValidator;
 
-    public void saveNewUser(User user) throws ValidationException{
+    public void saveNewUser(User user) throws ValidationException {
         List<String> validationFailures = registerValidator.validateUserErrors(user);
-        if(validationFailures.isEmpty()){
+        if (validationFailures.isEmpty()) {
             user.setUserId(null);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);

@@ -19,7 +19,7 @@ public class RegisterEmployeeService {
 
     public void saveNewEmployee(Employee employee) throws ValidationException {
         List<String> validationFailures = registerValidator.validateUserErrors(employee);
-        if(validationFailures.isEmpty()){
+        if (validationFailures.isEmpty()) {
             employee.setEmployeeId(null);
             employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             employeeRepository.save(employee);
