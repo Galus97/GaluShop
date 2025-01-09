@@ -14,7 +14,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Warehouse {
+public class WarehouseProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
