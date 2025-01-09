@@ -10,5 +10,9 @@ import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 public class WarehouseProductService {
     private final WarehouseProductRepository warehouseRepository;
 
-
+    public void addProductToWarehouse(WarehouseProduct warehouseProduct){
+        if(warehouseProduct != null){
+            warehouseRepository.save(warehouseProduct);
+        }
+    }
 }
