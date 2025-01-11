@@ -14,3 +14,8 @@ public class ProductRequest {
     private List<ProductImageRequest> productImages;
 }
 
+@Data
+class ProductImageRequest {
+    private String imgSrc;
+    private String altImg;
+}
