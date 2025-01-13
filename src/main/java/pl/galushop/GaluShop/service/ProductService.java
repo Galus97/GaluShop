@@ -29,7 +29,8 @@ public class ProductService {
         if (id != null && id > 0) {
             return productRepository.findByProductId(id);
         } else {
-            throw new NoSuchElementException();
+            throw new NoSuchElementException("Wrong Product Id");
         }
     }
+
 }
