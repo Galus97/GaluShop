@@ -12,10 +12,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public boolean userExist(String email){
-        if(email != null && !email.isBlank()){
-            return userRepository.existsByEmail(email);
-        }
-        return false;
+    public Optional<User> getUserById(Long userId){
+        return userRepository.findByUserId(userId);
     }
 }
