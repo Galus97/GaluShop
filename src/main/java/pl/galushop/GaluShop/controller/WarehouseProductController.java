@@ -2,7 +2,9 @@ package pl.galushop.GaluShop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.galushop.GaluShop.dto.WarehouseProductRequest;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.service.ProductService;
@@ -16,21 +18,19 @@ public class WarehouseProductController {
     private final ProductService productService;
 
     @GetMapping("/warehouse/addProduct")
-    public String addProductToWarehouse(){
+    public String addProductToWarehouse(@RequestBody WarehouseProductRequest warehouseProductRequest) {
 
-        Product product = new Product();
-        product.setProductName("Product 1");
-        product.setPrice(20.50);
-        product.setDescription("Description of first Product");
-        product.setCategory("Category 1");
-        product.setCategoryId(1);
-        productService.saveProductToDatabase(product);
+        Product product = productService.findProductById(warehouseProductRequest.getProductId());
+
+        if (product == null) {
+            return "Product not found";
+        }
 
         WarehouseProduct warehouseProduct = new WarehouseProduct();
         warehouseProduct.setProduct(product);
-        warehouseProduct.setQuantity(10);
-        warehouseProductService.addProductToWarehouse(warehouseProduct);
+        warehouseProduct.setQuantity(warehouseProduct.getQuantity());
 
+        warehouseProductService.addProductToWarehouse(warehouseProduct);
         return "success";
     }
 }
