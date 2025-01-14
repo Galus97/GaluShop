@@ -20,16 +20,21 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        if (productRepository.findByProductId(id) != null) {
-            productRepository.delete(productRepository.findByProductId(id));
+        if(id != null && id > 0) {
+            if (productRepository.findByProductId(id).isPresent()) {
+                productRepository.delete(productRepository.findByProductId(id).get());
+            }
         }
     }
 
     public Product findProductById(Long id) {
         if (id != null && id > 0) {
-            return productRepository.findByProductId(id);
+            if(productRepository.findByProductId(id).isPresent()){
+                return productRepository.findByProductId(id).get();
+            }
+            throw new NoSuchElementException("That product doesn't exist in database");
         } else {
-            throw new NoSuchElementException("Wrong Product Id");
+            throw new IllegalArgumentException("Wrong Product Id");
         }
     }
 
