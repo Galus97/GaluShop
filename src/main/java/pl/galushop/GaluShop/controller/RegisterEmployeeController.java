@@ -27,21 +27,6 @@ public class RegisterEmployeeController {
     }
 
     @PostMapping("/registerEmployee")
-    public String saveNewEmployee(@Valid Employee employee, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "registerEmployee";
-        }
-        try {
-            registerEmployeeService.saveNewEmployee(employee);
-        } catch (ValidationException exception) {
-            List<String> errors = exception.getValidationErrors();
-            bindingResult.rejectValue("email", "", errors.get(0));
-        }
-
-        return "redirect:login";
-    }
-
-    @PostMapping("/registerEmployee")
     public String saveNewEmployee(@RequestBody EmployeeRequest employeeRequest){
 
         Employee employee = new Employee();

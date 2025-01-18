@@ -26,22 +26,6 @@ public class RegisterUserController {
         return "registerUser";
     }
 
-    @PostMapping("/registerUser")
-    public String saveNewUser(@Valid User user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            System.out.println("(bindingResult.hasErrors() -- " + bindingResult.getAllErrors());
-            return "registerUser";
-        }
-
-        try {
-            registerUserService.saveNewUser(user);
-        } catch (ValidationException exception) {
-            List<String> errors = exception.getValidationErrors();
-            bindingResult.rejectValue("email", "", errors.get(0));
-        }
-
-        return "redirect:login";
-    }
 
     @PostMapping("/registerUser")
     public String saveNewUser(@RequestBody UserRequest userRequest){
