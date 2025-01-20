@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-public class UserDataController {
+public class SaveUserDataController {
     private final UserService userService;
     private final UserDataService userDataService;
 
