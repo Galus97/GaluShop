@@ -4,4 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.galushop.GaluShop.entity.UserData;
 
 public interface UserDataRepository extends JpaRepository<UserData, Long> {
+
+    UserData findByUser_UserId(Long id);
 }
