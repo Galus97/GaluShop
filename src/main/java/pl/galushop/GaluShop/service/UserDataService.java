@@ -9,10 +9,18 @@ import pl.galushop.GaluShop.repository.UserDataRepository;
 @RequiredArgsConstructor
 public class UserDataService {
     private final UserDataRepository userDataRepository;
+    private final UserService userService;
 
     public void saveUserDataToDatabase(UserData userData) {
         if (userData != null) {
             userDataRepository.save(userData);
         }
+    }
+
+    public UserData showUserData(Long userId){
+        if(userId != null && userId > 0 && userService.getUserById(userId).isPresent()){
+            return userDataRepository.findByUser_UserId(userId);
+        }
+        throw new IllegalArgumentException();
     }
 }
