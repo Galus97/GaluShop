@@ -28,6 +28,13 @@ public class OrderService {
                 return orderRepository.findAllByUser_UserId(userId);
 
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("User Id is wrong");
+    }
+
+    public Order showSpecificOrder(Long userId){
+        if(userId != null && userId > 0 && userService.getUserById(userId).isPresent()){
+            return orderRepository.findByUser_UserId(userId).get();
+        }
+        throw new IllegalArgumentException("User Id is wrong");
     }
 }
