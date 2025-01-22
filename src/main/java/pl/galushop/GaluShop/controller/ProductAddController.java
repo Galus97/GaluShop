@@ -2,11 +2,16 @@ package pl.galushop.GaluShop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.galushop.GaluShop.dto.ProductImageRequest;
+import pl.galushop.GaluShop.dto.ProductRequest;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.service.ProductImagesService;
 import pl.galushop.GaluShop.service.ProductService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,29 +21,23 @@ public class ProductAddController {
     private final ProductImagesService productImagesService;
 
     @GetMapping("/addProduct")
-    public String getProductAdd() {
+    public String addNewProduct(@RequestBody ProductRequest productRequest) {
         Product product = new Product();
-        product.setProductName("Product1");
-        product.setCategory("Category1");
-        product.setPrice(21.0);
-        product.setCategoryId(1);
-        product.setDescription("Description of added Product");
+        product.setProductName(productRequest.getProductName());
+        product.setCategory(productRequest.getCategory());
+        product.setPrice(productRequest.getPrice());
+        product.setCategoryId(productRequest.getCategoryId());
+        product.setDescription(productRequest.getDescription());
         productService.saveProductToDatabase(product);
 
-        ProductImages productImages1 = new ProductImages();
-        ProductImages productImages2 = new ProductImages();
-
-        productImages1.setProduct(product);
-        productImages1.setImgSrc("imgSrc");
-        productImages1.setAltImg("altImg");
-
-        productImages2.setProduct(product);
-        productImages2.setImgSrc("imgSrc");
-        productImages2.setAltImg("altImg");
-
-        productImagesService.saveProductImagesToDatabase(productImages1);
-        productImagesService.saveProductImagesToDatabase(productImages2);
-
+        List<ProductImageRequest> productImagesList = productRequest.getProductImages();
+        for (ProductImageRequest productImage : productImagesList) {
+            ProductImages productImages = new ProductImages();
+            productImages.setProduct(product);
+            productImages.setImgSrc(productImage.getImgSrc());
+            productImages.setAltImg(productImage.getAltImg());
+            productImagesService.saveProductImagesToDatabase(productImages);
+        }
         return "success";
     }
 }
