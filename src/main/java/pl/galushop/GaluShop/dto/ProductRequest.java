@@ -13,9 +13,3 @@ public class ProductRequest {
     private String description;
     private List<ProductImageRequest> productImages;
 }
-
-@Data
-class ProductImageRequest {
-    private String imgSrc;
-    private String altImg;
-}
