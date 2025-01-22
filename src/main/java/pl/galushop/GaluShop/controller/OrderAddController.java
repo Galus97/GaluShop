@@ -12,6 +12,7 @@ import pl.galushop.GaluShop.service.OrderService;
 import pl.galushop.GaluShop.service.ProductService;
 import pl.galushop.GaluShop.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,6 +39,7 @@ public class OrderAddController {
                 .collect(Collectors.toList());
 
         Order order = new Order();
+        order.setLocalDateTime(orderRequest.getLocalDateTime());
         order.setUser(user.get());
         order.setProducts(products);
 
