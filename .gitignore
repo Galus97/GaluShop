@@ -1,6 +1,7 @@
 *.properties
 *.iml
 *.yaml
+*.xml
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
