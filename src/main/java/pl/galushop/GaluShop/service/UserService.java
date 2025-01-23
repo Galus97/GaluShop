@@ -17,6 +17,18 @@ public class UserService {
     }
 
     public void deleteUserFromDatabase(User user){
-        userRepository.delete(user);
+        if(user != null){
+            userRepository.delete(user);
+        } else {
+            throw new IllegalArgumentException("User is null");
+        }
+    }
+
+    public void updateUser(Long userId){
+        if(userId != null && userId > 0){
+            userRepository.updateAllByUserId(userId);
+        } else {
+            throw new IllegalArgumentException("User Id is wrong");
+        }
     }
 }
