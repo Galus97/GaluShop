@@ -40,6 +40,7 @@ public class OrderAddController {
 
         Order order = new Order();
         order.setLocalDateTime(orderRequest.getLocalDateTime());
+        order.setStatus(orderRequest.getOrderStatus());
         order.setUser(user.get());
         order.setProducts(products);
 
