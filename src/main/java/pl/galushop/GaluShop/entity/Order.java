@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import pl.galushop.GaluShop.component.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,8 @@ public class Order {
 
 
     private LocalDateTime localDateTime;
+
+    private OrderStatus status;
 
     @ManyToOne
     private User user;
