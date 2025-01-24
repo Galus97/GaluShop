@@ -45,6 +45,6 @@ public class RegisterUserController {
             }
             return "faild";
         }
-        return "succes";
+        return "success";
     }
 }
