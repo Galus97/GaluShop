@@ -24,11 +24,16 @@ public class UserService {
         }
     }
 
-    public void updateUser(Long userId){
+    public void updateUser(Long userId, User user){
         if(userId != null && userId > 0){
-            userRepository.updateAllByUserId(userId);
+            userRepository.updateUserByUserId(userId,
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getPassword()
+            );
         } else {
-            throw new IllegalArgumentException("User Id is wrong");
+            throw new IllegalArgumentException("User Id is invalid");
         }
     }
 }
