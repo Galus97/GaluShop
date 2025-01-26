@@ -18,7 +18,7 @@ public class WarehouseProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long warehouseProductId;
 
     @OneToOne
     private Product product;
