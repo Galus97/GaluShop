@@ -25,13 +25,21 @@ public class UserService {
     }
 
     public void updateUser(Long userId, User user){
-        if(userId != null && userId > 0){
+        if(userId != null && userId > 0 && user != null){
             userRepository.updateUserByUserId(userId,
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
                     user.getPassword()
             );
+        } else {
+            throw new IllegalArgumentException("User Id is invalid");
+        }
+    }
+
+    public void deleteUser(Long userId){
+        if(userId != null && userId > 0){
+            userRepository.deleteByUserId(userId);
         } else {
             throw new IllegalArgumentException("User Id is invalid");
         }
