@@ -22,4 +22,10 @@ public class WarehouseProductService {
     public List<WarehouseProduct> getAllProductInWarehouse(){
         return warehouseRepository.findAll();
     }
+
+    public void deleteWarehouseProduct(Long warehouseId){
+        if(warehouseId != null && warehouseId > 0){
+            warehouseRepository.deleteById(warehouseId);
+        }
+    }
 }
