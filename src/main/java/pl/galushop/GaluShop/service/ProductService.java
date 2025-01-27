@@ -34,7 +34,7 @@ public class ProductService {
             }
             throw new NoSuchElementException("That product doesn't exist in database");
         } else {
-            throw new IllegalArgumentException("Wrong Product Id");
+            throw new IllegalArgumentException("Product Id is invalid");
         }
     }
 
