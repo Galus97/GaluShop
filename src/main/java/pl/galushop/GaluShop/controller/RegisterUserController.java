@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import pl.galushop.GaluShop.dto.UserRequest;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.ValidationException;
+import pl.galushop.GaluShop.service.EmailService;
 import pl.galushop.GaluShop.service.RegisterUserService;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RegisterUserController {
     private final RegisterUserService registerUserService;
+    private final EmailService emailService;
 
     @GetMapping("/registerUser")
     public String showRegisterUserPage(Model model) {
@@ -35,9 +37,11 @@ public class RegisterUserController {
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
+        user.setEmailCode(emailService.emailCodeValue());
 
         try{
             registerUserService.saveNewUser(user);
+            emailService.sendEmail(userRequest.getEmail());
         } catch (ValidationException exception){
             List<String> errors = exception.getValidationErrors();
             for (String error : errors) {
