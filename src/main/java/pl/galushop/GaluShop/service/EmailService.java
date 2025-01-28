@@ -1,7 +1,6 @@
 package pl.galushop.GaluShop.service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,27 +13,22 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class EmailService {
     private final JavaMailSender javaMailSender;
-    private final HttpServletRequest request;
     public String emailActiveCode;
 
     @Async
     public void sendEmail(String email) {
-        //HttpSession registerEmail = request.getSession();
-        //String email = (String) registerEmail.getAttribute("registerEmail");
-
         if (email != null && !email.isBlank()) {
             SimpleMailMessage message = new SimpleMailMessage();
             String text = "Twój kod aktywacyjny do GaluShop to: " + emailActiveCode;
 
             message.setTo(email);
             message.setFrom("projektkoncowymichal@gmail.com");
-            message.setSubject("Kod aktywacyjny Strefa Informacji");
+            message.setSubject("Kod aktywacyjny GaluShop");
             message.setText(text);
 
             javaMailSender.send(message);
-            //registerEmail.removeAttribute("registerEmail");
         } else {
-            System.out.println("Błąd: Adres e-mail rejestracji nie został ustawiony w sesji.");
+            System.out.println("Problem with sending email");
         }
     }
 
