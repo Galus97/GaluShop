@@ -1,16 +1,15 @@
 package pl.galushop.GaluShop.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.galushop.GaluShop.dto.EmployeeRequest;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.ValidationException;
+import pl.galushop.GaluShop.service.EmailService;
 import pl.galushop.GaluShop.service.RegisterEmployeeService;
 
 import java.util.List;
@@ -19,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RegisterEmployeeController {
     private final RegisterEmployeeService registerEmployeeService;
+    private final EmailService emailService;
 
     @GetMapping("/registerEmployee")
     public String showRegisterEmployeePage(Model model) {
@@ -34,9 +34,11 @@ public class RegisterEmployeeController {
         employee.setLastName(employeeRequest.getLastName());
         employee.setEmail(employeeRequest.getEmail());
         employee.setPassword(employeeRequest.getPassword());
+        employee.setEmailCode(emailService.emailCodeValue());
 
         try {
             registerEmployeeService.saveNewEmployee(employee);
+            emailService.sendEmail(employeeRequest.getEmail());
         } catch (ValidationException exception) {
             List<String> validationErrors = exception.getValidationErrors();
             for (String error : validationErrors) {
