@@ -22,13 +22,12 @@ public class UserUpdateController {
         }
 
         User user = new User();
-        user.setUserId(Long.valueOf(userRequest.getUserId()));
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(passwordEncoder.encode(userRequest.getFirstName()));
 
-        userService.updateUser(user.getUserId(), user);
+        userService.updateUser(userRequest.getUserId(), user);
 
         return "Success";
     }
