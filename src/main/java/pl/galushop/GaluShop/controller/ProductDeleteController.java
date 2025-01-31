@@ -16,7 +16,7 @@ public class ProductDeleteController {
     @GetMapping("/deleteProduct")
     public String deleteProduct(@RequestBody ProductRequest productRequest){
         Long productId = productRequest.getProductId();
-        if(productId > 0 && productId != null && productService.findProductById(productId) != null){
+        if(productId != null && productId > 0 && productService.findProductById(productId) != null){
             productService.deleteProduct(productId);
             return "Success";
         }
