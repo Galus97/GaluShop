@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.controller;
+package pl.galushop.GaluShop.controller.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
