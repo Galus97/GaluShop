@@ -20,10 +20,13 @@ public class UserDataService {
     }
 
     public UserData showUserData(Long userId){
-        if(userId != null && userId > 0 && userService.getUserById(userId).isPresent()){
-            return userDataRepository.findByUser_UserId(userId);
+        if(userId != null && userId > 0){
+            if(userService.getUserById(userId).isPresent()){
+                return userDataRepository.findByUser_UserId(userId);
+            }
+            throw new NoSuchElementException("That User Data doesn't exist in database");
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("User Id is invalid");
     }
 
     public void updateUserData(Long userDataId, String city, String street, Integer streetNumber,
