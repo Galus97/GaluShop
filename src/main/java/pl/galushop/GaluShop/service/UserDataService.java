@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 
+import java.util.NoSuchElementException;
+
 @Service
 @RequiredArgsConstructor
 public class UserDataService {
@@ -22,5 +24,19 @@ public class UserDataService {
             return userDataRepository.findByUser_UserId(userId);
         }
         throw new IllegalArgumentException();
+    }
+
+    public void updateUserData(Long userDataId, String city, String street, Integer streetNumber,
+                               Integer apartmentNumber, String zipCode, Integer phoneNumber){
+        if(userDataId != null && userDataId > 0){
+            if(userDataRepository.existsById(userDataId)){
+                userDataRepository.updateByUserDataId(userDataId, city, street, streetNumber,
+                        apartmentNumber, zipCode, phoneNumber);
+            } else {
+                throw new NoSuchElementException("That User Data doesn't exist in database");
+            }
+        } else {
+            throw new IllegalArgumentException("User Data Id is invalid");
+        }
     }
 }
