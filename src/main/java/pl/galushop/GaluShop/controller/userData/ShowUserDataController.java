@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.controller;
+package pl.galushop.GaluShop.controller.userData;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
