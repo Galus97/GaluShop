@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.controller;
+package pl.galushop.GaluShop.controller.login;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
