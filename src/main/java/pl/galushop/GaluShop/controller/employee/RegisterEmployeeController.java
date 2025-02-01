@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.controller;
+package pl.galushop.GaluShop.controller.employee;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
