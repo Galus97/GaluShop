@@ -1,5 +1,6 @@
-package pl.galushop.GaluShop.controller;
+package pl.galushop.GaluShop.controller.product;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,22 +10,16 @@ import pl.galushop.GaluShop.service.ProductService;
 
 @RestController
 @RequiredArgsConstructor
-public class ProductUpdateController {
+public class ProductDeleteController {
     private final ProductService productService;
 
-    @GetMapping("/updateProduct")
-    public String updateProduct(@RequestBody ProductRequest productRequest){
+    @GetMapping("/deleteProduct")
+    public String deleteProduct(@RequestBody ProductRequest productRequest){
         Long productId = productRequest.getProductId();
         if(productId != null && productId > 0 && productService.findProductById(productId) != null){
-            productService.updateProductByProductId(
-                    productRequest.getProductId(),
-                    productRequest.getProductName(),
-                    productRequest.getDescription(),
-                    productRequest.getPrice(),
-                    productRequest.getCategory(),
-                    productRequest.getCategoryId());
+            productService.deleteProduct(productId);
             return "Success";
         }
-        return "The product could not be updated";
+        return "The product could not be removed";
     }
 }
