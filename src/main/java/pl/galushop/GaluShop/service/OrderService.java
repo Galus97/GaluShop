@@ -3,12 +3,10 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.entity.Order;
-import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.repository.OrderRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,18 +21,20 @@ public class OrderService {
         }
     }
 
-    public List<Order> getAllOrdersByUser(Long userId){
-        if(userId != null && userId > 0 && userService.getUserById(userId).isPresent()){
+    public List<Order> getAllOrdersByUser(Long userId) {
+        if (userId != null && userId > 0) {
+            if(userService.getUserById(userId).isPresent()){
                 return orderRepository.findAllByUser_UserId(userId);
-
+            }
+            throw new NoSuchElementException("User doesn't exist in database");
         }
-        throw new IllegalArgumentException("User Id is wrong");
+        throw new IllegalArgumentException("User Id is invalid");
     }
 
-    public Order showSpecificOrder(Long userId){
-        if(userId != null && userId > 0 && userService.getUserById(userId).isPresent()){
+    public Order showSpecificOrder(Long userId) {
+        if (userId != null && userId > 0 && userService.getUserById(userId).isPresent()) {
             return orderRepository.findByUser_UserId(userId).get();
         }
-        throw new IllegalArgumentException("User Id is wrong");
+        throw new IllegalArgumentException("User Id is invalid");
     }
 }
