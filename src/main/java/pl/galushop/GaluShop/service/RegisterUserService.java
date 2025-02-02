@@ -21,7 +21,7 @@ public class RegisterUserService {
     public void saveNewUser(User user) throws ValidationException {
         List<String> validationFailures = registerValidator.validateUserErrors(user);
         if (validationFailures.isEmpty()) {
-            user.setUserId(null);
+            //user.setUserId(null);
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
         } else {
