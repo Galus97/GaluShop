@@ -25,11 +25,16 @@ public class WarehouseProductService {
         return warehouseRepository.findAll();
     }
 
-    public void deleteWarehouseProduct(WarehouseProduct warehouseProduct) {
-        if (warehouseProduct != null && warehouseRepository.existsById(warehouseProduct.getWarehouseProductId())) {
-            warehouseRepository.delete(warehouseProduct);
+    public void deleteWarehouseProduct(Long warehouseId) {
+        if (warehouseId != null && warehouseId > 0) {
+            if(warehouseRepository.existsById(warehouseId)){
+                warehouseRepository.deleteById(warehouseId);
+            } else {
+                throw new NoSuchElementException("That warehouse product doesn't exist in database");
+            }
+        } else {
+            throw new IllegalArgumentException("Warehouse Id is invalid");
         }
-        throw new IllegalArgumentException("WarehouseProduct (id) is invalid");
     }
 
     public WarehouseProduct getProductInfoInWarehouse(Long productId) {
