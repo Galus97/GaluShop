@@ -14,6 +14,11 @@ public class DeleteWarehouseProductController {
 
     @GetMapping("/deleteWarehouseProduct")
     public String deleteWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
-        warehouseProductRequest.g
+        Long warehouseProductId = warehouseProductRequest.getWarehouseProductId();
+        if(warehouseProductId != null){
+            warehouseProductService.deleteWarehouseProduct(warehouseProductId);
+            return "Success";
+        }
+        return "Warehouse Product Id is required";
     }
 }
