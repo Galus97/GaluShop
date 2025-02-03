@@ -25,10 +25,11 @@ public class WarehouseProductService {
         return warehouseRepository.findAll();
     }
 
-    public void deleteWarehouseProduct(Long warehouseId) {
-        if (warehouseId != null && warehouseId > 0) {
-            warehouseRepository.deleteById(warehouseId);
+    public void deleteWarehouseProduct(WarehouseProduct warehouseProduct) {
+        if (warehouseProduct != null && warehouseRepository.existsById(warehouseProduct.getWarehouseProductId())) {
+            warehouseRepository.delete(warehouseProduct);
         }
+        throw new IllegalArgumentException("WarehouseProduct (id) is invalid");
     }
 
     public WarehouseProduct getProductInfoInWarehouse(Long productId) {
