@@ -6,6 +6,7 @@ import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,17 @@ public class UserDataService {
         }
     }
 
-    public UserData showUserData(Long userId){
+    public UserData showUserData(Long userDataId){
+        if(userDataId != null && userDataId > 0){
+            if(userDataRepository.findById(userDataId).isPresent()){
+                return userDataRepository.findById(userDataId).get();
+            }
+            throw new NoSuchElementException("That User Data doesn't exist in database");
+        }
+        throw new IllegalArgumentException("User Data Id is invalid");
+    }
+
+    public UserData showUserDataByUserId(Long userId){
         if(userId != null && userId > 0){
             if(userService.getUserById(userId).isPresent()){
                 return userDataRepository.findByUser_UserId(userId);
