@@ -13,6 +13,6 @@ public class ShowUserDataController {
 
     @GetMapping("/userData/show")
     public UserData showUserData(){
-        return userDataService.showUserData(1L);
+        return userDataService.showUserDataByUserId(1L);
     }
 }
