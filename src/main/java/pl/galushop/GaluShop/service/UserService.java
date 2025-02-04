@@ -13,6 +13,9 @@ public class UserService {
     private final UserRepository userRepository;
 
     public Optional<User> getUserById(Long userId){
+        if(userId == null || userId < 0){
+            throw new IllegalArgumentException("User Id is invalid");
+        }
         return userRepository.findByUserId(userId);
     }
 
@@ -32,14 +35,6 @@ public class UserService {
                     user.getEmail(),
                     user.getPassword()
             );
-        } else {
-            throw new IllegalArgumentException("User Id is invalid");
-        }
-    }
-
-    public void deleteUser(Long userId){
-        if(userId != null && userId > 0){
-            userRepository.deleteByUserId(userId);
         } else {
             throw new IllegalArgumentException("User Id is invalid");
         }
