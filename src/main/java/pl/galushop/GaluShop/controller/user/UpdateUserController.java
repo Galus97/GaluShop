@@ -11,7 +11,7 @@ import pl.galushop.GaluShop.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-public class UserUpdateController {
+public class UpdateUserController {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
