@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.repository.UserRepository;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -12,11 +13,14 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public Optional<User> getUserById(Long userId){
-        if(userId == null || userId < 0){
-            throw new IllegalArgumentException("User Id is invalid");
+    public User getUserById(Long userId){
+        if(userId != null && userId < 0){
+            if(userRepository.findByUserId(userId).isPresent()){
+                return userRepository.findByUserId(userId).get();
+            }
+            throw new NoSuchElementException("This User doesn't exist in Data base");
         }
-        return userRepository.findByUserId(userId);
+        throw new IllegalArgumentException("User Id is invalid");
     }
 
     public void deleteUserFromDatabase(User user){
