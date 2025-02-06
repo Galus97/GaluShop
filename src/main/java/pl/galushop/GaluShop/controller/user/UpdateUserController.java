@@ -25,7 +25,7 @@ public class UpdateUserController {
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(userRequest.getFirstName()));
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         userService.updateUser(userRequest.getUserId(), user);
 
