@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class UserOrdersController {
+public class UserAllOrdersController {
     private final OrderService orderService;
 
     @GetMapping("/allUserOrders")
