@@ -22,4 +22,16 @@ public class EmployeeService {
             throw new IllegalArgumentException("Employee Id is invalid");
         }
     }
+
+    public void updateEmployee(Long employeeId, String firstName, String lastName, String email, String password){
+        if(employeeId != null && employeeId > 0) {
+            if (employeeRepository.findById(employeeId).isPresent()) {
+                employeeRepository.updateEmployeeByEmployeeId(employeeId, firstName, lastName, email, password);
+            } else {
+                throw new NoSuchElementException("This employee doesn't exist in database");
+            }
+        } else {
+            throw new IllegalArgumentException("Employee Id is invalid");
+        }
+    }
 }
