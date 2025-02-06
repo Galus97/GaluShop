@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-public class OrderAddController {
+public class AddOrderController {
     private final OrderService orderService;
     private final ProductService productService;
 
