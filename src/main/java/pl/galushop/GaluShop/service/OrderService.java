@@ -41,4 +41,14 @@ public class OrderService {
         }
         throw new IllegalArgumentException("User Id is invalid");
     }
+
+    public void deleteOrder(Long orderId){
+        if(orderId != null && orderId > 0){
+            if (orderRepository.findById(orderId).isPresent()) {
+                orderRepository.deleteById(orderId);
+            }
+            throw new NoSuchElementException("Order doesn't exist in database");
+        }
+        throw new IllegalArgumentException("Order Id is invalid");
+    }
 }
