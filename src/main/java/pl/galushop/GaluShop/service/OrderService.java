@@ -2,10 +2,13 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.entity.Order;
+import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.repository.OrderRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -46,9 +49,23 @@ public class OrderService {
         if(orderId != null && orderId > 0){
             if (orderRepository.findById(orderId).isPresent()) {
                 orderRepository.deleteById(orderId);
+            } else{
+                throw new NoSuchElementException("Order doesn't exist in database");
             }
-            throw new NoSuchElementException("Order doesn't exist in database");
+        } else {
+            throw new IllegalArgumentException("Order Id is invalid");
         }
-        throw new IllegalArgumentException("Order Id is invalid");
+    }
+
+    public void updateOrder(Long orderId, LocalDateTime localDateTime, OrderStatus status, List<Product> products){
+        if(orderId != null && orderId > 0) {
+            if (orderRepository.findById(orderId).isPresent()) {
+                orderRepository.updateOrderByOrderId(orderId, localDateTime, status, products);
+            } else {
+                throw new NoSuchElementException("Order doesn't exist in database");
+            }
+        } else {
+            throw new IllegalArgumentException("Order Id is invalid");
+        }
     }
 }
