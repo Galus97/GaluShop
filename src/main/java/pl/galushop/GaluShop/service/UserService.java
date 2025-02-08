@@ -2,27 +2,21 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.entity.User;
-import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserRepository;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public User getUserById(Long userId){
-        if(userId != null && userId < 0){
-            if(userRepository.findByUserId(userId).isPresent()){
-                return userRepository.findByUserId(userId).get();
-            }
-            throw new NoSuchElementException("This User doesn't exist in Data base");
-        }
-        throw new IllegalArgumentException("User Id is invalid");
+    public User getUser(Long userId){
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User with ID " + userId + " not found"));
     }
 
     public void deleteUser(Long userId){
@@ -31,16 +25,16 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void updateUser(Long userId, User user){
-        if(userId != null && userId > 0 && user != null){
-            userRepository.updateUserByUserId(userId,
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getEmail(),
-                    user.getPassword()
-            );
-        } else {
-            throw new IllegalArgumentException("User Id is invalid");
-        }
+    @Transactional
+    public void updateUser(User user){
+        User existingUser = userRepository.findById(user.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException("User with ID " + user.getUserId() + " not found"));
+
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userRepository.save(existingUser);
     }
 }

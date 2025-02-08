@@ -15,7 +15,7 @@ public class ShowUserController {
 
     @GetMapping("/user/show")
     public User showUserInfo(@RequestBody UserRequest userRequest){
-       return userService.getUserById(userRequest.getUserId());
+       return userService.getUser(userRequest.getUserId());
     }
 }
 
