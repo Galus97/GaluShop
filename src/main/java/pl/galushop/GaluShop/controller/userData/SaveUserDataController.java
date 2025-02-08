@@ -10,8 +10,6 @@ import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.service.UserDataService;
 import pl.galushop.GaluShop.service.UserService;
 
-import java.util.Optional;
-
 @RestController
 @RequiredArgsConstructor
 public class SaveUserDataController {
@@ -21,7 +19,7 @@ public class SaveUserDataController {
     @PostMapping("/userData")
     public String saveUserData(@RequestBody UserDataRequest userDataRequest){
 
-        User user = userService.getUserById(userDataRequest.getUserId());
+        User user = userService.getUser(userDataRequest.getUserId());
 
         UserData userData = new UserData();
         userData.setUser(user);
