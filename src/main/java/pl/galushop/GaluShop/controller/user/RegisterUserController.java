@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.galushop.GaluShop.dto.UserRequest;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.ValidationException;
@@ -18,18 +19,19 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class RegisterUserController {
     private final RegisterUserService registerUserService;
     private final EmailService emailService;
 
-    @GetMapping("/registerUser")
+    @GetMapping("/register")
     public String showRegisterUserPage(Model model) {
         model.addAttribute("user", new User());
         return "registerUser";
     }
 
 
-    @PostMapping("/registerUser")
+    @PostMapping("/register")
     public String saveNewUser(@RequestBody UserRequest userRequest){
 
         User user = new User();
