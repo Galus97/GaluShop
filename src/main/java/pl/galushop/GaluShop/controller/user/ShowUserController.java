@@ -1,7 +1,9 @@
 package pl.galushop.GaluShop.controller.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +17,9 @@ import pl.galushop.GaluShop.service.UserService;
 public class ShowUserController {
     private final UserService userService;
 
-    @GetMapping("/show")
-    public User showUserInfo(@RequestBody UserRequest userRequest){
-       return userService.getUser(userRequest.getUserId());
+    @GetMapping("/show/{id}")
+    public ResponseEntity<User> showUserInfo(@PathVariable Long id){
+       return ResponseEntity.ok(userService.getUser(id));
     }
 }
 
