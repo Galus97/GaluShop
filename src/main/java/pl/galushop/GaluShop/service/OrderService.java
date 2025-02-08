@@ -27,7 +27,7 @@ public class OrderService {
 
     public List<Order> getAllOrdersByUser(Long userId) {
         if (userId != null && userId > 0) {
-            if (userRepository.findByUserId(userId).isPresent()) {
+            if (userRepository.findById(userId).isPresent()) {
                 return orderRepository.findAllByUser_UserId(userId);
             }
             throw new NoSuchElementException("User doesn't exist in database");
@@ -37,7 +37,7 @@ public class OrderService {
 
     public Order showSpecificOrder(Long userId) {
         if (userId != null && userId > 0) {
-            if (userRepository.findByUserId(userId).isPresent()) {
+            if (userRepository.findById(userId).isPresent()) {
                 return orderRepository.findByUser_UserId(userId).get();
             }
             throw new NoSuchElementException("User doesn't exist in database");
