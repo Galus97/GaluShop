@@ -1,8 +1,10 @@
 package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.util.NoSuchElementException;
@@ -23,12 +25,10 @@ public class UserService {
         throw new IllegalArgumentException("User Id is invalid");
     }
 
-    public void deleteUserFromDatabase(User user){
-        if(user != null){
-            userRepository.delete(user);
-        } else {
-            throw new IllegalArgumentException("User is null");
-        }
+    public void deleteUser(Long userId){
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User with ID " + userId + " not found"));
+        userRepository.delete(user);
     }
 
     public void updateUser(Long userId, User user){

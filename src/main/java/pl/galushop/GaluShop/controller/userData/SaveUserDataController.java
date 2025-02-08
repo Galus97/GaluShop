@@ -21,13 +21,10 @@ public class SaveUserDataController {
     @PostMapping("/userData")
     public String saveUserData(@RequestBody UserDataRequest userDataRequest){
 
-        Optional<User> user = userService.getUserById(userDataRequest.getUserId());
-        if(user.isEmpty()){
-            return "User not found";
-        }
+        User user = userService.getUserById(userDataRequest.getUserId());
 
         UserData userData = new UserData();
-        userData.setUser(user.get());
+        userData.setUser(user);
         userData.setCity(userDataRequest.getCity());
         userData.setStreet(userDataRequest.getStreet());
         userData.setStreetNumber(userDataRequest.getStreetNumber());
