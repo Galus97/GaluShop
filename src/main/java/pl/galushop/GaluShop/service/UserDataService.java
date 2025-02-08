@@ -32,7 +32,7 @@ public class UserDataService {
 
     public UserData showUserDataByUserId(Long userId) {
         if (userId != null && userId > 0) {
-            if (userRepository.findByUserId(userId).isPresent()) {
+            if (userRepository.findById(userId).isPresent()) {
                 return userDataRepository.findByUser_UserId(userId);
             }
             throw new NoSuchElementException("That User Data doesn't exist in database");
