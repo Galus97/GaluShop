@@ -18,13 +18,6 @@ public class UpdateEmployeeController {
 
     @GetMapping("/update")
     private String updateEmployee(@RequestBody EmployeeRequest employeeRequest){
-        employeeService.updateEmployee(
-                employeeRequest.getEmployeeId(),
-                employeeRequest.getFirstName(),
-                employeeRequest.getLastName(),
-                employeeRequest.getEmail(),
-                passwordEncoder.encode(employeeRequest.getPassword())
-        );
 
         return "Success";
     }

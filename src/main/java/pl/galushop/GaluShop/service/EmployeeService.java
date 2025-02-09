@@ -1,7 +1,9 @@
 package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.dto.EmployeeRequest;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
@@ -12,6 +14,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Employee getEmployee(Long employeeId){
         return employeeRepository.findById(employeeId)
@@ -24,16 +27,17 @@ public class EmployeeService {
         employeeRepository.delete(employee);
     }
 
-    public void updateEmployee(Long employeeId, String firstName, String lastName, String email, String password){
-        if(employeeId != null && employeeId > 0) {
-            if (employeeRepository.existsById(employeeId)) {
-                employeeRepository.updateEmployeeByEmployeeId(employeeId, firstName, lastName, email, password);
-            } else {
-                throw new NoSuchElementException("This employee doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("Employee Id is invalid");
+    public void updateEmployee(EmployeeRequest employeeRequest){
+        Employee existingEmployee = employeeRepository.findById(employeeRequest.getEmployeeId())
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeRequest.getEmployeeId() + " not found"));
+        existingEmployee.setFirstName(existingEmployee.getFirstName());
+        existingEmployee.setLastName(existingEmployee.getLastName());
+        existingEmployee.setEmail(existingEmployee.getEmail());
+        if(employeeRequest.getPassword() != null && !employeeRequest.getPassword().isBlank()){
+            existingEmployee.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
         }
+
+        employeeRepository.save(existingEmployee);
     }
 
 }
