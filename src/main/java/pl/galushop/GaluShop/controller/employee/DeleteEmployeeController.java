@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.controller.employee;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +15,7 @@ import pl.galushop.GaluShop.service.EmployeeService;
 public class DeleteEmployeeController {
     private final EmployeeService employeeService;
 
-    @GetMapping("/delete")
+    @DeleteMapping("/delete")
     public String deleteEmployee(@RequestBody EmployeeRequest employeeRequest){
         employeeService.deleteEmployee(employeeRequest.getEmployeeId());
         return "Success";
