@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.controller.employee;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,11 +15,9 @@ import pl.galushop.GaluShop.service.EmployeeService;
 @RequestMapping("/employee")
 public class UpdateEmployeeController {
     private final EmployeeService employeeService;
-    private final PasswordEncoder passwordEncoder;
 
-    @GetMapping("/update")
+    @PutMapping("/update")
     private String updateEmployee(@RequestBody EmployeeRequest employeeRequest){
 
-        return "Success";
     }
 }
