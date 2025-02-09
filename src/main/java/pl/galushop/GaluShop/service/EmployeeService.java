@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
 
 import java.util.NoSuchElementException;
@@ -11,6 +12,11 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
+
+    public Employee getEmployee(Long employeeId){
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found"))
+    }
 
     public void deleteEmployee(Long employeeId){
         if(employeeId != null && employeeId > 0){
@@ -36,13 +42,4 @@ public class EmployeeService {
         }
     }
 
-    public Employee showEmployeeInf(Long employeeId){
-        if(employeeId != null && employeeId > 0){
-            if(employeeRepository.existsById(employeeId)){
-                return employeeRepository.findById(employeeId).get();
-            }
-            throw new NoSuchElementException("This employee doesn't exist in database");
-        }
-        throw new IllegalArgumentException("Employee Id is invalid");
-    }
 }
