@@ -15,19 +15,13 @@ public class EmployeeService {
 
     public Employee getEmployee(Long employeeId){
         return employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found"))
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found"));
     }
 
     public void deleteEmployee(Long employeeId){
-        if(employeeId != null && employeeId > 0){
-            if(employeeRepository.existsById(employeeId)){
-                employeeRepository.deleteById(employeeId);
-            } else {
-                throw new NoSuchElementException("This employee doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("Employee Id is invalid");
-        }
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found"));
+        employeeRepository.delete(employee);
     }
 
     public void updateEmployee(Long employeeId, String firstName, String lastName, String email, String password){
