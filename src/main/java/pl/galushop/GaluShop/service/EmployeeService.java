@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.dto.EmployeeRequest;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
@@ -27,6 +28,7 @@ public class EmployeeService {
         employeeRepository.delete(employee);
     }
 
+    @Transactional
     public void updateEmployee(EmployeeRequest employeeRequest){
         Employee existingEmployee = employeeRepository.findById(employeeRequest.getEmployeeId())
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeRequest.getEmployeeId() + " not found"));
