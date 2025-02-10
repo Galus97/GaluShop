@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.WarehouseProductRequest;
+import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
+import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 import pl.galushop.GaluShop.repository.WarehouseProductRepository;
@@ -24,13 +27,24 @@ public class WarehouseProductService {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
         return warehouseRepository.findById(productId)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", productId)));
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductByProductIdNotFound", productId)));
     }
 
-    public void addProductToWarehouse(WarehouseProduct warehouseProduct) {
-        if (warehouseProduct != null) {
-            warehouseRepository.save(warehouseProduct);
+    public void addProductToWarehouse(WarehouseProductRequest warehouseProductRequest) {
+        if (warehouseProductRequest == null) {
+            throw new IllegalArgumentException(messageService.getMessage("error.warehouseProductIsNull"));
         }
+        if(warehouseProductRequest.getProductId() == null && warehouseProductRequest.getQuantity() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
+        }
+
+        WarehouseProduct warehouseProduct = new WarehouseProduct();
+        Product product = productRepository.findByProductId(warehouseProductRequest.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", warehouseProductRequest.getProductId())));
+
+        warehouseProduct.setProduct(product);
+        warehouseProduct.setQuantity(warehouseProductRequest.getQuantity());
+        warehouseRepository.save(warehouseProduct);
     }
 
     public List<WarehouseProduct> getAllProductInWarehouse() {
@@ -38,15 +52,13 @@ public class WarehouseProductService {
     }
 
     public void deleteWarehouseProduct(Long warehouseId) {
-        if (warehouseId != null && warehouseId > 0) {
-            if(warehouseRepository.existsById(warehouseId)){
-                warehouseRepository.deleteById(warehouseId);
-            } else {
-                throw new NoSuchElementException("That warehouse product doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("Warehouse Id is invalid");
+        if (warehouseId == null && warehouseId < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidWarehouseProductId", warehouseId));
         }
+        WarehouseProduct warehouseProduct = warehouseRepository.findById(warehouseId)
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", warehouseId)));
+
+        warehouseRepository.delete(warehouseProduct);
     }
 
 
