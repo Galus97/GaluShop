@@ -13,24 +13,11 @@ import pl.galushop.GaluShop.service.WarehouseProductService;
 @RestController
 @RequiredArgsConstructor
 public class WarehouseProductController {
-
     private final WarehouseProductService warehouseProductService;
-    private final ProductService productService;
 
     @GetMapping("/warehouse/addProduct")
     public String addProductToWarehouse(@RequestBody WarehouseProductRequest warehouseProductRequest) {
-
-        Product product = productService.findProductById(warehouseProductRequest.getProductId());
-
-        if (product == null) {
-            return "Product not found";
-        }
-
-        WarehouseProduct warehouseProduct = new WarehouseProduct();
-        warehouseProduct.setProduct(product);
-        warehouseProduct.setQuantity(warehouseProduct.getQuantity());
-
-        warehouseProductService.addProductToWarehouse(warehouseProduct);
+        warehouseProductService.addProductToWarehouse(warehouseProductRequest);
         return "success";
     }
 }
