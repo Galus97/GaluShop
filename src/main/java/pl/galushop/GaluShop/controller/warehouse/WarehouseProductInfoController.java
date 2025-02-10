@@ -15,6 +15,6 @@ public class WarehouseProductInfoController {
 
     @GetMapping("/showInfoWarehouseProduct")
     public WarehouseProduct showInfoWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
-        return warehouseProductService.getProductInfoInWarehouse(warehouseProductRequest.getProductId());
+        return warehouseProductService.getWarehouseProduct(warehouseProductRequest.getProductId());
     }
 }

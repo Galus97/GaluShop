@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.UserRequest;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.repository.UserRepository;
@@ -14,31 +15,32 @@ import pl.galushop.GaluShop.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MessageService messageService;
 
     public User getUser(Long userId){
         if (userId == null || userId < 1) {
-            throw new IllegalArgumentException("Invalid user ID: " + userId);
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
         }
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User with ID " + userId + " not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId)));
     }
 
     public void deleteUser(Long userId){
         if (userId == null || userId < 1) {
-            throw new IllegalArgumentException("Invalid user ID: " + userId);
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User with ID " + userId + " not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId)));
         userRepository.delete(user);
     }
 
     @Transactional
     public void updateUser(UserRequest userRequest){
         if(userRequest.getUserId() == null || userRequest.getUserId() < 0){
-            throw new IllegalArgumentException("Invalid user request: missing or incorrect user ID");
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserRequest"));
         }
         User existingUser = userRepository.findById(userRequest.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException("User with ID " + userRequest.getUserId() + " not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userRequest.getUserId())));
 
         existingUser.setFirstName(userRequest.getFirstName());
         existingUser.setLastName(userRequest.getLastName());
