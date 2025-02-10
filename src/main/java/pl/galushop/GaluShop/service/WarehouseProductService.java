@@ -1,8 +1,11 @@
 package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
+import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 
@@ -14,6 +17,15 @@ import java.util.NoSuchElementException;
 public class WarehouseProductService {
     private final WarehouseProductRepository warehouseRepository;
     private final ProductRepository productRepository;
+    private final MessageService messageService;
+
+    public WarehouseProduct getWarehouseProduct(Long productId) {
+        if (productId == null && productId < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
+        }
+        return warehouseRepository.findById(productId)
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", productId)));
+    }
 
     public void addProductToWarehouse(WarehouseProduct warehouseProduct) {
         if (warehouseProduct != null) {
@@ -37,15 +49,6 @@ public class WarehouseProductService {
         }
     }
 
-    public WarehouseProduct getProductInfoInWarehouse(Long productId) {
-        if (productId != null && productId > 0) {
-            if (productRepository.findByProductId(productId).isPresent()) {
-                return warehouseRepository.findByProduct_ProductId(productId);
-            }
-            throw new NoSuchElementException("That product doesn't exist in database");
-        }
-        throw new IllegalArgumentException("Product Id is invalid");
-    }
 
     public void updateQuantityByProductId(Long productId, Integer quantity) {
         if (productId != null && productId > 0 && quantity != null && quantity >= 0) {
