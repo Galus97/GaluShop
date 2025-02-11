@@ -1,7 +1,11 @@
 package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.UserDataRequest;
+import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
@@ -13,11 +17,25 @@ import java.util.NoSuchElementException;
 public class UserDataService {
     private final UserDataRepository userDataRepository;
     private final UserRepository userRepository;
+    private final MessageService messageService;
 
-    public void saveUserDataToDatabase(UserData userData) {
-        if (userData != null) {
-            userDataRepository.save(userData);
+    public void saveUserData(UserDataRequest userDataRequest) {
+        if(userDataRequest == null){
+            throw new IllegalArgumentException();
         }
+        User user = userRepository.findById(userDataRequest.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userDataRequest.getUserId())));
+
+        UserData userData = new UserData();
+        userData.setUser(user);
+        userData.setCity(userDataRequest.getCity());
+        userData.setStreet(userDataRequest.getStreet());
+        userData.setStreetNumber(userDataRequest.getStreetNumber());
+        userData.setApartmentNumber(userDataRequest.getApartmentNumber());
+        userData.setZipCode(userDataRequest.getZipCode());
+        userData.setPhoneNumber(userDataRequest.getPhoneNumber());
+
+        userDataRepository.save(userData);
     }
 
     public UserData showUserData(Long userDataId) {
@@ -33,7 +51,7 @@ public class UserDataService {
     public UserData showUserDataByUserId(Long userId) {
         if (userId != null && userId > 0) {
             if (userRepository.findById(userId).isPresent()) {
-                return userDataRepository.findByUser_UserId(userId);
+                return userDataRepository.findByUser_UserId(userId).get();
             }
             throw new NoSuchElementException("That User Data doesn't exist in database");
         }
