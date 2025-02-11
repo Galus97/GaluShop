@@ -1,8 +1,8 @@
 package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.WarehouseProductRequest;
 import pl.galushop.GaluShop.entity.Product;
@@ -13,7 +13,6 @@ import pl.galushop.GaluShop.repository.ProductRepository;
 import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -61,16 +60,18 @@ public class WarehouseProductService {
         warehouseRepository.delete(warehouseProduct);
     }
 
-
+    @Transactional
     public void updateQuantityByProductId(Long productId, Integer quantity) {
-        if (productId != null && productId > 0 && quantity != null && quantity >= 0) {
-            if (productRepository.findByProductId(productId).isPresent()) {
-                warehouseRepository.updateQuantityByProductId(productId, quantity);
-            } else {
-                throw new NoSuchElementException("That product doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("Product Id is invalid");
+        if(productId == null && productId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
+        if(quantity == null && quantity < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidQuantity"));
+        }
+        WarehouseProduct existingWarehouseProduct = warehouseRepository.findByProduct_ProductId(productId)
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductIsNull")));
+
+        existingWarehouseProduct.setQuantity(quantity);
+        warehouseRepository.save(existingWarehouseProduct);
     }
 }
