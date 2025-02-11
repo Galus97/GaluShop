@@ -22,7 +22,7 @@ public class WarehouseProductService {
     private final MessageService messageService;
 
     public WarehouseProduct getWarehouseProduct(Long productId) {
-        if (productId == null && productId < 0) {
+        if (productId == null || productId < 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
         return warehouseRepository.findById(productId)
@@ -51,7 +51,7 @@ public class WarehouseProductService {
     }
 
     public void deleteWarehouseProduct(Long warehouseId) {
-        if (warehouseId == null && warehouseId < 0) {
+        if (warehouseId == null || warehouseId < 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidWarehouseProductId", warehouseId));
         }
         WarehouseProduct warehouseProduct = warehouseRepository.findById(warehouseId)
@@ -62,10 +62,10 @@ public class WarehouseProductService {
 
     @Transactional
     public void updateQuantityByProductId(Long productId, Integer quantity) {
-        if(productId == null && productId < 0){
+        if(productId == null || productId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
-        if(quantity == null && quantity < 0){
+        if(quantity == null || quantity < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidQuantity"));
         }
         WarehouseProduct existingWarehouseProduct = warehouseRepository.findByProduct_ProductId(productId)
