@@ -7,6 +7,7 @@ import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.UserDataRequest;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
+import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
@@ -39,13 +40,11 @@ public class UserDataService {
     }
 
     public UserData showUserData(Long userDataId) {
-        if (userDataId != null && userDataId > 0) {
-            if (userDataRepository.findById(userDataId).isPresent()) {
-                return userDataRepository.findById(userDataId).get();
-            }
-            throw new NoSuchElementException("That User Data doesn't exist in database");
+        if(userDataId == null || userDataId <0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataId));
         }
-        throw new IllegalArgumentException("User Data Id is invalid");
+        return userDataRepository.findById(userDataId)
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataId)));
     }
 
     public UserData showUserDataByUserId(Long userId) {
