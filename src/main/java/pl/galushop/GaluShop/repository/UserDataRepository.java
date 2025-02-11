@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.entity.UserData;
 
+import java.util.Optional;
+
 public interface UserDataRepository extends JpaRepository<UserData, Long> {
 
-    UserData findByUser_UserId(Long id);
+    Optional<UserData> findByUser_UserId(Long id);
 
     @Transactional
     @Modifying
