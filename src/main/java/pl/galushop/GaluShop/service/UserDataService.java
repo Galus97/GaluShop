@@ -40,7 +40,7 @@ public class UserDataService {
     }
 
     public UserData showUserData(Long userDataId) {
-        if(userDataId == null || userDataId <0){
+        if(userDataId == null || userDataId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataId));
         }
         return userDataRepository.findById(userDataId)
@@ -48,13 +48,11 @@ public class UserDataService {
     }
 
     public UserData showUserDataByUserId(Long userId) {
-        if (userId != null && userId > 0) {
-            if (userRepository.findById(userId).isPresent()) {
-                return userDataRepository.findByUser_UserId(userId).get();
-            }
-            throw new NoSuchElementException("That User Data doesn't exist in database");
+        if(userId == null || userId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
         }
-        throw new IllegalArgumentException("User Id is invalid");
+        return userDataRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userId)));
     }
 
     public void updateUserData(Long userDataId, String city, String street, Integer streetNumber,
