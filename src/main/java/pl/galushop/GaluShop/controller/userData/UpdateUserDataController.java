@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.controller.userData;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,9 +18,8 @@ public class UpdateUserDataController {
     private final UserDataService userDataService;
 
     @PutMapping("/update")
-    public UserData updateUserData(@RequestBody UserDataRequest userDataRequest){
+    public ResponseEntity<UserData> updateUserData(@RequestBody UserDataRequest userDataRequest){
         userDataService.updateUserData(userDataRequest);
-
-        return userDataService.showUserData(userDataRequest.getUserDataId());
+        return ResponseEntity.ok(userDataService.showUserData(userDataRequest.getUserDataId()));
     }
 }
