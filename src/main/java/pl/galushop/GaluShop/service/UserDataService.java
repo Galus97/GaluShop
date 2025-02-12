@@ -11,8 +11,6 @@ import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
-import java.util.NoSuchElementException;
-
 @Service
 @RequiredArgsConstructor
 public class UserDataService {
@@ -29,12 +27,7 @@ public class UserDataService {
 
         UserData userData = new UserData();
         userData.setUser(user);
-        userData.setCity(userDataRequest.getCity());
-        userData.setStreet(userDataRequest.getStreet());
-        userData.setStreetNumber(userDataRequest.getStreetNumber());
-        userData.setApartmentNumber(userDataRequest.getApartmentNumber());
-        userData.setZipCode(userDataRequest.getZipCode());
-        userData.setPhoneNumber(userDataRequest.getPhoneNumber());
+        setUserDataFields(userDataRequest, userData);
 
         userDataRepository.save(userData);
     }
@@ -62,15 +55,11 @@ public class UserDataService {
         UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
                         .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataRequest.getUserDataId())));
 
-        existingUserData.setCity(userDataRequest.getCity());
-        existingUserData.setStreet(userDataRequest.getStreet());
-        existingUserData.setStreetNumber(userDataRequest.getStreetNumber());
-        existingUserData.setApartmentNumber(userDataRequest.getApartmentNumber());
-        existingUserData.setZipCode(userDataRequest.getZipCode());
-        existingUserData.setPhoneNumber(userDataRequest.getPhoneNumber());
+        setUserDataFields(userDataRequest, existingUserData);
 
         userDataRepository.save(existingUserData);
     }
+
 
     public void deleteUserData(Long userDataId) {
         if(userDataId == null || userDataId < 0){
@@ -79,5 +68,14 @@ public class UserDataService {
         UserData userData = userDataRepository.findById(userDataId)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataId)));
         userDataRepository.delete(userData);
+    }
+
+    private static void setUserDataFields(UserDataRequest userDataRequest, UserData userData) {
+        userData.setCity(userDataRequest.getCity());
+        userData.setStreet(userDataRequest.getStreet());
+        userData.setStreetNumber(userDataRequest.getStreetNumber());
+        userData.setApartmentNumber(userDataRequest.getApartmentNumber());
+        userData.setZipCode(userDataRequest.getZipCode());
+        userData.setPhoneNumber(userDataRequest.getPhoneNumber());
     }
 }
