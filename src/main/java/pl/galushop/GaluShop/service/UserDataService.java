@@ -56,6 +56,9 @@ public class UserDataService {
     }
 
     public void updateUserData(UserDataRequest userDataRequest) {
+        if(userDataRequest.getUserId() == null || userDataRequest.getUserId() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataRequest.getUserDataId()));
+        }
         UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
                         .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataRequest.getUserDataId())));
 
@@ -70,14 +73,11 @@ public class UserDataService {
     }
 
     public void deleteUserData(Long userDataId) {
-        if (userDataId != null && userDataId > 0) {
-            if (userDataRepository.existsById(userDataId)) {
-                userDataRepository.deleteById(userDataId);
-            } else {
-                throw new NoSuchElementException("That User Data doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("User Data Id is invalid");
+        if(userDataId == null || userDataId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataId));
         }
+        UserData userData = userDataRepository.findById(userDataId)
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataId)));
+        userDataRepository.delete(userData);
     }
 }
