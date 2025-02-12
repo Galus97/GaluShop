@@ -55,18 +55,18 @@ public class UserDataService {
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userId)));
     }
 
-    public void updateUserData(Long userDataId, String city, String street, Integer streetNumber,
-                               Integer apartmentNumber, String zipCode, Integer phoneNumber) {
-        if (userDataId != null && userDataId > 0) {
-            if (userDataRepository.existsById(userDataId)) {
-                userDataRepository.updateByUserDataId(userDataId, city, street, streetNumber,
-                        apartmentNumber, zipCode, phoneNumber);
-            } else {
-                throw new NoSuchElementException("That User Data doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("User Data Id is invalid");
-        }
+    public void updateUserData(UserDataRequest userDataRequest) {
+        UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
+                        .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataRequest.getUserDataId())));
+
+        existingUserData.setCity(userDataRequest.getCity());
+        existingUserData.setStreet(userDataRequest.getStreet());
+        existingUserData.setStreetNumber(userDataRequest.getStreetNumber());
+        existingUserData.setApartmentNumber(userDataRequest.getApartmentNumber());
+        existingUserData.setZipCode(userDataRequest.getZipCode());
+        existingUserData.setPhoneNumber(userDataRequest.getPhoneNumber());
+
+        userDataRepository.save(existingUserData);
     }
 
     public void deleteUserData(Long userDataId) {
