@@ -11,7 +11,6 @@ import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,16 +20,12 @@ public class ProductService {
     private final ProductImagesService productImagesService;
     private final MessageService messageService;
 
-    public void saveProductToDatabase(ProductRequest productRequest) {
+    public void saveProduct(ProductRequest productRequest) {
         if(productRequest == null){
             throw new IllegalArgumentException();
         }
         Product product = new Product();
-        product.setProductName(productRequest.getProductName());
-        product.setCategory(productRequest.getCategory());
-        product.setPrice(productRequest.getPrice());
-        product.setCategoryId(productRequest.getCategoryId());
-        product.setDescription(productRequest.getDescription());
+        setProductFields(productRequest, product);
         productRepository.save(product);
 
         List<ProductImageRequest> productImagesList = productRequest.getProductImages();
