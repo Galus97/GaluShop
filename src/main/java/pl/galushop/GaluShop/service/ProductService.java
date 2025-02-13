@@ -60,14 +60,18 @@ public class ProductService {
                 () -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
     }
 
-    public void updateProductByProductId(Long productId, String productName, String description,
-                                         Double price, String category, Integer categoryId){
-        if(productId > 0 && productRepository.findByProductId(productId).isPresent()){
-            if(checkFields(productName, description, price, category, categoryId)){
-                productRepository.updateProductByProductId(productId, productName, description, price, category, categoryId);
-            }
-           throw new IllegalArgumentException("Some fields are invalid");
+    public void updateProduct(ProductRequest productRequest) {
+        if(productRequest == null || productRequest.getProductId() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productRequest.getProductId()));
         }
-        throw new IllegalArgumentException("Product Id is invalid");
+        Product existingProduct = productRepository.findById(productRequest.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productRequest.getProductId())));
+    }
+    private static void setProductFields(ProductRequest productRequest, Product product){
+        product.setProductName(productRequest.getProductName());
+        product.setDescription(productRequest.getDescription());
+        product.setPrice(productRequest.getPrice());
+        product.setCategory(productRequest.getCategory());
+        product.setCategoryId(productRequest.getCategoryId());
     }
 }
