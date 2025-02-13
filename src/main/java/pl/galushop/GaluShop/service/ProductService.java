@@ -2,9 +2,13 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.dto.ProductImageRequest;
+import pl.galushop.GaluShop.dto.ProductRequest;
 import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -12,10 +16,24 @@ import java.util.NoSuchElementException;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductImagesService productImagesService;
 
-    public void saveProductToDatabase(Product product) {
-        if (product != null) {
-            productRepository.save(product);
+    public void saveProductToDatabase(ProductRequest productRequest) {
+        Product product = new Product();
+        product.setProductName(productRequest.getProductName());
+        product.setCategory(productRequest.getCategory());
+        product.setPrice(productRequest.getPrice());
+        product.setCategoryId(productRequest.getCategoryId());
+        product.setDescription(productRequest.getDescription());
+        productRepository.save(product);
+
+        List<ProductImageRequest> productImagesList = productRequest.getProductImages();
+        for (ProductImageRequest productImage : productImagesList) {
+            ProductImages productImages = new ProductImages();
+            productImages.setProduct(product);
+            productImages.setImgSrc(productImage.getImgSrc());
+            productImages.setAltImg(productImage.getAltImg());
+            productImagesService.saveProductImagesToDatabase(productImages);
         }
     }
 
