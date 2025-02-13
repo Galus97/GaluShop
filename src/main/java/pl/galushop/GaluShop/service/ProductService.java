@@ -52,15 +52,12 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public Product findProductById(Long id) {
-        if (id != null && id > 0) {
-            if(productRepository.findByProductId(id).isPresent()){
-                return productRepository.findByProductId(id).get();
-            }
-            throw new NoSuchElementException("That product doesn't exist in database");
-        } else {
-            throw new IllegalArgumentException("Product Id is invalid");
+    public Product getProductById(Long productId) {
+        if (productId == null || productId < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
+        return productRepository.findById(productId).orElseThrow(
+                () -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
     }
 
     public void updateProductByProductId(Long productId, String productName, String description,
