@@ -70,11 +70,4 @@ public class ProductService {
         }
         throw new IllegalArgumentException("Product Id is invalid");
     }
-
-    private boolean checkFields(String productName, String description, Double price, String category, Integer categoryId){
-        if(productName.isBlank() || description.isBlank() || price < 0 || category.isBlank() || categoryId < 0){
-            return false;
-        }
-        return true;
-    }
 }
