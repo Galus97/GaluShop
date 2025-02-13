@@ -19,7 +19,7 @@ public class SaveProductController {
 
     @PutMapping("/add")
     public ResponseEntity<Product> addNewProduct(@RequestBody ProductRequest productRequest) {
-        productService.saveProductToDatabase(productRequest);
+        productService.saveProduct(productRequest);
         return ResponseEntity.ok(productService.getProductById(productRequest.getProductId()));
     }
 }
