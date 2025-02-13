@@ -21,7 +21,7 @@ public class UpdateOrderController {
     @GetMapping("/updateOrder")
     public String updateOrder(@RequestBody OrderRequest orderRequest){
         List<Product> products = orderRequest.getProductIds().stream()
-                .map(productService::findProductById)
+                .map(productService::getProductById)
                 .collect(Collectors.toList());
 
         orderService.updateOrder(

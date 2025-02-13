@@ -15,7 +15,7 @@ public class ProductUpdateController {
     @GetMapping("/updateProduct")
     public String updateProduct(@RequestBody ProductRequest productRequest){
         Long productId = productRequest.getProductId();
-        if(productId != null && productId > 0 && productService.findProductById(productId) != null){
+        if(productId != null && productId > 0 && productService.getProductById(productId) != null){
             productService.updateProductByProductId(
                     productRequest.getProductId(),
                     productRequest.getProductName(),

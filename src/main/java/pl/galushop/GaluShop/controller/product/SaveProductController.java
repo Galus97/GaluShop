@@ -2,7 +2,6 @@ package pl.galushop.GaluShop.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +20,6 @@ public class SaveProductController {
     @PutMapping("/add")
     public ResponseEntity<Product> addNewProduct(@RequestBody ProductRequest productRequest) {
         productService.saveProductToDatabase(productRequest);
-        return ResponseEntity.ok(productService.findProductById(productRequest.getProductId()));
+        return ResponseEntity.ok(productService.getProductById(productRequest.getProductId()));
     }
 }

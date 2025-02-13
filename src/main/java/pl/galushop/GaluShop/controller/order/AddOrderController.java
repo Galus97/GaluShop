@@ -22,7 +22,7 @@ public class AddOrderController {
     @PostMapping("/addOrder")
     public String saveNewOrder(@RequestBody OrderRequest orderRequest) {
         List<Product> products = orderRequest.getProductIds().stream()
-                .map(productService::findProductById)
+                .map(productService::getProductById)
                 .collect(Collectors.toList());
 
         Order order = new Order();
