@@ -2,10 +2,12 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.dto.ProductRequest;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
+import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
@@ -17,8 +19,12 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductImagesService productImagesService;
+    private final MessageService messageService;
 
     public void saveProductToDatabase(ProductRequest productRequest) {
+        if(productRequest == null){
+            throw new IllegalArgumentException();
+        }
         Product product = new Product();
         product.setProductName(productRequest.getProductName());
         product.setCategory(productRequest.getCategory());
