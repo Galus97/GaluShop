@@ -66,6 +66,9 @@ public class ProductService {
         }
         Product existingProduct = productRepository.findById(productRequest.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productRequest.getProductId())));
+        setProductFields(productRequest, existingProduct);
+
+        productRepository.save(existingProduct);
     }
     private static void setProductFields(ProductRequest productRequest, Product product){
         product.setProductName(productRequest.getProductName());
