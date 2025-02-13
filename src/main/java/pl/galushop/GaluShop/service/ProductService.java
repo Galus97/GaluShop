@@ -43,12 +43,13 @@ public class ProductService {
         }
     }
 
-    public void deleteProduct(Long id) {
-        if(id != null && id > 0) {
-            if (productRepository.findByProductId(id).isPresent()) {
-                productRepository.delete(productRepository.findByProductId(id).get());
-            }
+    public void deleteProduct(Long productId) {
+        if(productId == null || productId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
+        productRepository.delete(product);
     }
 
     public Product findProductById(Long id) {
