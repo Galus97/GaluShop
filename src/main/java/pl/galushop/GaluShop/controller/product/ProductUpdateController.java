@@ -1,12 +1,14 @@
 package pl.galushop.GaluShop.controller.product;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.ProductRequest;
+import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.service.ProductService;
 
 @RestController
@@ -16,7 +18,8 @@ public class ProductUpdateController {
     private final ProductService productService;
 
     @PutMapping("/update")
-    public String updateProduct(@RequestBody ProductRequest productRequest){
-
+    public ResponseEntity<Product> updateProduct(@RequestBody ProductRequest productRequest){
+        productService.updateProduct(productRequest);
+        return ResponseEntity.ok(productService.getProductById(productRequest.getProductId()));
     }
 }
