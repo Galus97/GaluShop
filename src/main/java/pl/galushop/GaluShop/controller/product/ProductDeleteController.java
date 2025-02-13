@@ -2,8 +2,10 @@ package pl.galushop.GaluShop.controller.product;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +18,9 @@ import pl.galushop.GaluShop.service.ProductService;
 public class ProductDeleteController {
     private final ProductService productService;
 
-    @DeleteMapping("/delete")
-    public String deleteProduct(@RequestBody ProductRequest productRequest){
-        Long productId = productRequest.getProductId();
-        if(productId != null && productId > 0 && productService.findProductById(productId) != null){
-            productService.deleteProduct(productId);
-            return "Success";
-        }
-        return "The product could not be removed";
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }
