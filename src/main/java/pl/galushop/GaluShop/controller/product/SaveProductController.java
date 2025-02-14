@@ -17,7 +17,7 @@ public class SaveProductController {
 
     private final ProductService productService;
 
-    @PutMapping("/add")
+    @PutMapping("/save")
     public ResponseEntity<Product> addNewProduct(@RequestBody ProductRequest productRequest) {
         productService.saveProduct(productRequest);
         return ResponseEntity.ok(productService.getProductById(productRequest.getProductId()));
