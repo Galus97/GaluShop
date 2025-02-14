@@ -4,17 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.galushop.GaluShop.dto.WarehouseProductRequest;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/warehouseProduct")
-public class WarehouseProductInfoController {
+public class ShowWarehouseProductController {
     private final WarehouseProductService warehouseProductService;
 
     @GetMapping("/show/{id}")
