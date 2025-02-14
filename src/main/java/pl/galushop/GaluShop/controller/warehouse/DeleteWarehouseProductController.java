@@ -13,7 +13,7 @@ import pl.galushop.GaluShop.service.WarehouseProductService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/warehouseProduct")
+@RequestMapping("/warehouse")
 public class DeleteWarehouseProductController {
     private final WarehouseProductService warehouseProductService;
 
