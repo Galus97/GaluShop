@@ -3,14 +3,17 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.OrderStatus;
+import pl.galushop.GaluShop.dto.OrderRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.repository.OrderRepository;
+import pl.galushop.GaluShop.repository.ProductRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,11 +21,20 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final ProductService productService;
 
-    public void saveOrderToDatabase(Order order) {
-        if (order != null) {
-            orderRepository.save(order);
-        }
+    public void saveOrderToDatabase(OrderRequest orderRequest) {
+        List<Product> products = orderRequest.getProductIds().stream()
+                .map(productService::getProductById)
+                .collect(Collectors.toList());
+
+        Order order = new Order();
+        order.setLocalDateTime(orderRequest.getLocalDateTime());
+        order.setStatus(orderRequest.getOrderStatus());
+        order.setUser(order.getUser());
+        order.setProducts(products);
+
+        orderRepository.save(order);
     }
 
     public List<Order> getAllOrdersByUser(Long userId) {
