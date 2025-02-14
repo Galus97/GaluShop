@@ -1,8 +1,10 @@
 package pl.galushop.GaluShop.controller.warehouse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,12 +18,8 @@ public class DeleteWarehouseProductController {
     private final WarehouseProductService warehouseProductService;
 
     @DeleteMapping("/delete/{id}")
-    public String deleteWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
-        Long warehouseProductId = warehouseProductRequest.getWarehouseProductId();
-        if(warehouseProductId != null){
-            warehouseProductService.deleteWarehouseProduct(warehouseProductId);
-            return "Success";
-        }
-        return "Warehouse Product Id is required";
+    public ResponseEntity<Void> deleteWarehouseProduct(@PathVariable Long id){
+        warehouseProductService.deleteWarehouseProduct(id);
+        return ResponseEntity.noContent().build();
     }
 }
