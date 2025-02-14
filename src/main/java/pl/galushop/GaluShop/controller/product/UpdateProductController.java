@@ -2,7 +2,6 @@ package pl.galushop.GaluShop.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,7 @@ import pl.galushop.GaluShop.service.ProductService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/product")
-public class ProductUpdateController {
+public class UpdateProductController {
     private final ProductService productService;
 
     @PutMapping("/update")
