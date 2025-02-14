@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.controller.warehouse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ public class WarehouseProductInfoController {
     private final WarehouseProductService warehouseProductService;
 
     @GetMapping("/show/{id}")
-    public WarehouseProduct showInfoWarehouseProduct(@PathVariable Long id){
-        return warehouseProductService.getWarehouseProduct(id);
+    public ResponseEntity<WarehouseProduct> showInfoWarehouseProduct(@PathVariable Long id){
+        return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(id));
     }
 }
