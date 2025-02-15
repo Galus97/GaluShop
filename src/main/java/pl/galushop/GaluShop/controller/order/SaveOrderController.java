@@ -12,7 +12,7 @@ import pl.galushop.GaluShop.service.OrderService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/order/")
+@RequestMapping("/order")
 public class SaveOrderController {
     private final OrderService orderService;
 
