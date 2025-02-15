@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.controller.order;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +17,8 @@ public class DeleteOrderController {
     private final OrderService orderService;
 
     @DeleteMapping("/delete")
-    public String deleteOrder(@RequestBody OrderRequest orderRequest){
+    public ResponseEntity<Void> deleteOrder(@RequestBody OrderRequest orderRequest){
         orderService.deleteOrder(orderRequest.getUserId());
-        return "Success";
+        return ResponseEntity.noContent().build();
     }
 }
