@@ -40,8 +40,6 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-
-
     public List<Order> getAllOrdersByUser(Long userId) {
         if (userId == null || userId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
@@ -53,13 +51,14 @@ public class OrderService {
     }
 
     public Order getSpecificOrder(Long userId) {
-        if (userId != null && userId > 0) {
-            if (userRepository.findById(userId).isPresent()) {
-                return orderRepository.findByUser_UserId(userId).get();
-            }
-            throw new NoSuchElementException("User doesn't exist in database");
+        if (userId == null || userId < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.orderNotFoundByUserId", userId));
         }
-        throw new IllegalArgumentException("User Id is invalid");
+        userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(messageService.getMessage("error.userNotFound", userId)));
+        return orderRepository.findByUser_UserId(userId).orElseThrow(
+                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFoundByUserId", userId)));
+
     }
 
     public void deleteOrder(Long orderId){
