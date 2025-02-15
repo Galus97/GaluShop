@@ -28,7 +28,7 @@ public class OrderService {
 
     public Order getOrder(Long orderId){
         if(orderId == null || orderId < 0){
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderId));
         }
         return orderRepository.findById(orderId).orElseThrow(
                 () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderId)));
@@ -62,15 +62,12 @@ public class OrderService {
     }
 
     public void deleteOrder(Long orderId){
-        if(orderId != null && orderId > 0){
-            if (orderRepository.findById(orderId).isPresent()) {
-                orderRepository.deleteById(orderId);
-            } else{
-                throw new NoSuchElementException("Order doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("Order Id is invalid");
+        if(orderId == null || orderId < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderId));
         }
+        Order order = orderRepository.findById(orderId).orElseThrow(
+                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderId)));
+        orderRepository.delete(order);
     }
 
     public void updateOrder(Long orderId, LocalDateTime localDateTime, OrderStatus status, List<Product> products){
