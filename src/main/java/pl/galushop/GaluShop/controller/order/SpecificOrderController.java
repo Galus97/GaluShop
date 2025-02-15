@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.controller.order;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ public class SpecificOrderController {
     private final OrderService orderService;
 
     @GetMapping("/show/{id}")
-    public Order showSpecificOrder(@PathVariable Long id){
-        return orderService.getSpecificOrder(1L);
+    public ResponseEntity<Order> showSpecificOrder(@PathVariable Long id){
+        return ResponseEntity.ok(orderService.getOrder(id));
     }
 }
