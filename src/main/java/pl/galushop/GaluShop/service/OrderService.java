@@ -70,16 +70,14 @@ public class OrderService {
         orderRepository.delete(order);
     }
 
-    public void updateOrder(Long orderId, LocalDateTime localDateTime, OrderStatus status, List<Product> products){
-        if(orderId != null && orderId > 0) {
-            if (orderRepository.findById(orderId).isPresent()) {
-                orderRepository.updateOrderByOrderId(orderId, localDateTime, status, products);
-            } else {
-                throw new NoSuchElementException("Order doesn't exist in database");
-            }
-        } else {
-            throw new IllegalArgumentException("Order Id is invalid");
+    public void updateOrder(OrderRequest orderRequest){
+        if(orderRequest.getOrderId() == null || orderRequest.getOrderId() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderRequest.getOrderId()));
         }
+        Order existingOrder = orderRepository.findById(orderRequest.getOrderId()).orElseThrow(
+                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderRequest.getOrderId())));
+        setOrderFields(orderRequest, existingOrder);
+        orderRepository.save(existingOrder);
     }
 
     private void setOrderFields(OrderRequest orderRequest, Order order) {
