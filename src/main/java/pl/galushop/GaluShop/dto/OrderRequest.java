@@ -8,6 +8,7 @@ import java.util.List;
 
 @Data
 public class OrderRequest {
+    private Long orderId;
     private Long userId;
     private LocalDateTime localDateTime;
     private OrderStatus orderStatus;
