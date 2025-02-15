@@ -34,18 +34,12 @@ public class OrderService {
     }
 
     public void saveOrderToDatabase(OrderRequest orderRequest) {
-        List<Product> products = orderRequest.getProductIds().stream()
-                .map(productService::getProductById)
-                .collect(Collectors.toList());
-
         Order order = new Order();
-        order.setLocalDateTime(orderRequest.getLocalDateTime());
-        order.setStatus(orderRequest.getOrderStatus());
-        order.setUser(order.getUser());
-        order.setProducts(products);
-
+        setOrderFields(orderRequest, order);
         orderRepository.save(order);
     }
+
+
 
     public List<Order> getAllOrdersByUser(Long userId) {
         if (userId != null && userId > 0) {
@@ -89,5 +83,15 @@ public class OrderService {
         } else {
             throw new IllegalArgumentException("Order Id is invalid");
         }
+    }
+
+    private void setOrderFields(OrderRequest orderRequest, Order order) {
+        List<Product> products = orderRequest.getProductIds().stream()
+                .map(productService::getProductById)
+                .collect(Collectors.toList());
+        order.setLocalDateTime(orderRequest.getLocalDateTime());
+        order.setStatus(orderRequest.getOrderStatus());
+        order.setUser(order.getUser());
+        order.setProducts(products);
     }
 }
