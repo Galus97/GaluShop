@@ -14,6 +14,6 @@ public class SpecificOrderController {
 
     @GetMapping("/specificOrder")
     public Order showSpecificOrder(){
-        return orderService.showSpecificOrder(1L);
+        return orderService.getSpecificOrder(1L);
     }
 }
