@@ -11,7 +11,7 @@ import pl.galushop.GaluShop.service.OrderService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/order/")
-public class AddOrderController {
+public class SaveOrderController {
     private final OrderService orderService;
 
     @PutMapping("/save")
@@ -19,4 +19,5 @@ public class AddOrderController {
         orderService.saveOrderToDatabase(orderRequest);
         return "Order added successfully!";
     }
+    // Dokończyć
 }
