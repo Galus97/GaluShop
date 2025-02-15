@@ -8,6 +8,7 @@ import pl.galushop.GaluShop.dto.OrderRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.OrderRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
@@ -42,13 +43,13 @@ public class OrderService {
 
 
     public List<Order> getAllOrdersByUser(Long userId) {
-        if (userId != null && userId > 0) {
-            if (userRepository.findById(userId).isPresent()) {
-                return orderRepository.findAllByUser_UserId(userId);
-            }
-            throw new NoSuchElementException("User doesn't exist in database");
+        if (userId == null || userId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
         }
-        throw new IllegalArgumentException("User Id is invalid");
+        userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(messageService.getMessage("error.userNotFound", userId)));
+        return orderRepository.findAllByUser_UserId(userId).orElseThrow(
+                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFoundByUserId", userId)));
     }
 
     public Order getSpecificOrder(Long userId) {
