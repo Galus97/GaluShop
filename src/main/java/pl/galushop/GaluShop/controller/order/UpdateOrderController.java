@@ -2,7 +2,9 @@ package pl.galushop.GaluShop.controller.order;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.OrderRequest;
 import pl.galushop.GaluShop.entity.Product;
@@ -14,22 +16,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/order")
 public class UpdateOrderController {
     private final OrderService orderService;
-    private final ProductService productService;
 
-    @GetMapping("/updateOrder")
+    @PutMapping("/update")
     public String updateOrder(@RequestBody OrderRequest orderRequest){
-        List<Product> products = orderRequest.getProductIds().stream()
-                .map(productService::getProductById)
-                .collect(Collectors.toList());
-
-        orderService.updateOrder(
-                orderRequest.getUserId(),
-                orderRequest.getLocalDateTime(),
-                orderRequest.getOrderStatus(),
-                products
-        );
+    orderService.updateOrder(orderRequest);
         return "Success";
     }
 
