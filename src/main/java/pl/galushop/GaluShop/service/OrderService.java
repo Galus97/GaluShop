@@ -2,12 +2,13 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.dto.OrderRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.repository.OrderRepository;
-import pl.galushop.GaluShop.repository.ProductRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,15 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductService productService;
+    private final MessageService messageService;
+
+    public Order getOrder(Long orderId){
+        if(orderId == null || orderId < 0){
+            throw new IllegalArgumentException();
+        }
+        return orderRepository.findById(orderId).orElseThrow(
+                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderId)));
+    }
 
     public void saveOrderToDatabase(OrderRequest orderRequest) {
         List<Product> products = orderRequest.getProductIds().stream()
@@ -47,7 +57,7 @@ public class OrderService {
         throw new IllegalArgumentException("User Id is invalid");
     }
 
-    public Order showSpecificOrder(Long userId) {
+    public Order getSpecificOrder(Long userId) {
         if (userId != null && userId > 0) {
             if (userRepository.findById(userId).isPresent()) {
                 return orderRepository.findByUser_UserId(userId).get();
