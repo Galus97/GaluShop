@@ -20,12 +20,6 @@ public class RegisterEmployeeController {
     private final RegisterEmployeeService registerEmployeeService;
     private final EmailService emailService;
 
-    @GetMapping("/registerEmployee")
-    public String showRegisterEmployeePage(Model model) {
-        model.addAttribute("employee", new Employee());
-        return "registerEmployee";
-    }
-
     @PostMapping("/registerEmployee")
     public String saveNewEmployee(@RequestBody EmployeeRequest employeeRequest){
 
