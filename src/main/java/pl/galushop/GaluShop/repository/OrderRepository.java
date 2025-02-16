@@ -17,9 +17,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<List<Order>> findAllByUser_UserId(Long userId);
 
     Optional<Order> findByUser_UserId(Long userId);
-
-    @Transactional
-    @Modifying
-    @Query("UPDATE Order o SET o.localDateTime = :localDateTime, o.status = :status, o.products = :products WHERE o.orderId = :orderId")
-    void updateOrderByOrderId(Long orderId, LocalDateTime localDateTime, OrderStatus status, List<Product> products);
 }
