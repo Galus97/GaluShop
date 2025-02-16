@@ -24,13 +24,6 @@ public class RegisterUserController {
     private final RegisterUserService registerUserService;
     private final EmailService emailService;
 
-    @GetMapping("/register")
-    public String showRegisterUserPage(Model model) {
-        model.addAttribute("user", new User());
-        return "registerUser";
-    }
-
-
     @PostMapping("/register")
     public String saveNewUser(@RequestBody UserRequest userRequest){
 
