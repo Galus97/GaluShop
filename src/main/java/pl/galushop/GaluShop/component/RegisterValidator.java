@@ -19,7 +19,7 @@ public class RegisterValidator {
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
 
-    public List<String> validateUserErrors(Object object) {
+    public List<String> validateErrors(Object object) {
         List<String> errors = new ArrayList<>();
 
         if (object instanceof User user) {
