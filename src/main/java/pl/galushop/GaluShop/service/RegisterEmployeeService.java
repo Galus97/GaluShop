@@ -19,7 +19,6 @@ public class RegisterEmployeeService {
     private final RegisterValidator registerValidator;
     private final EmailService emailService;
 
-    //Dokończyć
     public void saveEmployee(EmployeeRequest employeeRequest) throws ValidationException{
         Employee employee = new Employee();
         employee.setFirstName(employeeRequest.getFirstName());
