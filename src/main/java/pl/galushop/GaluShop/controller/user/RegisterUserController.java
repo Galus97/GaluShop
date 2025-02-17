@@ -24,6 +24,7 @@ public class RegisterUserController {
     private final RegisterUserService registerUserService;
     private final EmailService emailService;
 
+    //Dokończyć
     @PostMapping("/register")
     public String saveNewUser(@RequestBody UserRequest userRequest){
 
