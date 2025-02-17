@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.controller.user;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.EmailService;
 import pl.galushop.GaluShop.service.RegisterUserService;
+import pl.galushop.GaluShop.service.UserService;
 
 import java.util.List;
 
@@ -22,10 +24,15 @@ import java.util.List;
 @RequestMapping("/user")
 public class RegisterUserController {
     private final RegisterUserService registerUserService;
+    private final UserService userService;
 
-    //Dokończyć
     @PostMapping("/register")
-    public String saveUser(@RequestBody UserRequest userRequest){
-
+    public ResponseEntity<User> saveUser(@RequestBody UserRequest userRequest){
+        try {
+            registerUserService.saveNewUser(userRequest);
+            return ResponseEntity.ok(userService.getUser(userRequest.getUserId()));
+        } catch (ValidationException e) {
+            return ResponseEntity.noContent().build();
+        }
     }
 }
