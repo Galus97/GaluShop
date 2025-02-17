@@ -20,7 +20,7 @@ public class RegisterEmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping("/register")
-    public ResponseEntity<Employee> saveNewEmployee(@RequestBody EmployeeRequest employeeRequest) {
+    public ResponseEntity<Employee> saveEmployee(@RequestBody EmployeeRequest employeeRequest) {
         try {
             registerEmployeeService.saveEmployee(employeeRequest);
             return ResponseEntity.ok(employeeService.getEmployee(employeeRequest.getEmployeeId()));
