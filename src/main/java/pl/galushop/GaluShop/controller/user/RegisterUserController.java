@@ -22,29 +22,10 @@ import java.util.List;
 @RequestMapping("/user")
 public class RegisterUserController {
     private final RegisterUserService registerUserService;
-    private final EmailService emailService;
 
     //Dokończyć
     @PostMapping("/register")
-    public String saveNewUser(@RequestBody UserRequest userRequest){
+    public String saveUser(@RequestBody UserRequest userRequest){
 
-        User user = new User();
-        user.setFirstName(userRequest.getFirstName());
-        user.setLastName(userRequest.getLastName());
-        user.setEmail(userRequest.getEmail());
-        user.setPassword(userRequest.getPassword());
-        user.setEmailCode(emailService.emailCodeValue());
-
-        try{
-            registerUserService.saveNewUser(user);
-            emailService.sendEmail(userRequest.getEmail());
-        } catch (ValidationException exception){
-            List<String> errors = exception.getValidationErrors();
-            for (String error : errors) {
-                System.out.println(error);
-            }
-            return "faild";
-        }
-        return "success";
     }
 }
