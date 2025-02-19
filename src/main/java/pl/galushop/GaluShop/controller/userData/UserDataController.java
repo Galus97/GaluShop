@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.controller.userData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,11 @@ import pl.galushop.GaluShop.service.UserDataService;
 @RequestMapping("/userData")
 public class UserDataController {
     private final UserDataService userDataService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserData> showUserData(@PathVariable Long id){
+        return ResponseEntity.ok(userDataService.showUserDataByUserId(id));
+    }
 
     @PostMapping
     public ResponseEntity<UserData> saveUserData(@RequestBody UserDataRequest userDataRequest){
