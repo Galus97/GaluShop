@@ -31,6 +31,12 @@ public class UserDataController {
         return ResponseEntity.ok(userDataService.showUserData(userDataRequest.getUserDataId()));
     }
 
+    @PutMapping
+    public ResponseEntity<UserData> updateUserData(@RequestBody UserDataRequest userDataRequest){
+        userDataService.updateUserData(userDataRequest);
+        return ResponseEntity.ok(userDataService.showUserData(userDataRequest.getUserDataId()));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserData(@PathVariable Long id){
         userDataService.deleteUserData(id);
