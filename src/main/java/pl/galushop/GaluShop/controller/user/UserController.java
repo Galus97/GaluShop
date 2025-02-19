@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.controller.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,10 @@ public class UserController {
     private final UserService userService;
     private final RegisterUserService registerUserService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<User> showUser(@PathVariable Long id){
+        return ResponseEntity.ok(userService.getUser(id));
+    }
 
     @PostMapping
     public ResponseEntity<User> saveUser(@RequestBody UserRequest userRequest){
