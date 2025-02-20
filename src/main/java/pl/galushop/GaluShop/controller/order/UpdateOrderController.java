@@ -16,7 +16,7 @@ import pl.galushop.GaluShop.service.OrderService;
 public class UpdateOrderController {
     private final OrderService orderService;
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<Order> updateOrder(@RequestBody OrderRequest orderRequest) {
         orderService.updateOrder(orderRequest);
         return ResponseEntity.ok(orderService.getOrder(orderRequest.getOrderId()));
