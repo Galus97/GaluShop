@@ -1,11 +1,11 @@
 package pl.galushop.GaluShop.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,25 +16,28 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Product {
+public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long productId;
+    private Long employeeId;
 
     @Size(min = 3)
-    private String productName;
+    private String firstName;
 
-    @Size(min = 20)
-    private String description;
+    @Size(min = 3)
+    private String lastName;
 
-    @Min(1)
-    private Double price;
+    @Size(min = 5)
+    @Column(unique = true)
+    @Email
+    private String email;
 
-    @NotBlank
-    private String category;
+    @Size(min = 5)
+    private String password;
 
-    @Min(1)
-    private Integer categoryId;
+    private boolean enabled;
+
+    private String emailCode;
 }

@@ -1,16 +1,14 @@
 package pl.galushop.GaluShop.repository;
 
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import pl.galushop.GaluShop.entity.Product;
+import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.entity.UserData;
 
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface UserDataRepository extends JpaRepository<UserData, Long> {
 
-
-    Optional<Product> findByProductId(Long id);
-
+    Optional<UserData> findByUser_UserId(Long id);
 }

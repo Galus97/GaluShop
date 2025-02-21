@@ -21,12 +21,17 @@ public class SpringSecurity {
         );
         http
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/login", "/register", "/CSS/**", "/js/**", "/images/**", "/webjars/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/", "/CSS/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/loginUser", "/registerUser").permitAll()
+                        .requestMatchers("/loginEmployee", "/registerEmployee").permitAll()
+                        .requestMatchers("/userPanel").hasRole("USER")
+                        .requestMatchers("/employeePanel").hasRole("EMPLOYEE")
+                        .anyRequest().permitAll()
                 )
                 .formLogin((form) -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/panel")
+                        .loginProcessingUrl("/processLogin")
+                        .defaultSuccessUrl("/defaultLogin", true)
                         .permitAll()
                 )
                 .logout((logout) -> logout

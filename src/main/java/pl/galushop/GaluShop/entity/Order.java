@@ -1,38 +1,41 @@
 package pl.galushop.GaluShop.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import pl.galushop.GaluShop.component.OrderStatus;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @ToString
-public class ProductImages {
+@Table(name = "Orders")
+public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long imagesId;
+    private Long orderId;
 
-    @NotBlank
-    private String imgSrc;
 
-    @NotBlank
-    private String altImg;
+    private LocalDateTime localDateTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId")
-    @JsonIgnore
-    private Product product;
+    private OrderStatus status;
+
+    @ManyToOne
+    private User user;
+
+    @ManyToMany
+    private List<Product> products;
 }

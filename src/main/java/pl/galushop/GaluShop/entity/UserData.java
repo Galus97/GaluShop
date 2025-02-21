@@ -1,14 +1,12 @@
 package pl.galushop.GaluShop.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,21 +16,31 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ProductImages {
+public class UserData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long imagesId;
+    private Long userDataId;
+
+    @Size(min = 3)
+    private String city;
+
+    @Size(min = 3)
+    private String street;
 
     @NotBlank
-    private String imgSrc;
+    private Integer streetNumber;
 
     @NotBlank
-    private String altImg;
+    private Integer apartmentNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId")
-    @JsonIgnore
-    private Product product;
+    @NotBlank
+    private String zipCode;
+
+    @NotBlank
+    private Integer phoneNumber;
+
+    @OneToOne
+    private User user;
 }
