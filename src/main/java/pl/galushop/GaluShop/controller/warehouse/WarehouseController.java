@@ -29,4 +29,10 @@ public class WarehouseController {
         warehouseProductService.addProductToWarehouse(warehouseProductRequest);
         return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(warehouseProductRequest.getProductId()));
     }
+
+    @PutMapping("/{id}/{quantity}")
+    public ResponseEntity<WarehouseProduct> updateQuantity(@PathVariable Long id, @PathVariable Integer quantity){
+        warehouseProductService.updateQuantityByProductId(id, quantity);
+        return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(id));
+    }
 }
