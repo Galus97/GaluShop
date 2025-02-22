@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.RegisterValidator;
 import pl.galushop.GaluShop.dto.UserRequest;
 import pl.galushop.GaluShop.entity.User;
@@ -12,7 +13,7 @@ import pl.galushop.GaluShop.repository.UserRepository;
 import java.util.List;
 
 @Service
-//@Transactional
+@Transactional
 @RequiredArgsConstructor
 public class RegisterUserService {
     private final UserRepository userRepository;
