@@ -34,4 +34,10 @@ public class OrderProduct {
 
     private Integer quantity;
 
+    public OrderProduct(Order order, Product product, Integer quantity) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        this.id = new OrderProductId(order.getOrderId(), product.getProductId());
+    }
 }
