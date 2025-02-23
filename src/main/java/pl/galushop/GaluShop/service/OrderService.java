@@ -6,6 +6,7 @@ import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.dto.OrderRequest;
 import pl.galushop.GaluShop.entity.Order;
+import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
@@ -25,6 +26,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final ProductService productService;
     private final MessageService messageService;
+    private final OrderProductService orderProductService;
 
     public Order getOrder(Long orderId){
         if(orderId == null || orderId < 0){
@@ -81,12 +83,10 @@ public class OrderService {
     }
 
     private void setOrderFields(OrderRequest orderRequest, Order order) {
-        List<Product> products = orderRequest.getProductIds().stream()
-                .map(productService::getProductById)
-                .collect(Collectors.toList());
+        List<OrderProduct> orderProducts = orderProductService.getOrderProductByOrderId(order.getOrderId());
         order.setLocalDateTime(orderRequest.getLocalDateTime());
         order.setStatus(orderRequest.getOrderStatus());
         order.setUser(order.getUser());
-        order.setProducts(products);
+        order.setOrderProducts(orderProducts);
     }
 }
