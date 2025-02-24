@@ -29,7 +29,6 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private Long orderId;
 
-
     private LocalDateTime localDateTime;
 
     private OrderStatus status;
