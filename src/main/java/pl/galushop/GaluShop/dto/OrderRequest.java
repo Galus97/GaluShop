@@ -13,5 +13,5 @@ public class OrderRequest {
     private Long userId;
     private LocalDateTime localDateTime;
     private OrderStatus orderStatus;
-    private List<OrderProductId> orderProductsId;
+    private List<ProductQuantityRequest> productQuantityRequests;
 }
