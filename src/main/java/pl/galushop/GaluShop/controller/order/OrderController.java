@@ -27,7 +27,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> saveOrder(@RequestBody OrderRequest orderRequest) {
-        orderService.saveOrderToDatabase(orderRequest);
+        orderService.saveOrder(orderRequest);
         return ResponseEntity.ok(orderService.getOrder(orderRequest.getOrderId()));
     }
 
