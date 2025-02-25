@@ -28,7 +28,6 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final MessageService messageService;
-    private final OrderProductService orderProductService;
     private final ProductRepository productRepository;
 
     public Order getOrder(Long orderId){
