@@ -22,7 +22,7 @@ public class Payments {
     @Setter(AccessLevel.NONE)
     private Long paymentsId;
 
-    private Double price;
+    private Double totalAmount;
 
     private PaymentStatus paymentStatus;
 
