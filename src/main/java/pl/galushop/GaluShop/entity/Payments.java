@@ -9,7 +9,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.web.bind.annotation.GetMapping;
 import pl.galushop.GaluShop.component.PaymentStatus;
 
 @Entity
@@ -23,7 +22,7 @@ public class Payments {
     @Setter(AccessLevel.NONE)
     private Long paymentsId;
 
-    private Double price;
+    private Double totalAmount;
 
     private PaymentStatus paymentStatus;
 
