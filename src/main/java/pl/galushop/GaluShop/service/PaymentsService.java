@@ -24,6 +24,14 @@ public class PaymentsService {
                 .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentId)));
     }
 
+    public Payments getPaymentByOrderId(Long orderId){
+        if(orderId == null || orderId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderId));
+        }
+        return paymentsRepository.findByOrder_OrderId(orderId)
+                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFoundByOrderId", orderId)));
+    }
+
     public void savePayment(PaymentsRequest paymentsRequest){
         if(paymentsRequest == null){
             throw new IllegalArgumentException(messageService.getMessage("error.paymentsRequestIsNull"));
