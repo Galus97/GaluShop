@@ -9,12 +9,15 @@ import pl.galushop.GaluShop.entity.Payments;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
 import pl.galushop.GaluShop.repository.PaymentsRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PaymentsService {
     private final PaymentsRepository paymentsRepository;
     private final MessageService messageService;
     private final OrderService orderService;
+    private final UserService userService;
 
     public Payments getPaymentById(Long paymentId){
         if(paymentId == null || paymentId < 0){
@@ -30,6 +33,15 @@ public class PaymentsService {
         }
         return paymentsRepository.findByOrder_OrderId(orderId)
                 .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFoundByOrderId", orderId)));
+    }
+
+    public List<Payments> getAllPaymentsByUserId(Long userId){
+        if(userId == null || userId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
+        }
+        userService.getUser(userId);
+
+        return paymentsRepository.findAllByUser_UserId(userId);
     }
 
     public void savePayment(PaymentsRequest paymentsRequest){
