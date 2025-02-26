@@ -6,6 +6,7 @@ import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.PaymentsRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Payments;
+import pl.galushop.GaluShop.exception.PaymentsNotFoundException;
 import pl.galushop.GaluShop.repository.PaymentsRepository;
 
 @Service
@@ -14,7 +15,7 @@ public class PaymentsService {
     private final PaymentsRepository paymentsRepository;
     private final MessageService messageService;
     private final OrderService orderService;
-    public void savePayments(PaymentsRequest paymentsRequest){
+    public void savePayment(PaymentsRequest paymentsRequest){
         if(paymentsRequest == null){
             throw new IllegalArgumentException(messageService.getMessage("error.paymentsRequestIsNull"));
         }
@@ -24,5 +25,14 @@ public class PaymentsService {
         payments.setPaymentStatus(paymentsRequest.getPaymentStatus());
         payments.setOrder(order);
         paymentsRepository.save(payments);
+    }
+
+    public void deletePayment(Long paymentId){
+        if(paymentId == null || paymentId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentId));
+        }
+        Payments payments = paymentsRepository.findById(paymentId).
+                orElseThrow(() -> new PaymentsNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentId)));
+        paymentsRepository.delete(payments);
     }
 }

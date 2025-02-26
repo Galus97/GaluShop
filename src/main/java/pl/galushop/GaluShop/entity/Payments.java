@@ -20,7 +20,7 @@ public class Payments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long paymentsId;
+    private Long paymentId;
 
     private Double totalAmount;
 
