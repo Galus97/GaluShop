@@ -64,4 +64,21 @@ public class PaymentsService {
                 orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentId)));
         paymentsRepository.delete(payments);
     }
+
+    public void updatePayment(PaymentsRequest paymentsRequest){
+        if(paymentsRequest == null){
+            throw new IllegalArgumentException(messageService.getMessage("paymentsRequestIsNull"));
+        } else if (paymentsRequest.getPaymentsId() < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentsRequest.getPaymentsId()));
+        }
+        Order order = orderService.getSpecificOrder(paymentsRequest.getOrderId());
+
+        Payments existingPayment = paymentsRepository.findById(paymentsRequest.getPaymentsId())
+                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentsRequest.getPaymentsId())));
+        existingPayment.setPaymentStatus(paymentsRequest.getPaymentStatus());
+        existingPayment.setTotalAmount(paymentsRequest.getTotalAmount());
+        existingPayment.setOrder(order);
+
+        paymentsRepository.save(existingPayment);
+    }
 }
