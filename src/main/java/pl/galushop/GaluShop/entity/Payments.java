@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,7 +21,7 @@ public class Payments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private Long paymentsId;
+    private Long paymentId;
 
     private Double totalAmount;
 
@@ -28,4 +29,7 @@ public class Payments {
 
     @OneToOne
     private Order order;
+
+    @ManyToOne
+    private User user;
 }

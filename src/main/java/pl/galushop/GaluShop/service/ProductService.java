@@ -42,8 +42,8 @@ public class ProductService {
         if(productId == null || productId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
-        Product product = productRepository.findById(productId).orElseThrow(
-                () -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
         productRepository.delete(product);
     }
 
@@ -51,8 +51,8 @@ public class ProductService {
         if (productId == null || productId < 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
         }
-        return productRepository.findById(productId).orElseThrow(
-                () -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
     }
 
     public void updateProduct(ProductRequest productRequest) {
