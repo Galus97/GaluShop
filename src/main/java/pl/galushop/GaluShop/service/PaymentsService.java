@@ -16,7 +16,13 @@ public class PaymentsService {
     private final MessageService messageService;
     private final OrderService orderService;
 
-
+    public Payments getPaymentById(Long paymentId){
+        if(paymentId == null || paymentId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentId));
+        }
+        return paymentsRepository.findById(paymentId)
+                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentId)));
+    }
 
     public void savePayment(PaymentsRequest paymentsRequest){
         if(paymentsRequest == null){
