@@ -15,7 +15,7 @@ import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 import java.util.List;
 
 /**
- * Service responsible for managing warehouse products.
+ * Service class responsible for managing warehouse products operations.
  */
 @Service
 @RequiredArgsConstructor

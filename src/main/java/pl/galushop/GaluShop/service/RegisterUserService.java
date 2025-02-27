@@ -12,6 +12,10 @@ import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.util.List;
 
+/**
+ * Service class handling user registration process.
+ * This includes validation, password encoding, saving the user to the database, and sending a verification email.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,15 +25,22 @@ public class RegisterUserService {
     private final RegisterValidator registerValidator;
     private final EmailService emailService;
 
+    /**
+     * Registers a new user by validating input data, encoding the password,
+     * saving the user to the database, and sending a verification email.
+     *
+     * @param userRequest The request object containing user registration details.
+     * @throws ValidationException if the validation fails.
+     */
     public void saveNewUser(UserRequest userRequest) throws ValidationException {
         User user = new User();
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
-        user.setPassword(userRequest.getPassword());
-        user.setEmailCode(emailService.getVerificationCode(userRequest.getEmail()));
+
         List<String> validationFailures = registerValidator.validateErrors(user);
         if (validationFailures.isEmpty()) {
+            user.setEmailCode(emailService.getVerificationCode(userRequest.getEmail()));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
             emailService.sendEmail(userRequest.getEmail());
