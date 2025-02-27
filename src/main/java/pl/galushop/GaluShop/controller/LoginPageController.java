@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.controller.login;
+package pl.galushop.GaluShop.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

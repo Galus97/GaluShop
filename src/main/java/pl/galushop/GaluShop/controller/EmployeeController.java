@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.controller.employee;
+package pl.galushop.GaluShop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
