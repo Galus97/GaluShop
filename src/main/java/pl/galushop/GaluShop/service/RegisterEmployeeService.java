@@ -29,7 +29,7 @@ public class RegisterEmployeeService {
 
         List<String> validationFailures = registerValidator.validateErrors(employee);
         if(validationFailures.isEmpty()){
-            employee.setEmailCode(emailService.emailCodeValue());
+            employee.setEmailCode(emailService.getVerificationCode(employeeRequest.getEmail()));
             employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             employeeRepository.save(employee);
             emailService.sendEmail(employeeRequest.getEmail());

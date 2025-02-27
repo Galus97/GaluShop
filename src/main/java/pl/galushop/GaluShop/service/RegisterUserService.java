@@ -27,7 +27,7 @@ public class RegisterUserService {
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        user.setEmailCode(emailService.emailCodeValue());
+        user.setEmailCode(emailService.getVerificationCode(userRequest.getEmail()));
         List<String> validationFailures = registerValidator.validateErrors(user);
         if (validationFailures.isEmpty()) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
