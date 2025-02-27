@@ -22,19 +22,19 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> showProduct(@PathVariable Long id){
-        return ResponseEntity.ok(productService.getProductById(id));
+        return ResponseEntity.ok(productService.getProduct(id));
     }
 
     @PostMapping
     public ResponseEntity<Product> saveProduct(@RequestBody ProductRequest productRequest) {
         productService.saveProduct(productRequest);
-        return ResponseEntity.ok(productService.getProductById(productRequest.getProductId()));
+        return ResponseEntity.ok(productService.getProduct(productRequest.getProductId()));
     }
 
     @PutMapping
     public ResponseEntity<Product> updateProduct(@RequestBody ProductRequest productRequest){
         productService.updateProduct(productRequest);
-        return ResponseEntity.ok(productService.getProductById(productRequest.getProductId()));
+        return ResponseEntity.ok(productService.getProduct(productRequest.getProductId()));
     }
 
     @DeleteMapping("/{id}")
