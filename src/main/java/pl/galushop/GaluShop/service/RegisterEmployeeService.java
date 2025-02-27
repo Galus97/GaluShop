@@ -12,6 +12,10 @@ import pl.galushop.GaluShop.repository.EmployeeRepository;
 
 import java.util.List;
 
+/**
+ * Service class handling employee registration process.
+ * This includes validation, password encoding, saving the employee to the database, and sending a verification email.
+ */
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,6 +25,13 @@ public class RegisterEmployeeService {
     private final RegisterValidator registerValidator;
     private final EmailService emailService;
 
+    /**
+     * Registers a new employee by validating input data, encoding the password,
+     * saving the employee to the database, and sending a verification email.
+     *
+     * @param employeeRequest The request object containing user registration details.
+     * @throws ValidationException if the validation fails.
+     */
     public void saveEmployee(EmployeeRequest employeeRequest) throws ValidationException{
         Employee employee = new Employee();
         employee.setFirstName(employeeRequest.getFirstName());
