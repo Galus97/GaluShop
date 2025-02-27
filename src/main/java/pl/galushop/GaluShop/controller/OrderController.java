@@ -33,7 +33,7 @@ public class OrderController {
 
     @PutMapping
     public ResponseEntity<Order> updateOrder(@RequestBody OrderRequest orderRequest) {
-        //orderService.updateOrder(orderRequest);
+        orderService.updateOrder(orderRequest);
         return ResponseEntity.ok(orderService.getOrder(orderRequest.getOrderId()));
     }
 
