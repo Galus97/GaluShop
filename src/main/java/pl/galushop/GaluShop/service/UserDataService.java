@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.UserDataRequest;
 import pl.galushop.GaluShop.entity.User;
@@ -50,7 +51,7 @@ public class UserDataService {
      * @throws IllegalArgumentException if the ID is null or invalid
      * @throws UserDataNotFoundException if user data is not found
      */
-    public UserData showUserData(Long userDataId) {
+    public UserData getUserData(Long userDataId) {
         if(userDataId == null || userDataId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataId));
         }
@@ -66,7 +67,7 @@ public class UserDataService {
      * @throws IllegalArgumentException if the user ID is null or invalid
      * @throws UserDataNotFoundException if no user data is found for the user
      */
-    public UserData showUserDataByUserId(Long userId) {
+    public UserData getUserDataByUserId(Long userId) {
         if(userId == null || userId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
         }
@@ -81,6 +82,7 @@ public class UserDataService {
      * @throws IllegalArgumentException if the user ID is null or invalid
      * @throws UserDataNotFoundException if the user data is not found
      */
+    @Transactional
     public void updateUserData(UserDataRequest userDataRequest) {
         if(userDataRequest.getUserId() == null || userDataRequest.getUserId() < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataRequest.getUserDataId()));

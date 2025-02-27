@@ -22,19 +22,19 @@ public class UserDataController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserData> showUserData(@PathVariable Long id){
-        return ResponseEntity.ok(userDataService.showUserDataByUserId(id));
+        return ResponseEntity.ok(userDataService.getUserDataByUserId(id));
     }
 
     @PostMapping
     public ResponseEntity<UserData> saveUserData(@RequestBody UserDataRequest userDataRequest){
         userDataService.saveUserData(userDataRequest);
-        return ResponseEntity.ok(userDataService.showUserData(userDataRequest.getUserDataId()));
+        return ResponseEntity.ok(userDataService.getUserData(userDataRequest.getUserDataId()));
     }
 
     @PutMapping
     public ResponseEntity<UserData> updateUserData(@RequestBody UserDataRequest userDataRequest){
         userDataService.updateUserData(userDataRequest);
-        return ResponseEntity.ok(userDataService.showUserData(userDataRequest.getUserDataId()));
+        return ResponseEntity.ok(userDataService.getUserData(userDataRequest.getUserDataId()));
     }
 
     @DeleteMapping("/{id}")
