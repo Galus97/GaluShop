@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class ProductImagesService {
     private final ProductImagesRepository productImagesRepository;
+    private final ProductService productService;
     private final MessageService messageService;
 
     public void saveProductImagesToDatabase(ProductImages productImages) {
@@ -61,8 +62,13 @@ public class ProductImagesService {
         productImagesRepository.delete(productImages);
     }
 
-    //return productImagesRepository.findAllByProduct_ProductId(productId);
     public List<ProductImages> getAllImagesByProductId(Long productId) {
+        if(productId == null || productId < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
+        }
+        //throw ProductNotFoundException if product doesn't exist id database
+        productService.getProduct(productId);
 
+        return productImagesRepository.findAllByProduct_ProductId(productId);
     }
 }
