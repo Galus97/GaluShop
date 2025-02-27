@@ -2,7 +2,9 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;
@@ -34,6 +36,20 @@ public class ProductImagesService {
                 .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", imagesId)));
     }
 
+    @Transactional
+    public void updateProductImages(ProductImageRequest productImageRequest){
+        if(productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
+        }
+        ProductImages exisitngProductImages = productImagesRepository.findById(productImageRequest.getImagesId())
+                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", productImageRequest.getImagesId())));
+
+        exisitngProductImages.setProduct(productImageRequest.getProduct());
+        exisitngProductImages.setImgSrc(productImageRequest.getImgSrc());
+        exisitngProductImages.setAltImg(productImageRequest.getAltImg());
+
+        productImagesRepository.save(exisitngProductImages);
+    }
 
 
     public void deleteProductImages(Long imagesId) {
