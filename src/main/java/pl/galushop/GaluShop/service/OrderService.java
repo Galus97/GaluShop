@@ -4,17 +4,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.OrderRequest;
+import pl.galushop.GaluShop.dto.ProductQuantityRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.OrderRepository;
 import pl.galushop.GaluShop.repository.ProductRepository;
-import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing order operations.
@@ -24,7 +27,7 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final MessageService messageService;
     private final ProductRepository productRepository;
 
@@ -52,22 +55,7 @@ public class OrderService {
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     public void saveOrder(OrderRequest orderRequest) {
-        Order order = new Order();
-        order.setLocalDateTime(orderRequest.getLocalDateTime());
-        order.setStatus(orderRequest.getOrderStatus());
-        order.setUser(userRepository.findById(orderRequest.getUserId()).orElseThrow(
-                () -> new UserNotFoundException(messageService.getMessage("error.userNotFound", orderRequest.getUserId()))));
-
-        List<OrderProduct> orderProducts = orderRequest.getProductQuantityRequests().stream()
-                .map(pq -> {
-            Product product = productRepository.findById(pq.getProductId())
-                    .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", pq.getProductId())));
-
-            OrderProduct orderProduct = new OrderProduct(order, product, pq.getQuantity());
-            return orderProduct;
-        }).toList();
-
-        order.setOrderProducts(orderProducts);
+        Order order = buildOrder(orderRequest);
         orderRepository.save(order);
     }
 
@@ -84,8 +72,9 @@ public class OrderService {
         if (userId == null || userId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
         }
-        userRepository.findById(userId).orElseThrow(
-                () -> new UserNotFoundException(messageService.getMessage("error.userNotFound", userId)));
+        //Throws exception if user doesn't exist in database
+        userService.getUser(userId);
+
         return orderRepository.findAllByUser_UserId(userId).orElseThrow(
                 () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFoundByUserId", userId)));
     }
@@ -103,8 +92,9 @@ public class OrderService {
         if (userId == null || userId < 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.orderNotFoundByUserId", userId));
         }
-        userRepository.findById(userId).orElseThrow(
-                () -> new UserNotFoundException(messageService.getMessage("error.userNotFound", userId)));
+        //Throws exception if user doesn't exist in database
+        userService.getUser(userId);
+
         return orderRepository.findByUser_UserId(userId).orElseThrow(
                 () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFoundByUserId", userId)));
 
@@ -141,21 +131,50 @@ public class OrderService {
         }
         Order existingOrder = orderRepository.findById(orderRequest.getOrderId()).orElseThrow(
                 () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderRequest.getOrderId())));
+        Order updatedOrder = buildOrder(orderRequest);
+        updatedOrder.setOrderId(existingOrder.getOrderId());
+        orderRepository.save(updatedOrder);
+    }
 
-        existingOrder.setLocalDateTime(orderRequest.getLocalDateTime());
-        existingOrder.setStatus(orderRequest.getOrderStatus());
-        existingOrder.setUser(userRepository.findById(orderRequest.getUserId()).orElseThrow(
-                () -> new UserNotFoundException(messageService.getMessage("error.userNotFound", orderRequest.getUserId()))));
+    /**
+     * Builds an Order entity from the given OrderRequest.
+     *
+     * @param orderRequest The request object containing order details.
+     * @return The constructed Order entity.
+     * @throws UserNotFoundException if the user associated with the order is not found.
+     * @throws ProductNotFoundException if any product in the order is not found.
+     */
+    private Order buildOrder (OrderRequest orderRequest){
+        User user = userService.getUser(orderRequest.getUserId());
+
+        List<Long> productIds = orderRequest.getProductQuantityRequests().stream()
+                .map(ProductQuantityRequest::getProductId).toList();
+
+        Map<Long, Product> productsMap = productRepository.findAllById(productIds).stream()
+                .collect(Collectors.toMap(Product::getProductId, product -> product));
 
         List<OrderProduct> orderProducts = orderRequest.getProductQuantityRequests().stream()
                 .map(pq -> {
-                    Product product = productRepository.findById(pq.getProductId())
-                            .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", pq.getProductId())));
-                    OrderProduct orderProduct = new OrderProduct(existingOrder, product, pq.getQuantity());
-                    return orderProduct;
+                    Product product = productsMap.get(pq.getProductId());
+                    if(product == null){
+                        throw new ProductNotFoundException(messageService.getMessage("error.productNotFound", pq.getProductId()));
+                    }
+                    return OrderProduct.builder()
+                            .order(null)
+                            .product(product)
+                            .quantity(pq.getQuantity())
+                            .build();
                 }).toList();
-        existingOrder.setOrderProducts(orderProducts);
 
-        orderRepository.save(existingOrder);
+        Order order = Order.builder()
+                .localDateTime(orderRequest.getLocalDateTime())
+                .status(orderRequest.getOrderStatus())
+                .user(user)
+                .orderProducts(orderProducts)
+                .build();
+
+        orderProducts.forEach(op -> op.setOrder(order));
+
+        return order;
     }
 }
