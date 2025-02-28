@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,12 @@ public class ProductImagesController {
     @PostMapping
     public ResponseEntity<ProductImages> saveProductImages(@RequestBody ProductImageRequest productImageRequest){
         productImagesService.saveProductImages(productImageRequest);
+        return ResponseEntity.ok(productImagesService.getProductImages(productImageRequest.getImagesId()));
+    }
+
+    @PutMapping
+    public ResponseEntity<ProductImages> updateProductImages(@RequestBody ProductImageRequest productImageRequest){
+        productImagesService.updateProductImages(productImageRequest);
         return ResponseEntity.ok(productImagesService.getProductImages(productImageRequest.getImagesId()));
     }
 }
