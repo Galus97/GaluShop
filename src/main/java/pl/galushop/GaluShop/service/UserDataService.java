@@ -29,17 +29,9 @@ public class UserDataService {
      * @throws IllegalArgumentException if the request is null
      * @throws UsernameNotFoundException if the user does not exist
      */
+    @Transactional
     public void saveUserData(UserDataRequest userDataRequest) {
-        if(userDataRequest == null){
-            throw new IllegalArgumentException();
-        }
-        User user = userRepository.findById(userDataRequest.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userDataRequest.getUserId())));
-
-        UserData userData = new UserData();
-        userData.setUser(user);
-        setUserDataFields(userDataRequest, userData);
-
+        UserData userData = buildUserData(userDataRequest);
         userDataRepository.save(userData);
     }
 
@@ -76,26 +68,6 @@ public class UserDataService {
     }
 
     /**
-     * Updates existing user data with the provided request details.
-     *
-     * @param userDataRequest the user data request containing updated details
-     * @throws IllegalArgumentException if the user ID is null or invalid
-     * @throws UserDataNotFoundException if the user data is not found
-     */
-    @Transactional
-    public void updateUserData(UserDataRequest userDataRequest) {
-        if(userDataRequest.getUserId() == null || userDataRequest.getUserId() < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataRequest.getUserDataId()));
-        }
-        UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
-                        .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataRequest.getUserDataId())));
-
-        setUserDataFields(userDataRequest, existingUserData);
-
-        userDataRepository.save(existingUserData);
-    }
-
-    /**
      * Deletes user data by its ID.
      *
      * @param userDataId the ID of the user data
@@ -112,17 +84,40 @@ public class UserDataService {
     }
 
     /**
-     * Helper method to set fields of a UserData entity from a UserDataRequest.
+     * Updates existing user data with the provided request details.
      *
-     * @param userDataRequest the request containing user data fields
-     * @param userData the user data entity to update
+     * @param userDataRequest the user data request containing updated details
+     * @throws IllegalArgumentException if the user ID is null or invalid
+     * @throws UserDataNotFoundException if the user data is not found
      */
-    private static void setUserDataFields(UserDataRequest userDataRequest, UserData userData) {
-        userData.setCity(userDataRequest.getCity());
-        userData.setStreet(userDataRequest.getStreet());
-        userData.setStreetNumber(userDataRequest.getStreetNumber());
-        userData.setApartmentNumber(userDataRequest.getApartmentNumber());
-        userData.setZipCode(userDataRequest.getZipCode());
-        userData.setPhoneNumber(userDataRequest.getPhoneNumber());
+    @Transactional
+    public void updateUserData(UserDataRequest userDataRequest) {
+        UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataRequest.getUserDataId())));
+
+        UserData userData = buildUserData(userDataRequest);
+        userData.setUserDataId(existingUserData.getUserDataId());
+
+        userDataRepository.save(existingUserData);
+    }
+
+    private UserData buildUserData(UserDataRequest userDataRequest) {
+        if(userDataRequest == null){
+            throw new IllegalArgumentException();
+        }
+
+        User user = userRepository.findById(userDataRequest.getUserId())
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userDataRequest.getUserId())));
+
+        return UserData.builder()
+                .userDataId(null)
+                .user(user)
+                .city(userDataRequest.getCity())
+                .street(userDataRequest.getStreet())
+                .streetNumber(userDataRequest.getStreetNumber())
+                .apartmentNumber(userDataRequest.getApartmentNumber())
+                .zipCode(userDataRequest.getZipCode())
+                .phoneNumber(userDataRequest.getPhoneNumber())
+                .build();
     }
 }
