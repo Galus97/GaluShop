@@ -88,6 +88,27 @@ public class WarehouseProductService {
         warehouseRepository.delete(warehouseProduct);
     }
 
+    @Transactional
+    public void updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest){
+        if (warehouseProductRequest == null) {
+            throw new IllegalArgumentException(messageService.getMessage("error.warehouseProductIsNull"));
+        }
+        if(warehouseProductRequest.getProductId() == null && warehouseProductRequest.getQuantity() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
+        }
+
+        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+
+        WarehouseProduct existingWarehouseProduct = warehouseRepository.findById(warehouseProductRequest.getWarehouseProductId())
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", warehouseProductRequest.getWarehouseProductId())));
+        WarehouseProduct updatedWarehouseProduct = WarehouseProduct.builder()
+                .warehouseProductId(existingWarehouseProduct.getWarehouseProductId())
+                .product(product)
+                .quantity(warehouseProductRequest.getQuantity())
+                .build();
+        warehouseRepository.save(updatedWarehouseProduct);
+    }
+
     /**
      * Updates the quantity of a product in the warehouse based on the product ID.
      *
