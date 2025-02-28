@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,5 +36,11 @@ public class ProductImagesController {
     public ResponseEntity<ProductImages> updateProductImages(@RequestBody ProductImageRequest productImageRequest){
         productImagesService.updateProductImages(productImageRequest);
         return ResponseEntity.ok(productImagesService.getProductImages(productImageRequest.getImagesId()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProductImages(@PathVariable Long id){
+        productImagesService.deleteProductImages(id);
+        return ResponseEntity.noContent().build();
     }
 }
