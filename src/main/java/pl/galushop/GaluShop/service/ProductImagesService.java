@@ -10,7 +10,6 @@ import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +18,15 @@ public class ProductImagesService {
     private final ProductService productService;
     private final MessageService messageService;
 
-    public void saveProductImagesToDatabase(ProductImages productImages) {
-        if (productImages == null) {
-            throw new IllegalArgumentException(messageService.getMessage("error.productImagesIsNull"));
+    public void saveProductImages(ProductImageRequest productImageRequest){
+        if(productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
         }
-        if (productImages.getImagesId() == null || productImages.getImagesId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImages.getImagesId()));
-        }
+        ProductImages productImages = new ProductImages();
+        productImages.setProduct(productImageRequest.getProduct());
+        productImages.setImgSrc(productImageRequest.getImgSrc());
+        productImages.setAltImg(productImageRequest.getAltImg());
+
         productImagesRepository.save(productImages);
     }
 
