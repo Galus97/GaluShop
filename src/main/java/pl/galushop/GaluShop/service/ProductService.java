@@ -53,14 +53,7 @@ public class ProductService {
         setProductFields(productRequest, product);
         productRepository.save(product);
 
-        List<ProductImageRequest> productImagesList = productRequest.getProductImages();
-        for (ProductImageRequest productImage : productImagesList) {
-            ProductImages productImages = new ProductImages();
-            productImages.setProduct(product);
-            productImages.setImgSrc(productImage.getImgSrc());
-            productImages.setAltImg(productImage.getAltImg());
-            productImagesService.saveProductImagesToDatabase(productImages);
-        }
+        productRequest.getProductImages().forEach(productImagesService::saveProductImages);
     }
 
     /**
