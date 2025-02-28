@@ -46,19 +46,8 @@ public class WarehouseProductService {
      * @throws IllegalArgumentException If the request is null or contains invalid fields.
      * @throws ProductNotFoundException If the specified product is not found.
      */
-    public void addProductToWarehouse(WarehouseProductRequest warehouseProductRequest) {
-        if (warehouseProductRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage("error.warehouseProductIsNull"));
-        }
-        if(warehouseProductRequest.getProductId() == null && warehouseProductRequest.getQuantity() < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
-        }
-
-        Product product = productService.getProduct(warehouseProductRequest.getProductId());
-        WarehouseProduct warehouseProduct = WarehouseProduct.builder()
-                .product(product)
-                .quantity(warehouseProductRequest.getQuantity())
-                .build();
+    public void saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
+        WarehouseProduct warehouseProduct = buildWarehouseProduct(warehouseProductRequest);
         warehouseRepository.save(warehouseProduct);
     }
 
@@ -90,22 +79,11 @@ public class WarehouseProductService {
 
     @Transactional
     public void updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest){
-        if (warehouseProductRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage("error.warehouseProductIsNull"));
-        }
-        if(warehouseProductRequest.getProductId() == null && warehouseProductRequest.getQuantity() < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
-        }
-
-        Product product = productService.getProduct(warehouseProductRequest.getProductId());
-
         WarehouseProduct existingWarehouseProduct = warehouseRepository.findById(warehouseProductRequest.getWarehouseProductId())
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", warehouseProductRequest.getWarehouseProductId())));
-        WarehouseProduct updatedWarehouseProduct = WarehouseProduct.builder()
-                .warehouseProductId(existingWarehouseProduct.getWarehouseProductId())
-                .product(product)
-                .quantity(warehouseProductRequest.getQuantity())
-                .build();
+
+        WarehouseProduct updatedWarehouseProduct = buildWarehouseProduct(warehouseProductRequest);
+        updatedWarehouseProduct.setWarehouseProductId(existingWarehouseProduct.getWarehouseProductId());
         warehouseRepository.save(updatedWarehouseProduct);
     }
 
@@ -130,5 +108,20 @@ public class WarehouseProductService {
 
         existingWarehouseProduct.setQuantity(quantity);
         warehouseRepository.save(existingWarehouseProduct);
+    }
+
+    private WarehouseProduct buildWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
+        if (warehouseProductRequest == null) {
+            throw new IllegalArgumentException(messageService.getMessage("error.warehouseProductIsNull"));
+        }
+        if(warehouseProductRequest.getProductId() == null && warehouseProductRequest.getQuantity() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
+        }
+        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+        return WarehouseProduct.builder()
+                .warehouseProductId(null)
+                .product(product)
+                .quantity(warehouseProductRequest.getQuantity())
+                .build();
     }
 }

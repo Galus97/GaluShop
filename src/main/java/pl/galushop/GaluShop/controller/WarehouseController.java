@@ -27,7 +27,7 @@ public class WarehouseController {
 
     @PostMapping
     public ResponseEntity<WarehouseProduct> saveWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest) {
-        warehouseProductService.addProductToWarehouse(warehouseProductRequest);
+        warehouseProductService.saveWarehouseProduct(warehouseProductRequest);
         return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(warehouseProductRequest.getProductId()));
     }
 
