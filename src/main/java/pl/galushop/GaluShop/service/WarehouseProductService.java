@@ -9,7 +9,6 @@ import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
-import pl.galushop.GaluShop.repository.ProductRepository;
 import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarehouseProductService {
     private final WarehouseProductRepository warehouseRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
     private final MessageService messageService;
 
     /**
@@ -55,12 +54,11 @@ public class WarehouseProductService {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
         }
 
-        WarehouseProduct warehouseProduct = new WarehouseProduct();
-        Product product = productRepository.findByProductId(warehouseProductRequest.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", warehouseProductRequest.getProductId())));
-
-        warehouseProduct.setProduct(product);
-        warehouseProduct.setQuantity(warehouseProductRequest.getQuantity());
+        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+        WarehouseProduct warehouseProduct = WarehouseProduct.builder()
+                .product(product)
+                .quantity(warehouseProductRequest.getQuantity())
+                .build();
         warehouseRepository.save(warehouseProduct);
     }
 
