@@ -14,10 +14,9 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class RegisterValidator {
-
-    private static final String ERROR_MESSAGE = "Ten adres email jest już używany. Wpisz inny adres email";
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
+    private final MessageService messageService;
 
     public List<String> validateErrors(Object object) {
         List<String> errors = new ArrayList<>();
@@ -25,17 +24,16 @@ public class RegisterValidator {
         if (object instanceof User user) {
             Optional<User> userExistByEmail = userRepository.findByEmail(user.getEmail());
             if (userExistByEmail.isPresent()) {
-                errors.add(ERROR_MESSAGE);
+                errors.add(messageService.getMessage("error.emailAlreadyUsed"));
             }
         }
 
         if (object instanceof Employee employee) {
             Optional<Employee> employeeExistByEmail = employeeRepository.findByEmail(employee.getEmail());
             if (employeeExistByEmail.isPresent()) {
-                errors.add(ERROR_MESSAGE);
+                errors.add(messageService.getMessage("error.emailAlreadyUsed"));
             }
         }
-
         return errors;
     }
 }
