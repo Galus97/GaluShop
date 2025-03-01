@@ -14,6 +14,8 @@ import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.service.ProductImagesService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/images")
@@ -27,8 +29,9 @@ public class ProductImagesController {
 
     @PostMapping
     public ResponseEntity<ProductImages> saveProductImages(@RequestBody ProductImageRequest productImageRequest) {
-        productImagesService.saveProductImages(productImageRequest);
-        return ResponseEntity.ok(productImagesService.getProductImages(productImageRequest.getImagesId()));
+        ProductImages savedProductImages = productImagesService.saveProductImages(productImageRequest);
+        return ResponseEntity.created(URI.create("/images/" + savedProductImages.getImagesId()))
+                .body(savedProductImages);
     }
 
     @PutMapping
