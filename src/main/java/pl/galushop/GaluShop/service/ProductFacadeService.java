@@ -23,6 +23,7 @@ public class ProductFacadeService {
      * Saves a new product along with its associated images.
      *
      * @param productRequest The request object containing product details and images.
+     * @return Thr created Product
      */
     @Transactional
     public Product saveProductWithImages(ProductRequest productRequest){
