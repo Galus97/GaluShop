@@ -20,7 +20,6 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductImagesService productImagesService;
     private final MessageService messageService;
 
     /**
@@ -40,20 +39,24 @@ public class ProductService {
     }
 
     /**
-     * Saves a new product along with its associated images.
+     * Saves a new product to the database.
      *
      * @param productRequest The request object containing product details and images.
      * @throws IllegalArgumentException if the product request is null.
      */
-    public void saveProduct(ProductRequest productRequest) {
+    public Product saveProduct(ProductRequest productRequest) {
         if(productRequest == null){
             throw new IllegalArgumentException();
         }
-        Product product = new Product();
-        setProductFields(productRequest, product);
-        productRepository.save(product);
+        Product product = Product.builder()
+                .productName(productRequest.getProductName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .category(productRequest.getCategory())
+                .categoryId(productRequest.getCategoryId())
+                .build();
 
-        productRequest.getProductImages().forEach(productImagesService::saveProductImages);
+        return productRepository.save(product);
     }
 
     /**
@@ -85,22 +88,12 @@ public class ProductService {
         }
         Product existingProduct = productRepository.findById(productRequest.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productRequest.getProductId())));
-        setProductFields(productRequest, existingProduct);
+        existingProduct.setProductName(productRequest.getProductName());
+        existingProduct.setDescription(productRequest.getDescription());
+        existingProduct.setPrice(productRequest.getPrice());
+        existingProduct.setCategory(productRequest.getCategory());
+        existingProduct.setCategoryId(productRequest.getCategoryId());
 
         productRepository.save(existingProduct);
-    }
-
-    /**
-     * Sets the common fields for a product entity.
-     *
-     * @param productRequest The request object containing product details.
-     * @param product The product entity to update.
-     */
-    private static void setProductFields(ProductRequest productRequest, Product product){
-        product.setProductName(productRequest.getProductName());
-        product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
-        product.setCategory(productRequest.getCategory());
-        product.setCategoryId(productRequest.getCategoryId());
     }
 }
