@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/warehouse")
-public class AllWarehouseProductController {
+public class WarehouseAllProductController {
     private final WarehouseProductService warehouseProductService;
 
 
