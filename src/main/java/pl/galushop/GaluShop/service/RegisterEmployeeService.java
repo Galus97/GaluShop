@@ -33,15 +33,16 @@ public class RegisterEmployeeService {
      * @throws ValidationException if the validation fails.
      */
     public void saveEmployee(EmployeeRequest employeeRequest) throws ValidationException{
-        Employee employee = new Employee();
-        employee.setFirstName(employeeRequest.getFirstName());
-        employee.setLastName(employeeRequest.getLastName());
-        employee.setEmail(employeeRequest.getEmail());
+        Employee employee = Employee.builder()
+                .firstName(employeeRequest.getFirstName())
+                .lastName(employeeRequest.getLastName())
+                .email(employeeRequest.getEmail())
+                .emailCode(emailService.getVerificationCode(employeeRequest.getEmail()))
+                .password(passwordEncoder.encode(employeeRequest.getPassword()))
+                .build();
 
         List<String> validationFailures = registerValidator.validateErrors(employee);
         if(validationFailures.isEmpty()){
-            employee.setEmailCode(emailService.getVerificationCode(employeeRequest.getEmail()));
-            employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             employeeRepository.save(employee);
             emailService.sendEmail(employeeRequest.getEmail());
         } else {
