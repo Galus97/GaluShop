@@ -99,4 +99,18 @@ public class ProductService {
 
         productRepository.save(existingProduct);
     }
+
+    /**
+     * Retrieves a list of products by their IDs.
+     *
+     * @param productIds The list of product IDs to retrieve.
+     * @return A list of retrieved product entities.
+     * @throws IllegalArgumentException if the provided list is null.
+     */
+    public List<Product> getAllProductByIds(List<Long> productIds){
+        if(productIds == null){
+            throw new IllegalArgumentException(messageService.getMessage("error.listIsNull"));
+        }
+        return productRepository.findAllById(productIds);
+    }
 }
