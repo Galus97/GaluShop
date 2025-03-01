@@ -75,13 +75,14 @@ public class PaymentsService {
      * Saves a new payment associated with an order.
      *
      * @param paymentsRequest The request object containing payment details.
+     * @return The created Payment
      * @throws IllegalArgumentException if the request object is null.
      * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
      */
     @Transactional
-    public void savePayment(PaymentsRequest paymentsRequest){
+    public Payments savePayment(PaymentsRequest paymentsRequest){
         Payments payments = buildPayment(paymentsRequest);
-        paymentsRepository.save(payments);
+        return paymentsRepository.save(payments);
     }
 
 
