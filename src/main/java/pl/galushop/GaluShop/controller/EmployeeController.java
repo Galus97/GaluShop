@@ -16,6 +16,8 @@ import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.EmployeeService;
 import pl.galushop.GaluShop.service.RegisterEmployeeService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/employee")
@@ -29,12 +31,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<Employee> saveEmployee(@RequestBody EmployeeRequest employeeRequest) {
+    public ResponseEntity<?> saveEmployee(@RequestBody EmployeeRequest employeeRequest) {
         try {
-            registerEmployeeService.saveEmployee(employeeRequest);
-            return ResponseEntity.ok(employeeService.getEmployee(employeeRequest.getEmployeeId()));
+            Employee savedEmployee = registerEmployeeService.saveNewEmployee(employeeRequest);
+            return ResponseEntity.created(URI.create("/employee/" + savedEmployee.getEmployeeId()))
+                    .body(savedEmployee);
         } catch (ValidationException e) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().body(e.getValidationErrors());
         }
     }
 
