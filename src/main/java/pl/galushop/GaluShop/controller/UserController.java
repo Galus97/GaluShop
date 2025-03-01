@@ -16,6 +16,8 @@ import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.RegisterUserService;
 import pl.galushop.GaluShop.service.UserService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -29,12 +31,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> saveUser(@RequestBody UserRequest userRequest){
+    public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest){
         try {
-            registerUserService.saveNewUser(userRequest);
-            return ResponseEntity.ok(userService.getUser(userRequest.getUserId()));
+            User savedUser = registerUserService.saveNewUser(userRequest);
+            return ResponseEntity.created(URI.create("/user/" + savedUser.getUserId()))
+                    .body(savedUser);
         } catch (ValidationException e) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.badRequest().body(e.getValidationErrors());
         }
     }
 
