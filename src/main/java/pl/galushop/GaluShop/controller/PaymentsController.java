@@ -14,6 +14,8 @@ import pl.galushop.GaluShop.dto.PaymentsRequest;
 import pl.galushop.GaluShop.entity.Payments;
 import pl.galushop.GaluShop.service.PaymentsService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
@@ -27,8 +29,9 @@ public class PaymentsController {
 
     @PostMapping
     public ResponseEntity<Payments> savePayment(@RequestBody PaymentsRequest paymentsRequest){
-        paymentsService.savePayment(paymentsRequest);
-        return ResponseEntity.ok(paymentsService.getPaymentById(paymentsRequest.getPaymentsId()));
+        Payments savedPayment = paymentsService.savePayment(paymentsRequest);
+        return ResponseEntity.created(URI.create("/payments/" + savedPayment.getPaymentId()))
+                .body(savedPayment);
     }
 
     @PutMapping
