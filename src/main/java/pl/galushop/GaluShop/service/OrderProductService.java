@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
@@ -19,10 +20,11 @@ public class OrderProductService {
     private final OrderProductRepository orderProductRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+    private final MessageService messageService;
 
     public void saveOrderProduct(Long orderId, Long productId, int quantity){
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(""));
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(""));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound")));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound")));
         OrderProduct orderProduct = new OrderProduct(order, product, quantity);
         orderProductRepository.save(orderProduct);
     }
@@ -33,12 +35,10 @@ public class OrderProductService {
         }
     }
 
-    public List<OrderProduct> getOrderProductByOrderId(Long orderId){
+    public List<OrderProduct> getOrderProductsByOrderId(Long orderId){
         if(orderId == null || orderId < 0){
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderId));
         }
-        return orderProductRepository.findByOrderOrderId(orderId);
+        return orderProductRepository.findByOrder_OrderId(orderId);
     }
-
-
 }
