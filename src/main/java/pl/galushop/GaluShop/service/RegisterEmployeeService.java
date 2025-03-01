@@ -30,9 +30,10 @@ public class RegisterEmployeeService {
      * saving the employee to the database, and sending a verification email.
      *
      * @param employeeRequest The request object containing user registration details.
+     * @return The created Employee
      * @throws ValidationException if the validation fails.
      */
-    public void saveEmployee(EmployeeRequest employeeRequest) throws ValidationException{
+    public Employee saveNewEmployee(EmployeeRequest employeeRequest) throws ValidationException{
         Employee employee = Employee.builder()
                 .firstName(employeeRequest.getFirstName())
                 .lastName(employeeRequest.getLastName())
@@ -43,8 +44,8 @@ public class RegisterEmployeeService {
 
         List<String> validationFailures = registerValidator.validateErrors(employee);
         if(validationFailures.isEmpty()){
-            employeeRepository.save(employee);
             emailService.sendEmail(employeeRequest.getEmail());
+            return employeeRepository.save(employee);
         } else {
             throw new ValidationException(validationFailures);
         }
