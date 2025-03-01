@@ -14,6 +14,8 @@ import pl.galushop.GaluShop.dto.OrderRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.service.OrderService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/order")
@@ -27,8 +29,9 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> saveOrder(@RequestBody OrderRequest orderRequest) {
-        orderService.saveOrder(orderRequest);
-        return ResponseEntity.ok(orderService.getOrder(orderRequest.getOrderId()));
+        Order savedOrder = orderService.saveOrder(orderRequest);
+        return ResponseEntity.created(URI.create("/order/" + savedOrder.getOrderId()))
+                .body(savedOrder);
     }
 
     @PutMapping
