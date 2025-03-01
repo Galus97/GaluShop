@@ -14,6 +14,8 @@ import pl.galushop.GaluShop.dto.UserDataRequest;
 import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.service.UserDataService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/userData")
@@ -27,8 +29,9 @@ public class UserDataController {
 
     @PostMapping
     public ResponseEntity<UserData> saveUserData(@RequestBody UserDataRequest userDataRequest){
-        userDataService.saveUserData(userDataRequest);
-        return ResponseEntity.ok(userDataService.getUserData(userDataRequest.getUserDataId()));
+        UserData savedUserData = userDataService.saveUserData(userDataRequest);
+        return ResponseEntity.created(URI.create("/userData/" + savedUserData.getUserDataId()))
+                .body(savedUserData);
     }
 
     @PutMapping
