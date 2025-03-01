@@ -26,14 +26,16 @@ public class ProductImagesService {
      * @param productImageRequest The request object containing product image details.
      * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
      */
+    @Transactional
     public void saveProductImages(ProductImageRequest productImageRequest) {
         if (productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
         }
-        ProductImages productImages = new ProductImages();
-        productImages.setProduct(productImageRequest.getProduct());
-        productImages.setImgSrc(productImageRequest.getImgSrc());
-        productImages.setAltImg(productImageRequest.getAltImg());
+        ProductImages productImages = ProductImages.builder()
+                .product(productImageRequest.getProduct())
+                .imgSrc(productImageRequest.getImgSrc())
+                .altImg(productImageRequest.getAltImg())
+                .build();
 
         productImagesRepository.save(productImages);
     }
