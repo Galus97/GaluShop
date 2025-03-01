@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.dto.ProductRequest;
@@ -44,6 +45,7 @@ public class ProductService {
      * @param productRequest The request object containing product details and images.
      * @throws IllegalArgumentException if the product request is null.
      */
+    @Transactional
     public Product saveProduct(ProductRequest productRequest) {
         if(productRequest == null){
             throw new IllegalArgumentException();
@@ -82,6 +84,7 @@ public class ProductService {
      * @throws IllegalArgumentException if the product request is null or contains an invalid ID.
      * @throws ProductNotFoundException if no product is found with the given ID.
      */
+    @Transactional
     public void updateProduct(ProductRequest productRequest) {
         if(productRequest == null || productRequest.getProductId() < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productRequest.getProductId()));
