@@ -28,14 +28,7 @@ public class ProductImagesService {
      */
     @Transactional
     public void saveProductImages(ProductImageRequest productImageRequest) {
-        if (productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
-        }
-        ProductImages productImages = ProductImages.builder()
-                .product(productImageRequest.getProduct())
-                .imgSrc(productImageRequest.getImgSrc())
-                .altImg(productImageRequest.getAltImg())
-                .build();
+        ProductImages productImages = buildProductImages(productImageRequest);
 
         productImagesRepository.save(productImages);
     }
@@ -107,5 +100,23 @@ public class ProductImagesService {
         }
 
         return productImagesRepository.findAllByProduct_ProductId(productId);
+    }
+
+    /**
+     * Builds a ProductImages entity from the given request
+     *
+     * @param productImageRequest The request object containing product image details.
+     * @return A new ProductImages instance
+     * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
+     */
+    private ProductImages buildProductImages(ProductImageRequest productImageRequest) {
+        if (productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
+        }
+        return ProductImages.builder()
+                .product(productImageRequest.getProduct())
+                .imgSrc(productImageRequest.getImgSrc())
+                .altImg(productImageRequest.getAltImg())
+                .build();
     }
 }

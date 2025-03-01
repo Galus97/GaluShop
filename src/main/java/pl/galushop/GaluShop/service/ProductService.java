@@ -47,19 +47,10 @@ public class ProductService {
      */
     @Transactional
     public Product saveProduct(ProductRequest productRequest) {
-        if(productRequest == null){
-            throw new IllegalArgumentException();
-        }
-        Product product = Product.builder()
-                .productName(productRequest.getProductName())
-                .description(productRequest.getDescription())
-                .price(productRequest.getPrice())
-                .category(productRequest.getCategory())
-                .categoryId(productRequest.getCategoryId())
-                .build();
-
+        Product product = buildProduct(productRequest);
         return productRepository.save(product);
     }
+
 
     /**
      * Deletes a product by its ID.
@@ -112,5 +103,26 @@ public class ProductService {
             throw new IllegalArgumentException(messageService.getMessage("error.listIsNull"));
         }
         return productRepository.findAllById(productIds);
+    }
+
+    /**
+     * Builds Product entity from the given request
+     *
+     * @param productRequest The request object containing product details and images.
+     * @return A new Product instance
+     * @throws IllegalArgumentException if the product request is null.
+     */
+    private static Product buildProduct(ProductRequest productRequest) {
+        if(productRequest == null){
+            throw new IllegalArgumentException();
+        }
+        return Product.builder()
+                .productName(productRequest.getProductName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .category(productRequest.getCategory())
+                .categoryId(productRequest.getCategoryId())
+                .build();
+
     }
 }

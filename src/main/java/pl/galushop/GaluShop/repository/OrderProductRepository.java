@@ -8,6 +8,6 @@ import pl.galushop.GaluShop.entity.OrderProductId;
 import java.util.List;
 
 public interface OrderProductRepository extends JpaRepository<OrderProduct, OrderProductId> {
-    List<OrderProduct> findByOrderOrderId(Long orderId);
-    List<OrderProduct> findByProductProductId(Long productId);
+    List<OrderProduct> findByOrder_OrderId(Long orderId);
+    List<OrderProduct> findByProduct_ProductId(Long productId);
 }

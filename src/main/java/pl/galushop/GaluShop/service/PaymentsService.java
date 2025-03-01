@@ -76,22 +76,14 @@ public class PaymentsService {
      *
      * @param paymentsRequest The request object containing payment details.
      * @throws IllegalArgumentException if the request object is null.
+     * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
      */
     @Transactional
     public void savePayment(PaymentsRequest paymentsRequest){
-        if(paymentsRequest == null){
-            throw new IllegalArgumentException(messageService.getMessage("error.paymentsRequestIsNull"));
-        }
-        Order order = orderService.getOrder(paymentsRequest.getOrderId());
-
-        Payments payments = Payments.builder()
-                .totalAmount(paymentsRequest.getTotalAmount())
-                .paymentStatus(paymentsRequest.getPaymentStatus())
-                .order(order)
-                .build();
-
+        Payments payments = buildPayment(paymentsRequest);
         paymentsRepository.save(payments);
     }
+
 
     /**
      * Deletes a payment by its ID.
@@ -132,5 +124,25 @@ public class PaymentsService {
         existingPayment.setOrder(order);
 
         paymentsRepository.save(existingPayment);
+    }
+
+    /**
+     * Builds a Payment entity from the given request
+     *
+     * @param paymentsRequest The request object containing payment details.
+     * @throws IllegalArgumentException if the request object is null.
+     * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
+     */
+    private Payments buildPayment(PaymentsRequest paymentsRequest) {
+        if(paymentsRequest == null){
+            throw new IllegalArgumentException(messageService.getMessage("error.paymentsRequestIsNull"));
+        }
+        Order order = orderService.getOrder(paymentsRequest.getOrderId());
+
+        return Payments.builder()
+                .totalAmount(paymentsRequest.getTotalAmount())
+                .paymentStatus(paymentsRequest.getPaymentStatus())
+                .order(order)
+                .build();
     }
 }
