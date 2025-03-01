@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.dto.ProductRequest;
 import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.entity.ProductImages;
+
+import java.util.List;
 
 /**
  * Facade service that manages interactions between ProductService and ProductImagesService.
@@ -23,5 +26,11 @@ public class ProductFacadeService {
             imageRequest.setProduct(product);
             productImagesService.saveProductImages(imageRequest);
         }
+    }
+
+
+    public List<ProductImages> getAllImagesByProductId(Long productId) {
+        productService.getProduct(productId);
+        return productImagesService.getAllImagesByProductId(productId);
     }
 }
