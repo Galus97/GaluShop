@@ -31,6 +31,7 @@ public class OrderService {
     private final UserService userService;
     private final MessageService messageService;
     private final ProductService productService;
+    private final OrderProductService orderProductService;
 
     /**
      * Retrieves an order by its ID.
@@ -50,6 +51,7 @@ public class OrderService {
 
     /**
      * Saves a new order to the database.
+     * Saves a new orderProduct to the database.
      *
      * @param orderRequest The request object containing order details.
      * @throws UserNotFoundException if the user associated with the order is not found.
@@ -141,6 +143,7 @@ public class OrderService {
 
     /**
      * Builds an Order entity from the given OrderRequest.
+     * Saves a new orderProduct to the database.
      *
      * @param orderRequest The request object containing order details.
      * @return The constructed Order entity.
@@ -177,6 +180,7 @@ public class OrderService {
                 .build();
 
         orderProducts.forEach(op -> op.setOrder(order));
+        orderProducts.forEach(orderProductService::saveOrderProduct);
 
         return order;
     }
