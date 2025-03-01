@@ -14,6 +14,8 @@ import pl.galushop.GaluShop.dto.WarehouseProductRequest;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/warehouse")
@@ -27,8 +29,9 @@ public class WarehouseController {
 
     @PostMapping
     public ResponseEntity<WarehouseProduct> saveWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest) {
-        warehouseProductService.saveWarehouseProduct(warehouseProductRequest);
-        return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(warehouseProductRequest.getProductId()));
+        WarehouseProduct savedWarehouseProduct = warehouseProductService.saveWarehouseProduct(warehouseProductRequest);
+        return ResponseEntity.created(URI.create("/warehouse/" + savedWarehouseProduct.getWarehouseProductId()))
+                .body(savedWarehouseProduct);
     }
 
     @PutMapping
