@@ -29,7 +29,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final MessageService messageService;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     /**
      * Retrieves an order by its ID.
@@ -150,7 +150,7 @@ public class OrderService {
         List<Long> productIds = orderRequest.getProductQuantityRequests().stream()
                 .map(ProductQuantityRequest::getProductId).toList();
 
-        Map<Long, Product> productsMap = productRepository.findAllById(productIds).stream()
+        Map<Long, Product> productsMap = productService.getAllProductByIds(productIds).stream()
                 .collect(Collectors.toMap(Product::getProductId, product -> product));
 
         List<OrderProduct> orderProducts = orderRequest.getProductQuantityRequests().stream()
