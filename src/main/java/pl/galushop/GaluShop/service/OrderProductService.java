@@ -27,6 +27,12 @@ public class OrderProductService {
         orderProductRepository.save(orderProduct);
     }
 
+    public void saveOrderProduct(OrderProduct orderProduct){
+        if(orderProduct != null){
+            orderProductRepository.save(orderProduct);
+        }
+    }
+
     public List<OrderProduct> getOrderProductByOrderId(Long orderId){
         if(orderId == null || orderId < 0){
             throw new IllegalArgumentException("");
