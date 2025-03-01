@@ -24,13 +24,13 @@ public class ProductImagesService {
      * Saves a new product image to the database.
      *
      * @param productImageRequest The request object containing product image details.
+     * @return The created ProductImages
      * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
      */
     @Transactional
-    public void saveProductImages(ProductImageRequest productImageRequest) {
+    public ProductImages saveProductImages(ProductImageRequest productImageRequest) {
         ProductImages productImages = buildProductImages(productImageRequest);
-
-        productImagesRepository.save(productImages);
+        return productImagesRepository.save(productImages);
     }
 
     /**
