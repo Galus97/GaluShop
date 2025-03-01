@@ -54,13 +54,14 @@ public class OrderService {
      * Saves a new orderProduct to the database.
      *
      * @param orderRequest The request object containing order details.
+     * @return The created Order
      * @throws UserNotFoundException if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
-    public void saveOrder(OrderRequest orderRequest) {
+    public Order saveOrder(OrderRequest orderRequest) {
         Order order = buildOrder(orderRequest);
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     /**
