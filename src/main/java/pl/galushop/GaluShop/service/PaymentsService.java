@@ -83,10 +83,13 @@ public class PaymentsService {
             throw new IllegalArgumentException(messageService.getMessage("error.paymentsRequestIsNull"));
         }
         Order order = orderService.getOrder(paymentsRequest.getOrderId());
-        Payments payments = new Payments();
-        payments.setTotalAmount(payments.getTotalAmount());
-        payments.setPaymentStatus(paymentsRequest.getPaymentStatus());
-        payments.setOrder(order);
+
+        Payments payments = Payments.builder()
+                .totalAmount(paymentsRequest.getTotalAmount())
+                .paymentStatus(paymentsRequest.getPaymentStatus())
+                .order(order)
+                .build();
+
         paymentsRepository.save(payments);
     }
 
