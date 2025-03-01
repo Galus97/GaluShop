@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.dto.ProductRequest;
 import pl.galushop.GaluShop.entity.Product;
@@ -23,6 +24,7 @@ public class ProductFacadeService {
      *
      * @param productRequest The request object containing product details and images.
      */
+    @Transactional
     public void saveProductWithImages(ProductRequest productRequest){
         Product product = productService.saveProduct(productRequest);
 
