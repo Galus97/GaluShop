@@ -89,9 +89,11 @@ public class WarehouseProductService {
         WarehouseProduct existingWarehouseProduct = warehouseRepository.findById(warehouseProductRequest.getWarehouseProductId())
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", warehouseProductRequest.getWarehouseProductId())));
 
-        WarehouseProduct updatedWarehouseProduct = buildWarehouseProduct(warehouseProductRequest);
-        updatedWarehouseProduct.setWarehouseProductId(existingWarehouseProduct.getWarehouseProductId());
-        warehouseRepository.save(updatedWarehouseProduct);
+        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+        existingWarehouseProduct.setProduct(product);
+        existingWarehouseProduct.setQuantity(warehouseProductRequest.getQuantity());
+
+        warehouseRepository.save(existingWarehouseProduct);
     }
 
     /**

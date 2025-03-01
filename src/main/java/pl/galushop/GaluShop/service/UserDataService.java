@@ -38,10 +38,10 @@ public class UserDataService {
     /**
      * Retrieves user data by its ID.
      *
-     * @param userDataId the ID of the user data
-     * @return the found user data entity
-     * @throws IllegalArgumentException if the ID is null or invalid
-     * @throws UserDataNotFoundException if user data is not found
+     * @param userDataId the ID of the user data.
+     * @return the found user data entity.
+     * @throws IllegalArgumentException if the ID is null or negative.
+     * @throws UserDataNotFoundException if user data is not found.
      */
     public UserData getUserData(Long userDataId) {
         if(userDataId == null || userDataId < 0){
@@ -54,10 +54,10 @@ public class UserDataService {
     /**
      * Retrieves user data by the associated user ID.
      *
-     * @param userId the ID of the user
-     * @return the found user data entity
-     * @throws IllegalArgumentException if the user ID is null or invalid
-     * @throws UserDataNotFoundException if no user data is found for the user
+     * @param userId the ID of the user.
+     * @return the found user data entity.
+     * @throws IllegalArgumentException if the user ID is null or negative.
+     * @throws UserDataNotFoundException if no user data is found for the user.
      */
     public UserData getUserDataByUserId(Long userId) {
         if(userId == null || userId < 0){
@@ -70,9 +70,9 @@ public class UserDataService {
     /**
      * Deletes user data by its ID.
      *
-     * @param userDataId the ID of the user data
-     * @throws IllegalArgumentException if the ID is null or invalid
-     * @throws UserDataNotFoundException if the user data is not found
+     * @param userDataId the ID of the user data.
+     * @throws IllegalArgumentException if the ID is null or negative.
+     * @throws UserDataNotFoundException if the user data is not found.
      */
     public void deleteUserData(Long userDataId) {
         if(userDataId == null || userDataId < 0){
@@ -86,21 +86,37 @@ public class UserDataService {
     /**
      * Updates existing user data with the provided request details.
      *
-     * @param userDataRequest the user data request containing updated details
-     * @throws IllegalArgumentException if the user ID is null or invalid
-     * @throws UserDataNotFoundException if the user data is not found
+     * @param userDataRequest the user data request containing updated details.
+     * @throws IllegalArgumentException if the user data ID is null or invalid.
+     * @throws UserDataNotFoundException if the user data is not found.
      */
     @Transactional
     public void updateUserData(UserDataRequest userDataRequest) {
+        if (userDataRequest.getUserDataId() == null || userDataRequest.getUserDataId() < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataRequest.getUserDataId()));
+        }
+
         UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataRequest.getUserDataId())));
 
-        UserData userData = buildUserData(userDataRequest);
-        userData.setUserDataId(existingUserData.getUserDataId());
+        existingUserData.setCity(userDataRequest.getCity());
+        existingUserData.setStreet(userDataRequest.getStreet());
+        existingUserData.setStreetNumber(userDataRequest.getStreetNumber());
+        existingUserData.setApartmentNumber(userDataRequest.getApartmentNumber());
+        existingUserData.setZipCode(userDataRequest.getZipCode());
+        existingUserData.setPhoneNumber(userDataRequest.getPhoneNumber());
 
         userDataRepository.save(existingUserData);
     }
 
+    /**
+     * Builds a UserData entity from the given request.
+     *
+     * @param userDataRequest the request containing user details.
+     * @return a new UserData instance.
+     * @throws IllegalArgumentException if the request is null.
+     * @throws UsernameNotFoundException if the user is not found.
+     */
     private UserData buildUserData(UserDataRequest userDataRequest) {
         if(userDataRequest == null){
             throw new IllegalArgumentException();
