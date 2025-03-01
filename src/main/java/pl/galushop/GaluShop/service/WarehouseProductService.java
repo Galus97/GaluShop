@@ -43,6 +43,7 @@ public class WarehouseProductService {
      * Adds a new product to the warehouse.
      *
      * @param warehouseProductRequest The request containing product ID and quantity.
+     * @return The created WarehouseProduct
      * @throws IllegalArgumentException If the request is null or contains invalid fields.
      * @throws ProductNotFoundException If the specified product is not found.
      */

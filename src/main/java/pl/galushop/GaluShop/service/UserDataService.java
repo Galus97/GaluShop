@@ -26,6 +26,7 @@ public class UserDataService {
      * Saves new user data based on the provided request.
      *
      * @param userDataRequest the user data request containing user details
+     * @return The created UserData
      * @throws IllegalArgumentException if the request is null
      * @throws UsernameNotFoundException if the user does not exist
      */

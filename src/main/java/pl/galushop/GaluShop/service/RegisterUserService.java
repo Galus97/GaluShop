@@ -30,9 +30,10 @@ public class RegisterUserService {
      * saving the user to the database, and sending a verification email.
      *
      * @param userRequest The request object containing user registration details.
+     * @return The created User
      * @throws ValidationException if the validation fails.
      */
-    public void saveNewUser(UserRequest userRequest) throws ValidationException {
+    public User saveNewUser(UserRequest userRequest) throws ValidationException {
         User user = User.builder()
                 .firstName(userRequest.getFirstName())
                 .lastName(userRequest.getLastName())
@@ -43,8 +44,8 @@ public class RegisterUserService {
 
         List<String> validationFailures = registerValidator.validateErrors(user);
         if (validationFailures.isEmpty()) {
-            userRepository.save(user);
             emailService.sendEmail(userRequest.getEmail());
+            return userRepository.save(user);
         } else {
             throw new ValidationException(validationFailures);
         }
