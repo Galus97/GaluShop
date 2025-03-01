@@ -18,7 +18,11 @@ public class ProductFacadeService {
     private final ProductService productService;
     private final ProductImagesService productImagesService;
 
-
+    /**
+     * Saves a new product along with its associated images.
+     *
+     * @param productRequest The request object containing product details and images.
+     */
     public void saveProductWithImages(ProductRequest productRequest){
         Product product = productService.saveProduct(productRequest);
 
@@ -28,7 +32,12 @@ public class ProductFacadeService {
         }
     }
 
-
+    /**
+     * Retrieves all images for a given product ID.
+     *
+     * @param productId The ID of the product.
+     * @return List of product images.
+     */
     public List<ProductImages> getAllImagesByProductId(Long productId) {
         productService.getProduct(productId);
         return productImagesService.getAllImagesByProductId(productId);
