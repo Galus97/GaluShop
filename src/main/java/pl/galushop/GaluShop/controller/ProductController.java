@@ -15,6 +15,8 @@ import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.service.ProductFacadeService;
 import pl.galushop.GaluShop.service.ProductService;
 
+import java.net.URI;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/product")
@@ -29,8 +31,9 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<Product> saveProduct(@RequestBody ProductRequest productRequest) {
-        productFacadeService.saveProductWithImages(productRequest);
-        return ResponseEntity.ok(productService.getProduct(productRequest.getProductId()));
+        Product savedProduct = productFacadeService.saveProductWithImages(productRequest);
+        return ResponseEntity.created(URI.create("/product/" + savedProduct.getProductId()))
+                .body(savedProduct);
     }
 
     @PutMapping

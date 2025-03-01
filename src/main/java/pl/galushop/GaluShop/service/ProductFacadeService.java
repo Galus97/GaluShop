@@ -25,13 +25,14 @@ public class ProductFacadeService {
      * @param productRequest The request object containing product details and images.
      */
     @Transactional
-    public void saveProductWithImages(ProductRequest productRequest){
+    public Product saveProductWithImages(ProductRequest productRequest){
         Product product = productService.saveProduct(productRequest);
 
         for(ProductImageRequest imageRequest : productRequest.getProductImages()){
             imageRequest.setProduct(product);
             productImagesService.saveProductImages(imageRequest);
         }
+        return product;
     }
 
     /**
