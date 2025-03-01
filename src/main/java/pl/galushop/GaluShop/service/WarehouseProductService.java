@@ -47,9 +47,9 @@ public class WarehouseProductService {
      * @throws ProductNotFoundException If the specified product is not found.
      */
     @Transactional
-    public void saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
+    public WarehouseProduct saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
         WarehouseProduct warehouseProduct = buildWarehouseProduct(warehouseProductRequest);
-        warehouseRepository.save(warehouseProduct);
+        return warehouseRepository.save(warehouseProduct);
     }
 
     /**
