@@ -30,9 +30,9 @@ public class UserDataService {
      * @throws UsernameNotFoundException if the user does not exist
      */
     @Transactional
-    public void saveUserData(UserDataRequest userDataRequest) {
+    public UserData saveUserData(UserDataRequest userDataRequest) {
         UserData userData = buildUserData(userDataRequest);
-        userDataRepository.save(userData);
+        return userDataRepository.save(userData);
     }
 
     /**
