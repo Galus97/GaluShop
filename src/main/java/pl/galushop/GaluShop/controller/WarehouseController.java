@@ -27,14 +27,14 @@ public class WarehouseController {
 
     @PostMapping
     public ResponseEntity<WarehouseProduct> saveWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest) {
-        warehouseProductService.addProductToWarehouse(warehouseProductRequest);
+        warehouseProductService.saveWarehouseProduct(warehouseProductRequest);
         return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(warehouseProductRequest.getProductId()));
     }
 
-    @PutMapping("/{id}/{quantity}")
-    public ResponseEntity<WarehouseProduct> updateQuantity(@PathVariable Long id, @PathVariable Integer quantity){
-        warehouseProductService.updateQuantityByProductId(id, quantity);
-        return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(id));
+    @PutMapping
+    public ResponseEntity<WarehouseProduct> updateWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
+        warehouseProductService.updateWarehouseProduct(warehouseProductRequest);
+        return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(warehouseProductRequest.getWarehouseProductId()));
     }
 
     @DeleteMapping("/{id}")

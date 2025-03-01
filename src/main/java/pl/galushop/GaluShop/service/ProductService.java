@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.dto.ProductRequest;
@@ -20,7 +21,6 @@ import java.util.List;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductImagesService productImagesService;
     private final MessageService messageService;
 
     /**
@@ -40,20 +40,25 @@ public class ProductService {
     }
 
     /**
-     * Saves a new product along with its associated images.
+     * Saves a new product to the database.
      *
      * @param productRequest The request object containing product details and images.
      * @throws IllegalArgumentException if the product request is null.
      */
-    public void saveProduct(ProductRequest productRequest) {
+    @Transactional
+    public Product saveProduct(ProductRequest productRequest) {
         if(productRequest == null){
             throw new IllegalArgumentException();
         }
-        Product product = new Product();
-        setProductFields(productRequest, product);
-        productRepository.save(product);
+        Product product = Product.builder()
+                .productName(productRequest.getProductName())
+                .description(productRequest.getDescription())
+                .price(productRequest.getPrice())
+                .category(productRequest.getCategory())
+                .categoryId(productRequest.getCategoryId())
+                .build();
 
-        productRequest.getProductImages().forEach(productImagesService::saveProductImages);
+        return productRepository.save(product);
     }
 
     /**
@@ -79,28 +84,33 @@ public class ProductService {
      * @throws IllegalArgumentException if the product request is null or contains an invalid ID.
      * @throws ProductNotFoundException if no product is found with the given ID.
      */
+    @Transactional
     public void updateProduct(ProductRequest productRequest) {
         if(productRequest == null || productRequest.getProductId() < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productRequest.getProductId()));
         }
         Product existingProduct = productRepository.findById(productRequest.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productRequest.getProductId())));
-        setProductFields(productRequest, existingProduct);
+        existingProduct.setProductName(productRequest.getProductName());
+        existingProduct.setDescription(productRequest.getDescription());
+        existingProduct.setPrice(productRequest.getPrice());
+        existingProduct.setCategory(productRequest.getCategory());
+        existingProduct.setCategoryId(productRequest.getCategoryId());
 
         productRepository.save(existingProduct);
     }
 
     /**
-     * Sets the common fields for a product entity.
+     * Retrieves a list of products by their IDs.
      *
-     * @param productRequest The request object containing product details.
-     * @param product The product entity to update.
+     * @param productIds The list of product IDs to retrieve.
+     * @return A list of retrieved product entities.
+     * @throws IllegalArgumentException if the provided list is null.
      */
-    private static void setProductFields(ProductRequest productRequest, Product product){
-        product.setProductName(productRequest.getProductName());
-        product.setDescription(productRequest.getDescription());
-        product.setPrice(productRequest.getPrice());
-        product.setCategory(productRequest.getCategory());
-        product.setCategoryId(productRequest.getCategoryId());
+    public List<Product> getAllProductByIds(List<Long> productIds){
+        if(productIds == null){
+            throw new IllegalArgumentException(messageService.getMessage("error.listIsNull"));
+        }
+        return productRepository.findAllById(productIds);
     }
 }

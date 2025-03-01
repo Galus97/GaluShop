@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.OrderRequest;
 import pl.galushop.GaluShop.dto.ProductQuantityRequest;
@@ -29,7 +30,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final MessageService messageService;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
 
     /**
      * Retrieves an order by its ID.
@@ -54,6 +55,7 @@ public class OrderService {
      * @throws UserNotFoundException if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
+    @Transactional
     public void saveOrder(OrderRequest orderRequest) {
         Order order = buildOrder(orderRequest);
         orderRepository.save(order);
@@ -125,6 +127,7 @@ public class OrderService {
      * @throws UserNotFoundException if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
+    @Transactional
     public void updateOrder(OrderRequest orderRequest){
         if(orderRequest.getOrderId() == null || orderRequest.getOrderId() < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderRequest.getOrderId()));
@@ -150,7 +153,7 @@ public class OrderService {
         List<Long> productIds = orderRequest.getProductQuantityRequests().stream()
                 .map(ProductQuantityRequest::getProductId).toList();
 
-        Map<Long, Product> productsMap = productRepository.findAllById(productIds).stream()
+        Map<Long, Product> productsMap = productService.getAllProductByIds(productIds).stream()
                 .collect(Collectors.toMap(Product::getProductId, product -> product));
 
         List<OrderProduct> orderProducts = orderRequest.getProductQuantityRequests().stream()

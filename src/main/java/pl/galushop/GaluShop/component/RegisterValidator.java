@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Component responsible for validating user and employee registration.
+ * Checks whether an email is already in use before allowing registration.
+ */
 @Component
 @RequiredArgsConstructor
 public class RegisterValidator {
@@ -18,6 +22,13 @@ public class RegisterValidator {
     private final EmployeeRepository employeeRepository;
     private final MessageService messageService;
 
+    /**
+     * Validates registration errors for a given object.
+     * If the object is a User or Employee, it checks whether the email is already registered.
+     *
+     * @param object The object to validate (User or Employee).
+     * @return A list of error messages if validation fails; otherwise, an empty list.
+     */
     public List<String> validateErrors(Object object) {
         List<String> errors = new ArrayList<>();
 

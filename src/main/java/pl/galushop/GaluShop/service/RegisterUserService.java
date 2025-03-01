@@ -33,15 +33,16 @@ public class RegisterUserService {
      * @throws ValidationException if the validation fails.
      */
     public void saveNewUser(UserRequest userRequest) throws ValidationException {
-        User user = new User();
-        user.setFirstName(userRequest.getFirstName());
-        user.setLastName(userRequest.getLastName());
-        user.setEmail(userRequest.getEmail());
+        User user = User.builder()
+                .firstName(userRequest.getFirstName())
+                .lastName(userRequest.getLastName())
+                .email(userRequest.getEmail())
+                .emailCode(emailService.getVerificationCode(userRequest.getEmail()))
+                .password(passwordEncoder.encode(userRequest.getPassword()))
+                .build();
 
         List<String> validationFailures = registerValidator.validateErrors(user);
         if (validationFailures.isEmpty()) {
-            user.setEmailCode(emailService.getVerificationCode(userRequest.getEmail()));
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
             emailService.sendEmail(userRequest.getEmail());
         } else {

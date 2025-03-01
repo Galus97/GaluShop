@@ -9,7 +9,6 @@ import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
-import pl.galushop.GaluShop.repository.ProductRepository;
 import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarehouseProductService {
     private final WarehouseProductRepository warehouseRepository;
-    private final ProductRepository productRepository;
+    private final ProductService productService;
     private final MessageService messageService;
 
     /**
@@ -47,20 +46,9 @@ public class WarehouseProductService {
      * @throws IllegalArgumentException If the request is null or contains invalid fields.
      * @throws ProductNotFoundException If the specified product is not found.
      */
-    public void addProductToWarehouse(WarehouseProductRequest warehouseProductRequest) {
-        if (warehouseProductRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage("error.warehouseProductIsNull"));
-        }
-        if(warehouseProductRequest.getProductId() == null && warehouseProductRequest.getQuantity() < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
-        }
-
-        WarehouseProduct warehouseProduct = new WarehouseProduct();
-        Product product = productRepository.findByProductId(warehouseProductRequest.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", warehouseProductRequest.getProductId())));
-
-        warehouseProduct.setProduct(product);
-        warehouseProduct.setQuantity(warehouseProductRequest.getQuantity());
+    @Transactional
+    public void saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
+        WarehouseProduct warehouseProduct = buildWarehouseProduct(warehouseProductRequest);
         warehouseRepository.save(warehouseProduct);
     }
 
@@ -91,6 +79,24 @@ public class WarehouseProductService {
     }
 
     /**
+     * Updates an existing warehouse product based on the provided request.
+     *
+     * @param warehouseProductRequest The request containing updated product details.
+     * @throws WarehouseProductNotFoundException If the warehouse product is not found.
+     */
+    @Transactional
+    public void updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest){
+        WarehouseProduct existingWarehouseProduct = warehouseRepository.findById(warehouseProductRequest.getWarehouseProductId())
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", warehouseProductRequest.getWarehouseProductId())));
+
+        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+        existingWarehouseProduct.setProduct(product);
+        existingWarehouseProduct.setQuantity(warehouseProductRequest.getQuantity());
+
+        warehouseRepository.save(existingWarehouseProduct);
+    }
+
+    /**
      * Updates the quantity of a product in the warehouse based on the product ID.
      *
      * @param productId The ID of the product.
@@ -111,5 +117,28 @@ public class WarehouseProductService {
 
         existingWarehouseProduct.setQuantity(quantity);
         warehouseRepository.save(existingWarehouseProduct);
+    }
+
+    /**
+     * Builds a WarehouseProduct entity from the given request.
+     *
+     * @param warehouseProductRequest The request containing product ID and quantity.
+     * @return A new WarehouseProduct instance.
+     * @throws IllegalArgumentException If the request is invalid.
+     * @throws ProductNotFoundException If the product is not found.
+     */
+    private WarehouseProduct buildWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
+        if (warehouseProductRequest == null) {
+            throw new IllegalArgumentException(messageService.getMessage("error.warehouseProductIsNull"));
+        }
+        if(warehouseProductRequest.getProductId() == null && warehouseProductRequest.getQuantity() < 0){
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidFieldsWarehouseProduct"));
+        }
+        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+        return WarehouseProduct.builder()
+                .warehouseProductId(null)
+                .product(product)
+                .quantity(warehouseProductRequest.getQuantity())
+                .build();
     }
 }

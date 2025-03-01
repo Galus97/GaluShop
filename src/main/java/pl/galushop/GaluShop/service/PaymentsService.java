@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.PaymentsRequest;
 import pl.galushop.GaluShop.entity.Order;
@@ -76,15 +77,19 @@ public class PaymentsService {
      * @param paymentsRequest The request object containing payment details.
      * @throws IllegalArgumentException if the request object is null.
      */
+    @Transactional
     public void savePayment(PaymentsRequest paymentsRequest){
         if(paymentsRequest == null){
             throw new IllegalArgumentException(messageService.getMessage("error.paymentsRequestIsNull"));
         }
         Order order = orderService.getOrder(paymentsRequest.getOrderId());
-        Payments payments = new Payments();
-        payments.setTotalAmount(payments.getTotalAmount());
-        payments.setPaymentStatus(paymentsRequest.getPaymentStatus());
-        payments.setOrder(order);
+
+        Payments payments = Payments.builder()
+                .totalAmount(paymentsRequest.getTotalAmount())
+                .paymentStatus(paymentsRequest.getPaymentStatus())
+                .order(order)
+                .build();
+
         paymentsRepository.save(payments);
     }
 
@@ -111,6 +116,7 @@ public class PaymentsService {
      * @throws IllegalArgumentException if the request object is null or contains an invalid ID.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
+    @Transactional
     public void updatePayment(PaymentsRequest paymentsRequest){
         if(paymentsRequest == null){
             throw new IllegalArgumentException(messageService.getMessage("paymentsRequestIsNull"));

@@ -54,6 +54,7 @@ public class UserService {
 
     /**
      * Updates an existing user's details.
+     * If a new password is provided, it will be updated; otherwise, the old password remains unchanged.
      *
      * @param userRequest The request object containing updated user details.
      * @throws IllegalArgumentException if the userRequest is invalid.
@@ -61,7 +62,7 @@ public class UserService {
      */
     @Transactional
     public void updateUser(UserRequest userRequest){
-        if(userRequest.getUserId() == null || userRequest.getUserId() < 0){
+        if (userRequest.getUserId() == null || userRequest.getUserId() < 1) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserRequest"));
         }
         User existingUser = userRepository.findById(userRequest.getUserId())
@@ -70,7 +71,8 @@ public class UserService {
         existingUser.setFirstName(userRequest.getFirstName());
         existingUser.setLastName(userRequest.getLastName());
         existingUser.setEmail(userRequest.getEmail());
-        if(userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()){
+
+        if (userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         }
 
