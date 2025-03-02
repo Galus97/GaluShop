@@ -124,5 +124,19 @@ class OrderTest {
                     .extracting(ConstraintViolation::getMessage)
                     .contains("must not be null");
         }
+
+        @Test
+        void shouldFailValidationWhenUserIsNull() {
+            Order invalidOrder = Order.builder()
+                    .orderId(2L)
+                    .localDateTime(fixedDateTime)
+                    .status(OrderStatus.PAID)
+                    .build();
+
+            Set<ConstraintViolation<Order>> violations = validator.validate(invalidOrder);
+            assertThat(violations)
+                    .extracting(ConstraintViolation::getMessage)
+                    .contains("must not be null");
+        }
     }
 }
