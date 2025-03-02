@@ -153,4 +153,25 @@ class OrderTest {
                     .contains("localDateTime=" + fixedDateTime);
         }
     }
+
+    @Test
+    void shouldHandleEqualityCorrectly() {
+        Order sameOrder = Order.builder()
+                .orderId(1L)
+                .localDateTime(fixedDateTime)
+                .status(OrderStatus.PLACED)
+                .user(user)
+                .orderProducts(Collections.emptyList())
+                .build();
+
+        Order differentOrder = Order.builder()
+                .orderId(2L)
+                .localDateTime(LocalDateTime.now())
+                .status(OrderStatus.PAID)
+                .user(new User())
+                .build();
+
+        assertThat(order).isEqualTo(sameOrder);
+        assertThat(order).isNotEqualTo(differentOrder);
+    }
 }
