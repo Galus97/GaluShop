@@ -91,5 +91,21 @@ class OrderTest {
                         assertThat(o.getOrderProducts()).isEmpty();
                     });
         }
+
+        @Test
+        void shouldUseLombokSettersCorrectly() {
+            order.setOrderId(2L);
+            order.setStatus(OrderStatus.SENT);
+            order.setLocalDateTime(null);
+            order.setUser(null);
+
+            assertThat(order)
+                    .satisfies(o -> {
+                        assertThat(o.getOrderId()).isEqualTo(2L);
+                        assertThat(o.getStatus()).isEqualTo(OrderStatus.SENT);
+                        assertThat(o.getLocalDateTime()).isNull();
+                        assertThat(o.getUser()).isNull();
+                    });
+        }
     }
 }
