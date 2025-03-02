@@ -21,4 +21,14 @@ class OrderProductIdTest {
         assertThat(orderProductId1.getOrderId()).isEqualTo(1L);
         assertThat(orderProductId1.getProductId()).isEqualTo(2L);
     }
+
+    @Test
+    void shouldSetAndGetValuesCorrectly() {
+        OrderProductId orderProductId = new OrderProductId();
+        orderProductId.setOrderId(3L);
+        orderProductId.setProductId(4L);
+
+        assertThat(orderProductId.getOrderId()).isEqualTo(3L);
+        assertThat(orderProductId.getProductId()).isEqualTo(4L);
+    }
 }
