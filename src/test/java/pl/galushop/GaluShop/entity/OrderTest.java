@@ -61,5 +61,20 @@ class OrderTest {
                         assertThat(o.getOrderProducts()).isEmpty();
                     });
         }
+
+        @Test
+        void shouldCreateOrderWithNoArgsConstructor() {
+            Order emptyOrder = new Order();
+
+            assertThat(emptyOrder)
+                    .isNotNull()
+                    .satisfies(o -> {
+                        assertThat(o.getOrderId()).isNull();
+                        assertThat(o.getLocalDateTime()).isNull();
+                        assertThat(o.getStatus()).isNull();
+                        assertThat(o.getUser()).isNull();
+                        assertThat(o.getOrderProducts()).isNull();
+                    });
+        }
     }
 }
