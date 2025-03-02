@@ -79,4 +79,17 @@ class PaymentsTest {
         Set<ConstraintViolation<Payments>> violations = validator.validate(invalidPayments);
         assertThat(violations).isNotEmpty();
     }
+
+    @Test
+    void shouldValidateNotNullPaymentStatus() {
+        Payments invalidPayments = Payments.builder()
+                .totalAmount(100.0)
+                .paymentStatus(null)
+                .order(order)
+                .user(user)
+                .build();
+
+        Set<ConstraintViolation<Payments>> violations = validator.validate(invalidPayments);
+        assertThat(violations).isNotEmpty();
+    }
 }
