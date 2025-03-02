@@ -85,4 +85,18 @@ class EmployeeTest {
         assertThat(violations).extracting(ConstraintViolation::getMessage)
                 .contains("size must be between 3 and 2147483647");
     }
+
+    @Test
+    void shouldDetectShortPassword() {
+        // Given
+        employee.setPassword("pass"); //To short
+
+        // When
+        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
+
+        // Then
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting(ConstraintViolation::getMessage)
+                .contains("size must be between 5 and 2147483647");
+    }
 }
