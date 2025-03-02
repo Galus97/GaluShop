@@ -7,6 +7,7 @@ import pl.galushop.GaluShop.component.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderProductTest {
@@ -20,7 +21,6 @@ class OrderProductTest {
     @BeforeEach
     void setUp() {
         fixedDateTime = LocalDateTime.of(2023, 10, 10, 12, 30);
-        OrderProductId id = new OrderProductId();
         order = Order.builder()
                 .orderId(1L)
                 .localDateTime(fixedDateTime)
@@ -39,14 +39,11 @@ class OrderProductTest {
                 .build();
 
         orderProduct = OrderProduct.builder()
-                .id(id)
+                .id(new OrderProductId())
                 .order(order)
                 .product(product)
                 .quantity(5)
                 .build();
-
-        id.setProductId(product.getProductId());
-        id.setOrderId(order.getOrderId());
     }
 
     @Test
@@ -56,5 +53,17 @@ class OrderProductTest {
         assertNotNull(orderProduct.getProduct());
         assertNotNull(orderProduct.getId());
         assertEquals(5, orderProduct.getQuantity());
+    }
+
+    @Test
+    void shouldCreateOrderProductWithAllArgsConstructor() {
+        OrderProduct constructedOrderProduct = new OrderProduct(order, product, 10);
+
+        assertThat(constructedOrderProduct)
+                .satisfies(op -> {
+                    assertThat(op.getOrder()).isEqualTo(order);
+                    assertThat(op.getProduct()).isEqualTo(product);
+                    assertThat(op.getQuantity()).isEqualTo(10);
+                });
     }
 }
