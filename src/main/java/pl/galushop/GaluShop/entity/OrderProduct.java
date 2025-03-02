@@ -6,6 +6,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class OrderProduct {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Min(0)
     private Integer quantity;
 
     public OrderProduct(Order order, Product product, Integer quantity) {
