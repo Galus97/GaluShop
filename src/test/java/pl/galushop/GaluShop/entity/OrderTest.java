@@ -108,4 +108,21 @@ class OrderTest {
                     });
         }
     }
+
+    @Nested
+    class ValidationTests {
+        @Test
+        void shouldFailValidationWhenStatusIsNull() {
+            Order invalidOrder = Order.builder()
+                    .orderId(2L)
+                    .localDateTime(fixedDateTime)
+                    .user(user)
+                    .build();
+
+            Set<ConstraintViolation<Order>> violations = validator.validate(invalidOrder);
+            assertThat(violations)
+                    .extracting(ConstraintViolation::getMessage)
+                    .contains("must not be null");
+        }
+    }
 }
