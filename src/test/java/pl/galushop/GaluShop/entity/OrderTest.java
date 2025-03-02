@@ -139,4 +139,18 @@ class OrderTest {
                     .contains("must not be null");
         }
     }
+
+    @Nested
+    class UtilityMethodsTests {
+        @Test
+        void shouldImplementToStringCorrectly() {
+            String toStringResult = order.toString();
+
+            assertThat(toStringResult)
+                    .contains("orderId=1")
+                    .contains("status=PLACED")
+                    .contains("user=" + user)
+                    .contains("localDateTime=" + fixedDateTime);
+        }
+    }
 }
