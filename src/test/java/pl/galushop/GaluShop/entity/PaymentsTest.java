@@ -11,6 +11,7 @@ import pl.galushop.GaluShop.component.PaymentStatus;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PaymentsTest {
@@ -51,5 +52,16 @@ class PaymentsTest {
         assertNotNull(payments.getPaymentStatus());
         assertNotNull(payments.getOrder());
         assertNotNull(payments.getUser());
+    }
+
+    @Test
+    void shouldCreatePaymentsWithNoArgsConstructor() {
+        Payments emptyPayment = new Payments();
+        assertThat(emptyPayment).isNotNull();
+        assertThat(emptyPayment.getPaymentId()).isNull();
+        assertThat(emptyPayment.getTotalAmount()).isNull();
+        assertThat(emptyPayment.getPaymentStatus()).isNull();
+        assertThat(emptyPayment.getOrder()).isNull();
+        assertThat(emptyPayment.getUser()).isNull();
     }
 }
