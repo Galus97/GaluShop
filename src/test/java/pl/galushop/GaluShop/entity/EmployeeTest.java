@@ -57,4 +57,18 @@ class EmployeeTest {
         assertThat(violations).extracting(ConstraintViolation::getMessage)
                 .contains("must be a well-formed email address");
     }
+
+    @Test
+    void shouldDetectShortFirstName() {
+        // Given
+        employee.setFirstName("Jo"); // Too short
+
+        // When
+        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
+
+        // Then
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting(ConstraintViolation::getMessage)
+                .contains("size must be between 3 and 2147483647");
+    }
 }
