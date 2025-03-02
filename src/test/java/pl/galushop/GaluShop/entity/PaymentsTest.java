@@ -4,11 +4,14 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.component.PaymentStatus;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class PaymentsTest {
     private Payments payments;
@@ -39,5 +42,14 @@ class PaymentsTest {
                 .order(order)
                 .user(user)
                 .build();
+    }
+
+    @Test
+    void shouldCreatePaymentsUsingBuilder() {
+        assertNotNull(payments);
+        assertNotNull(payments.getTotalAmount());
+        assertNotNull(payments.getPaymentStatus());
+        assertNotNull(payments.getOrder());
+        assertNotNull(payments.getUser());
     }
 }
