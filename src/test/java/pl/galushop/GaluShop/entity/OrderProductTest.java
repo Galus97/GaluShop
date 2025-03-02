@@ -79,4 +79,10 @@ class OrderProductTest {
                     assertThat(op.getQuantity()).isNull();
                 });
     }
+
+    @Test
+    void shouldSetQuantityCorrectly() {
+        orderProduct.setQuantity(8);
+        assertThat(orderProduct.getQuantity()).isEqualTo(8);
+    }
 }
