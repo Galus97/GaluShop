@@ -1,11 +1,16 @@
 package pl.galushop.GaluShop.entity;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.galushop.GaluShop.component.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,9 +22,11 @@ class OrderProductTest {
     private User user;
 
     private LocalDateTime fixedDateTime;
+    private static Validator validator;
 
     @BeforeEach
     void setUp() {
+
         fixedDateTime = LocalDateTime.of(2023, 10, 10, 12, 30);
         order = Order.builder()
                 .orderId(1L)
@@ -109,5 +116,19 @@ class OrderProductTest {
                 .usingRecursiveComparison()
                 .ignoringExpectedNullFields()
                 .isNotEqualTo(differentOrderProduct);
+    }
+
+    @Test
+    void shouldDetectInvalidQuantity(){
+        orderProduct.setQuantity(-1);
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
+        Set<ConstraintViolation<OrderProduct>> violations = validator.validate(orderProduct);
+
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting(ConstraintViolation::getMessage)
+                .contains("must be greater than or equal to 0");
     }
 }
