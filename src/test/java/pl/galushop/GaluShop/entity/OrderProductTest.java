@@ -66,4 +66,17 @@ class OrderProductTest {
                     assertThat(op.getQuantity()).isEqualTo(10);
                 });
     }
+
+    @Test
+    void shouldCreateOrderProductWithNoArgsConstructor() {
+        OrderProduct emptyOrderProduct = new OrderProduct();
+
+        assertThat(emptyOrderProduct)
+                .isNotNull()
+                .satisfies(op -> {
+                    assertThat(op.getOrder()).isNull();
+                    assertThat(op.getProduct()).isNull();
+                    assertThat(op.getQuantity()).isNull();
+                });
+    }
 }
