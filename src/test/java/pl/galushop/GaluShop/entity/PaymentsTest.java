@@ -1,5 +1,6 @@
 package pl.galushop.GaluShop.entity;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -10,6 +11,7 @@ import pl.galushop.GaluShop.component.PaymentStatus;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -63,5 +65,18 @@ class PaymentsTest {
         assertThat(emptyPayment.getPaymentStatus()).isNull();
         assertThat(emptyPayment.getOrder()).isNull();
         assertThat(emptyPayment.getUser()).isNull();
+    }
+
+    @Test
+    void shouldValidateTotalAmountMinimumConstraint() {
+        Payments invalidPayments = Payments.builder()
+                .totalAmount(0.5)
+                .paymentStatus(PaymentStatus.PENDING)
+                .order(order)
+                .user(user)
+                .build();
+
+        Set<ConstraintViolation<Payments>> violations = validator.validate(invalidPayments);
+        assertThat(violations).isNotEmpty();
     }
 }
