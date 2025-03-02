@@ -77,4 +77,19 @@ class OrderTest {
                     });
         }
     }
+
+    @Nested
+    class BuilderTests {
+        @Test
+        void shouldCreateOrderUsingBuilder() {
+            assertThat(order)
+                    .satisfies(o -> {
+                        assertThat(o.getOrderId()).isEqualTo(1L);
+                        assertThat(o.getLocalDateTime()).isEqualTo(fixedDateTime);
+                        assertThat(o.getStatus()).isEqualTo(OrderStatus.PLACED);
+                        assertThat(o.getUser()).isEqualTo(user);
+                        assertThat(o.getOrderProducts()).isEmpty();
+                    });
+        }
+    }
 }
