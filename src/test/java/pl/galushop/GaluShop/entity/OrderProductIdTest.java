@@ -31,4 +31,10 @@ class OrderProductIdTest {
         assertThat(orderProductId.getOrderId()).isEqualTo(3L);
         assertThat(orderProductId.getProductId()).isEqualTo(4L);
     }
+
+    @Test
+    void shouldImplementEqualsCorrectly() {
+        assertThat(orderProductId1).isEqualTo(orderProductId2);
+        assertThat(orderProductId1.hashCode()).isEqualTo(orderProductId2.hashCode());
+    }
 }
