@@ -85,4 +85,29 @@ class OrderProductTest {
         orderProduct.setQuantity(8);
         assertThat(orderProduct.getQuantity()).isEqualTo(8);
     }
+
+    @Test
+    void shouldHandleEqualityCorrectly() {
+        OrderProduct sameOrderProduct = OrderProduct.builder()
+                .order(order)
+                .product(product)
+                .quantity(5)
+                .build();
+
+        OrderProduct differentOrderProduct = OrderProduct.builder()
+                .order(order)
+                .product(new Product())
+                .quantity(3)
+                .build();
+
+        assertThat(orderProduct)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(sameOrderProduct);
+
+        assertThat(orderProduct)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isNotEqualTo(differentOrderProduct);
+    }
 }
