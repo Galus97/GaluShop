@@ -71,4 +71,18 @@ class EmployeeTest {
         assertThat(violations).extracting(ConstraintViolation::getMessage)
                 .contains("size must be between 3 and 2147483647");
     }
+
+    @Test
+    void shouldDetectShortLastName() {
+        // Given
+        employee.setLastName("Do"); // Too short
+
+        // When
+        Set<ConstraintViolation<Employee>> violations = validator.validate(employee);
+
+        // Then
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting(ConstraintViolation::getMessage)
+                .contains("size must be between 3 and 2147483647");
+    }
 }
