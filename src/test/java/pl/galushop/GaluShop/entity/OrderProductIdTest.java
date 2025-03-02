@@ -37,4 +37,10 @@ class OrderProductIdTest {
         assertThat(orderProductId1).isEqualTo(orderProductId2);
         assertThat(orderProductId1.hashCode()).isEqualTo(orderProductId2.hashCode());
     }
+
+    @Test
+    void shouldImplementNotEqualsCorrectly() {
+        OrderProductId differentOrderProductId = new OrderProductId(2L, 3L);
+        assertThat(orderProductId1).isNotEqualTo(differentOrderProductId);
+    }
 }
