@@ -92,4 +92,15 @@ class PaymentsTest {
         Set<ConstraintViolation<Payments>> violations = validator.validate(invalidPayments);
         assertThat(violations).isNotEmpty();
     }
+
+    @Test
+    void shouldUseLombokBuilderCorrectly() {
+        assertThat(payments).satisfies(p -> {
+            assertThat(p.getPaymentId()).isEqualTo(1L);
+            assertThat(p.getTotalAmount()).isEqualTo(100.0);
+            assertThat(p.getPaymentStatus()).isEqualTo(PaymentStatus.PENDING);
+            assertThat(p.getOrder()).isEqualTo(order);
+            assertThat(p.getUser()).isEqualTo(user);
+        });
+    }
 }
