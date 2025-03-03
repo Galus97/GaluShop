@@ -98,4 +98,21 @@ class ProductTest {
                 .extracting(ConstraintViolation::getMessage)
                 .contains("size must be between 3 and 2147483647");
     }
+
+    @Test
+    void shouldValidateDescriptionSize() {
+            Product invalidProduct = Product.builder()
+                    .productName("Valid Name")
+                    .description("Short desc") // Too short
+                    .price(10.0)
+                    .category("Test Category")
+                    .categoryId(1)
+                    .build();
+
+        Set<ConstraintViolation<Product>> violations = validator.validate(invalidProduct);
+
+        assertThat(violations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("size must be between 20 and 2147483647");
+    }
 }
