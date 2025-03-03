@@ -132,4 +132,20 @@ class ProductTest {
                 .extracting(ConstraintViolation::getMessage)
                 .contains("must be greater than or equal to 1");
     }
+
+    @Test
+    void shouldValidateCategoryNotBlank() {
+            Product invalidProduct = Product.builder()
+                    .productName("Valid Name")
+                    .description("Valid description with enough length.")
+                    .price(10.0)
+                    .category(" ") // Blank
+                    .categoryId(1)
+                    .build();
+        Set<ConstraintViolation<Product>> violations = validator.validate(invalidProduct);
+
+        assertThat(violations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("must not be blank");
+    }
 }
