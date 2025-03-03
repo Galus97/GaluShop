@@ -103,4 +103,33 @@ class PaymentsTest {
             assertThat(p.getUser()).isEqualTo(user);
         });
     }
+
+    @Test
+    void shouldHandleEqualityCorrectly() {
+        Payments samePayments = Payments.builder()
+                .paymentId(1L)
+                .totalAmount(100.0)
+                .paymentStatus(PaymentStatus.PENDING)
+                .order(order)
+                .user(user)
+                .build();
+
+        Payments differentPayments = Payments.builder()
+                .paymentId(2L)
+                .totalAmount(200.0)
+                .paymentStatus(PaymentStatus.NEW)
+                .order(new Order())
+                .user(new User())
+                .build();
+
+        assertThat(payments)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(samePayments);
+
+        assertThat(payments)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isNotEqualTo(differentPayments);
+    }
 }
