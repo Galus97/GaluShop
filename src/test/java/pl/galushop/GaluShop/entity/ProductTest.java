@@ -1,18 +1,27 @@
 package pl.galushop.GaluShop.entity;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
     private Product product;
+    private Validator validator;
 
     @BeforeEach
     void setUp() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         product = Product.builder()
                 .productId(1L)
                 .productName("Sample Product")
@@ -71,5 +80,22 @@ class ProductTest {
                     assertEquals(3, p.getCategoryId());
                     assertTrue(p.getOrderProducts().isEmpty());
                 });
+    }
+
+    @Test
+    void shouldValidateProductNameSize() {
+        Product invalidProduct = Product.builder()
+                .productName("AB") // Too short (min = 3)
+                .description("Valid description with enough length.")
+                .price(10.0)
+                .category("Test Category")
+                .categoryId(1)
+                .build();
+
+        Set<ConstraintViolation<Product>> violations = validator.validate(invalidProduct);
+
+        assertThat(violations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("size must be between 3 and 2147483647");
     }
 }
