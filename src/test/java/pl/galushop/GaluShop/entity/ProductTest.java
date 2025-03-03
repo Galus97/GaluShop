@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProductTest {
@@ -31,5 +32,20 @@ class ProductTest {
         assertNotNull(product.getCategory());
         assertNotNull(product.getOrderProducts());
         assertTrue(product.getOrderProducts().isEmpty());
+    }
+
+    @Test
+    void shouldCreateProductWithNoArgsConstructor() {
+        Product emptyProduct = new Product();
+
+        assertThat(emptyProduct)
+                .isNotNull()
+                .satisfies(p -> {
+                    assertNull(p.getProductId());
+                    assertNull(p.getProductName());
+                    assertNull(p.getDescription());
+                    assertNull(p.getCategory());
+                    assertNull(p.getOrderProducts());
+                });
     }
 }
