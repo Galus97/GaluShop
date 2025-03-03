@@ -48,4 +48,28 @@ class ProductTest {
                     assertNull(p.getOrderProducts());
                 });
     }
+
+    @Test
+    void shouldCreateProductWithAllArgsConstructor() {
+        Product constructedProduct = new Product(
+                2L,
+                "Phone",
+                "High-end smartphone with powerful specs.",
+                1200.0,
+                "Electronics",
+                3,
+                Collections.emptyList()
+        );
+
+        assertThat(constructedProduct)
+                .satisfies(p -> {
+                    assertEquals(2L, p.getProductId());
+                    assertEquals("Phone", p.getProductName());
+                    assertEquals("High-end smartphone with powerful specs.", p.getDescription());
+                    assertEquals(1200.0, p.getPrice());
+                    assertEquals("Electronics", p.getCategory());
+                    assertEquals(3, p.getCategoryId());
+                    assertTrue(p.getOrderProducts().isEmpty());
+                });
+    }
 }
