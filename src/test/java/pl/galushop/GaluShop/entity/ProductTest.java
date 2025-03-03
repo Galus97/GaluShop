@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.entity;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
@@ -20,5 +21,15 @@ class ProductTest {
                 .categoryId(2)
                 .orderProducts(Collections.emptyList())
                 .build();
+    }
+
+    @Test
+    void shouldCreateProductUsingBuilder() {
+        assertNotNull(product);
+        assertNotNull(product.getProductName());
+        assertNotNull(product.getDescription());
+        assertNotNull(product.getCategory());
+        assertNotNull(product.getOrderProducts());
+        assertTrue(product.getOrderProducts().isEmpty());
     }
 }
