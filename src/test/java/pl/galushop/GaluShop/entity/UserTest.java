@@ -1,10 +1,13 @@
 package pl.galushop.GaluShop.entity;
 
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,5 +39,21 @@ class UserTest {
         assertThat(user.getPassword()).isEqualTo("securePassword");
         assertThat(user.isEnabled()).isTrue();
         assertThat(user.getEmailCode()).isEqualTo("123456");
+    }
+
+    @Test
+    void shouldDetectInvalidEmail() {
+        User user = User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("invalid-email")
+                .password("securePassword")
+                .enabled(true)
+                .build();
+
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).anyMatch(v -> v.getMessage().contains("must be a well-formed email address"));
     }
 }
