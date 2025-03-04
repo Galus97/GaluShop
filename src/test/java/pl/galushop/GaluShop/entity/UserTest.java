@@ -56,4 +56,20 @@ class UserTest {
         assertThat(violations).isNotEmpty();
         assertThat(violations).anyMatch(v -> v.getMessage().contains("must be a well-formed email address"));
     }
+
+    @Test
+    void shouldDetectShortFirstName() {
+        User user = User.builder()
+                .firstName("Jo") // too short
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .password("securePassword")
+                .enabled(true)
+                .build();
+
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).anyMatch(v -> v.getMessage().contains("size must be between 3 and"));
+    }
 }
