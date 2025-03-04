@@ -35,16 +35,27 @@ class ProductImagesTest {
 
     @Test
     void shouldDetectBlankImgSrc() {
-        // Given
         ProductImages productImages = ProductImages.builder()
                 .imgSrc("") // Invalid blank field
                 .altImg("Valid Alt Text")
                 .build();
 
-        // When
+
         Set<ConstraintViolation<ProductImages>> violations = validator.validate(productImages);
 
-        // Then
+        assertEquals(1, violations.size());
+        assertThat(violations.iterator().next().getMessage()).isEqualTo("must not be blank");
+    }
+
+    @Test
+    void shouldDetectBlankAltImg() {
+        ProductImages productImages = ProductImages.builder()
+                .imgSrc("https://example.com/image.jpg")
+                .altImg("") // Invalid blank field
+                .build();
+
+        Set<ConstraintViolation<ProductImages>> violations = validator.validate(productImages);
+
         assertEquals(1, violations.size());
         assertThat(violations.iterator().next().getMessage()).isEqualTo("must not be blank");
     }
