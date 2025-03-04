@@ -88,4 +88,20 @@ class UserTest {
         assertThat(violations).isNotEmpty();
         assertThat(violations).anyMatch(v -> v.getMessage().contains("size must be between 3 and"));
     }
+
+    @Test
+    void shouldDetectShortPassword() {
+        User user = User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .password("1234") // too short
+                .enabled(true)
+                .build();
+
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).anyMatch(v -> v.getMessage().contains("size must be between 5 and"));
+    }
 }
