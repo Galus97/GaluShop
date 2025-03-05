@@ -5,6 +5,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -13,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class UserDataTest {
     private static Validator validator;
+    private UserData userData;
 
     @BeforeAll
     static void setUp() {
@@ -20,9 +22,9 @@ class UserDataTest {
         validator = factory.getValidator();
     }
 
-    @Test
-    void shouldCreateValidUserData() {
-        UserData userData = UserData.builder()
+    @BeforeEach
+     void init(){
+        userData = UserData.builder()
                 .city("Warsaw")
                 .street("Main Street")
                 .streetNumber(10)
@@ -30,7 +32,10 @@ class UserDataTest {
                 .zipCode("00-123")
                 .phoneNumber(123456789)
                 .build();
+    }
 
+    @Test
+    void shouldCreateValidUserData() {
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
         assertThat(violations).isEmpty();
     }
@@ -76,6 +81,23 @@ class UserDataTest {
                 .street("Main Street")
                 .streetNumber(null) // null street number
                 .apartmentNumber(5)
+                .zipCode("00-123")
+                .phoneNumber(123456789)
+                .build();
+
+        Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
+
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting("message").contains("must not be null");
+    }
+
+    @Test
+    void shouldDetectInvalidApartmentNumber() {
+        UserData userData = UserData.builder()
+                .city("Warsaw")
+                .street("Main Street")
+                .streetNumber(10)
+                .apartmentNumber(null) // null apartment number
                 .zipCode("00-123")
                 .phoneNumber(123456789)
                 .build();
