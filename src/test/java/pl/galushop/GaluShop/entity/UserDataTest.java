@@ -70,6 +70,23 @@ class UserDataTest {
     }
 
     @Test
+    void shouldDetectInvalidStreetNumber() {
+        UserData userData = UserData.builder()
+                .city("Warsaw")
+                .street("Main Street")
+                .streetNumber(null) // null street number
+                .apartmentNumber(5)
+                .zipCode("00-123")
+                .phoneNumber(123456789)
+                .build();
+
+        Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
+
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting("message").contains("must not be null");
+    }
+
+    @Test
     void shouldDetectInvalidZipCode() {
         UserData userData = UserData.builder()
                 .city("Warsaw")
