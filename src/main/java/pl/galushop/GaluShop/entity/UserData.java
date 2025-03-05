@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,16 +35,16 @@ public class UserData {
     @Size(min = 3)
     private String street;
 
-    @NotBlank
+    @NotNull
     private Integer streetNumber;
 
-    @NotBlank
+    @NotNull
     private Integer apartmentNumber;
 
     @NotBlank
     private String zipCode;
 
-    @NotBlank
+    @NotNull
     private Integer phoneNumber;
 
     @OneToOne
