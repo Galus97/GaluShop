@@ -38,7 +38,7 @@ class UserDataTest {
     @Test
     void shouldDetectInvalidCity() {
         UserData userData = UserData.builder()
-                .city("A")
+                .city("A") // Too short
                 .street("Main Street")
                 .streetNumber(10)
                 .apartmentNumber(5)
@@ -47,6 +47,24 @@ class UserDataTest {
                 .build();
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
+
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting("message").contains("size must be between 3 and 2147483647");
+    }
+
+    @Test
+    void shouldDetectInvalidStreet() {
+        UserData userData = UserData.builder()
+                .city("Warsaw")
+                .street("A") // Too short
+                .streetNumber(10)
+                .apartmentNumber(5)
+                .zipCode("00-123")
+                .phoneNumber(123456789)
+                .build();
+
+        Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
+
         assertThat(violations).isNotEmpty();
         assertThat(violations).extracting("message").contains("size must be between 3 and 2147483647");
     }
