@@ -37,19 +37,13 @@ class UserDataTest {
     @Test
     void shouldCreateValidUserData() {
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
+
         assertThat(violations).isEmpty();
     }
 
     @Test
     void shouldDetectInvalidCity() {
-        UserData userData = UserData.builder()
-                .city("A") // Too short
-                .street("Main Street")
-                .streetNumber(10)
-                .apartmentNumber(5)
-                .zipCode("00-123")
-                .phoneNumber(123456789)
-                .build();
+        userData.setCity("A"); // Too short
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
 
@@ -59,14 +53,7 @@ class UserDataTest {
 
     @Test
     void shouldDetectInvalidStreet() {
-        UserData userData = UserData.builder()
-                .city("Warsaw")
-                .street("A") // Too short
-                .streetNumber(10)
-                .apartmentNumber(5)
-                .zipCode("00-123")
-                .phoneNumber(123456789)
-                .build();
+        userData.setStreet("A"); // Too short
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
 
@@ -76,14 +63,7 @@ class UserDataTest {
 
     @Test
     void shouldDetectInvalidStreetNumber() {
-        UserData userData = UserData.builder()
-                .city("Warsaw")
-                .street("Main Street")
-                .streetNumber(null) // null street number
-                .apartmentNumber(5)
-                .zipCode("00-123")
-                .phoneNumber(123456789)
-                .build();
+        userData.setStreetNumber(null);
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
 
@@ -93,14 +73,7 @@ class UserDataTest {
 
     @Test
     void shouldDetectInvalidApartmentNumber() {
-        UserData userData = UserData.builder()
-                .city("Warsaw")
-                .street("Main Street")
-                .streetNumber(10)
-                .apartmentNumber(null) // null apartment number
-                .zipCode("00-123")
-                .phoneNumber(123456789)
-                .build();
+        userData.setApartmentNumber(null);
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
 
@@ -110,14 +83,7 @@ class UserDataTest {
 
     @Test
     void shouldDetectInvalidZipCode() {
-        UserData userData = UserData.builder()
-                .city("Warsaw")
-                .street("Main Street")
-                .streetNumber(10)
-                .apartmentNumber(5)
-                .zipCode("") // blank
-                .phoneNumber(123456789)
-                .build();
+        userData.setZipCode(""); // blank
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
 
@@ -127,14 +93,7 @@ class UserDataTest {
 
     @Test
     void shouldDetectInvalidPhoneNumber() {
-        UserData userData = UserData.builder()
-                .city("Warsaw")
-                .street("Main Street")
-                .streetNumber(10)
-                .apartmentNumber(5)
-                .zipCode("00-123")
-                .phoneNumber(null) // null phone number
-                .build();
+        userData.setPhoneNumber(null);
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
         assertThat(violations).isNotEmpty();
