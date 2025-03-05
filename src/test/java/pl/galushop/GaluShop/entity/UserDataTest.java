@@ -47,8 +47,23 @@ class UserDataTest {
                 .build();
 
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
-        
+
         assertThat(violations).isNotEmpty();
         assertThat(violations).extracting("message").contains("must not be blank");
+    }
+
+    @Test
+    void shouldDetectInvalidPhoneNumber() {
+        UserData userData = UserData.builder()
+                .city("Warsaw")
+                .street("Main Street")
+                .streetNumber(10)
+                .apartmentNumber(5)
+                .zipCode("00-123")
+                .phoneNumber(null) // null phone number
+                .build();
+
+        Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
+        assertThat(violations).isNotEmpty();
     }
 }
