@@ -34,4 +34,21 @@ class UserDataTest {
         Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
         assertThat(violations).isEmpty();
     }
+
+    @Test
+    void shouldDetectInvalidZipCode() {
+        UserData userData = UserData.builder()
+                .city("Warsaw")
+                .street("Main Street")
+                .streetNumber(10)
+                .apartmentNumber(5)
+                .zipCode("") // blank
+                .phoneNumber(123456789)
+                .build();
+
+        Set<ConstraintViolation<UserData>> violations = validator.validate(userData);
+        
+        assertThat(violations).isNotEmpty();
+        assertThat(violations).extracting("message").contains("must not be blank");
+    }
 }
