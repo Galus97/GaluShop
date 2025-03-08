@@ -36,12 +36,6 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId)));
     }
 
-    public void isUserExistOrThrow(Long userId){
-        if(!userRepository.existsById(userId)){
-            throw new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId));
-        }
-    }
-
     /**
      * Deletes a user by their ID.
      *
@@ -83,5 +77,11 @@ public class UserService {
         }
 
         userRepository.save(existingUser);
+    }
+
+    public void throwIfUserDoesntExist(Long userId){
+        if(!userRepository.existsById(userId)){
+            throw new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId));
+        }
     }
 }
