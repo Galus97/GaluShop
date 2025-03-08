@@ -14,7 +14,6 @@ import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.OrderRepository;
-import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
+    private static final String INVALID_ORDER_ID = "error.invalidOrderId";
+    private static final String ORDER_NOT_FOUND_BY_USER = "error.orderNotFoundByUserId";
+    private static final String INVALID_USER_ID = "error.invalidUserId";
+    private static final String ORDER_NOT_FOUND = "error.orderNotFound";
 
     private final OrderRepository orderRepository;
     private final UserService userService;
@@ -42,11 +45,11 @@ public class OrderService {
      * @throws OrderNotFoundException if no order is found with the given ID.
      */
     public Order getOrder(Long orderId){
-        if(orderId == null || orderId < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderId));
+        if(orderId == null || orderId <= 0){
+            throw new IllegalArgumentException(messageService.getMessage(INVALID_ORDER_ID, orderId));
         }
         return orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderId)));
+                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND, orderId)));
     }
 
     /**
@@ -75,13 +78,13 @@ public class OrderService {
      */
     public List<Order> getAllOrdersByUser(Long userId) {
         if (userId == null || userId < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
+            throw new IllegalArgumentException(messageService.getMessage(INVALID_USER_ID, userId));
         }
         //Throws exception if user doesn't exist in database
-        userService.getUser(userId);
+        userService.throwIfUserDoesntExist(userId);
 
         return orderRepository.findAllByUser_UserId(userId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFoundByUserId", userId)));
+                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND_BY_USER, userId)));
     }
 
     /**
@@ -95,13 +98,13 @@ public class OrderService {
      */
     public Order getOrderByUserId(Long userId) {
         if (userId == null || userId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.orderNotFoundByUserId", userId));
+            throw new IllegalArgumentException(messageService.getMessage(INVALID_USER_ID, userId));
         }
         //Throws exception if user doesn't exist in database
-        userService.getUser(userId);
+        userService.throwIfUserDoesntExist(userId);
 
         return orderRepository.findByUser_UserId(userId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFoundByUserId", userId)));
+                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND_BY_USER, userId)));
 
     }
 
@@ -114,10 +117,10 @@ public class OrderService {
      */
     public void deleteOrder(Long orderId){
         if(orderId == null || orderId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderId));
+            throw new IllegalArgumentException(messageService.getMessage(INVALID_ORDER_ID, orderId));
         }
         Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderId)));
+                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND, orderId)));
         orderRepository.delete(order);
     }
 
@@ -133,10 +136,10 @@ public class OrderService {
     @Transactional
     public void updateOrder(OrderRequest orderRequest){
         if(orderRequest.getOrderId() == null || orderRequest.getOrderId() < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderRequest.getOrderId()));
+            throw new IllegalArgumentException(messageService.getMessage(INVALID_ORDER_ID, orderRequest.getOrderId()));
         }
         Order existingOrder = orderRepository.findById(orderRequest.getOrderId()).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage("error.orderNotFound", orderRequest.getOrderId())));
+                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND, orderRequest.getOrderId())));
         Order updatedOrder = buildOrder(orderRequest);
         updatedOrder.setOrderId(existingOrder.getOrderId());
         orderRepository.save(updatedOrder);
