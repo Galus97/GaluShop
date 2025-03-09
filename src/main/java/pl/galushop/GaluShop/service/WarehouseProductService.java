@@ -19,6 +19,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WarehouseProductService {
+    private static final String PRODUCT_ID_IS_INVALID = "error.invalidProductId";
+    private static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";
+
     private final WarehouseProductRepository warehouseRepository;
     private final ProductService productService;
     private final MessageService messageService;
@@ -32,9 +35,7 @@ public class WarehouseProductService {
      * @throws WarehouseProductNotFoundException If no warehouse product is found.
      */
     public WarehouseProduct getWarehouseProduct(Long productId) {
-        if (productId == null || productId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
-        }
+        throwIfIdIsInvalid(productId, PRODUCT_ID_IS_INVALID);
         return warehouseRepository.findById(productId)
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductByProductIdNotFound", productId)));
     }
@@ -70,9 +71,7 @@ public class WarehouseProductService {
      * @throws WarehouseProductNotFoundException If the warehouse product is not found.
      */
     public void deleteWarehouseProduct(Long warehouseId) {
-        if (warehouseId == null || warehouseId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidWarehouseProductId", warehouseId));
-        }
+        throwIfIdIsInvalid(warehouseId, WAREHOUSE_ID_IS_INVALID);
         WarehouseProduct warehouseProduct = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage("error.warehouseProductNotFound", warehouseId)));
 
@@ -107,9 +106,7 @@ public class WarehouseProductService {
      */
     @Transactional
     public void updateQuantityByProductId(Long productId, Integer quantity) {
-        if(productId == null || productId < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
-        }
+        throwIfIdIsInvalid(productId, PRODUCT_ID_IS_INVALID);
         if(quantity == null || quantity < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidQuantity"));
         }
@@ -141,5 +138,11 @@ public class WarehouseProductService {
                 .product(product)
                 .quantity(warehouseProductRequest.getQuantity())
                 .build();
+    }
+
+    private void throwIfIdIsInvalid(Long id, String message){
+        if(id == null || id <= 0){
+            throw new IllegalArgumentException(messageService.getMessage(message, id));
+        }
     }
 }
