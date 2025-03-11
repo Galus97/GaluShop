@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.galushop.GaluShop.entity.Payments;
-import pl.galushop.GaluShop.service.PaymentsService;
+import pl.galushop.GaluShop.entity.Payment;
+import pl.galushop.GaluShop.service.PaymentService;
 
 import java.util.List;
 
@@ -15,10 +15,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/payments")
 public class UserAllPaymentsController {
-    private final PaymentsService paymentsService;
+    private final PaymentService paymentService;
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<Payments>> showAllUserPayments(@PathVariable Long id){
-        return ResponseEntity.ok(paymentsService.getAllPaymentsByUserId(id));
+    public ResponseEntity<List<Payment>> showAllUserPayments(@PathVariable Long id){
+        return ResponseEntity.ok(paymentService.getAllPaymentsByUserId(id));
     }
 }

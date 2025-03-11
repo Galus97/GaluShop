@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.component.PaymentStatus;
 import pl.galushop.GaluShop.entity.Order;
-import pl.galushop.GaluShop.entity.Payments;
+import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.entity.User;
 
 import java.time.LocalDateTime;
@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
-class PaymentsRepositoryTest {
+class PaymentRepositoryTest {
     @Autowired
     TestEntityManager entityManager;
     @Autowired
-    PaymentsRepository paymentsRepository;
+    PaymentRepository paymentRepository;
 
-    private Payments payments;
+    private Payment payment;
 
     @BeforeEach
     void setUp(){
@@ -44,28 +44,28 @@ class PaymentsRepositoryTest {
                 .status(OrderStatus.PROCESSED)
                 .user(persistedUser)
                 .build());
-        payments = Payments.builder()
+        payment = Payment.builder()
                 .totalAmount(100d)
                 .paymentStatus(PaymentStatus.NEW)
                 .order(persistedOrder)
                 .user(persistedUser)
                 .build();
-        entityManager.persistAndFlush(payments);
+        entityManager.persistAndFlush(payment);
     }
 
     @Test
     void givenExistingPayment_whenFindByOrderId_thenReturnPayment(){
         //when
-        Optional<Payments> optionalPayment = paymentsRepository.findByOrder_OrderId(payments.getOrder().getOrderId());
+        Optional<Payment> optionalPayment = paymentRepository.findByOrder_OrderId(payment.getOrder().getOrderId());
         //then
         assertTrue(optionalPayment.isPresent());
-        assertEquals(payments, optionalPayment.get());
+        assertEquals(payment, optionalPayment.get());
     }
 
     @Test
     void givenNonExistentOrderId_whenFindByOrderId_thenOptionalEmpty(){
         //when
-        Optional<Payments> optionalPayment = paymentsRepository.findByOrder_OrderId(9999L);
+        Optional<Payment> optionalPayment = paymentRepository.findByOrder_OrderId(9999L);
         //then
         assertFalse(optionalPayment.isPresent());
     }
@@ -73,7 +73,7 @@ class PaymentsRepositoryTest {
     @Test
     void givenInvalidOrderId_whenFindByOrderId_thenOptionalEmpty(){
         //when
-        Optional<Payments> optionalPayment = paymentsRepository.findByOrder_OrderId(-1L);
+        Optional<Payment> optionalPayment = paymentRepository.findByOrder_OrderId(-1L);
         //then
         assertFalse(optionalPayment.isPresent());
     }
@@ -81,7 +81,7 @@ class PaymentsRepositoryTest {
     @Test
     void givenNullOrderId_whenFindByOrderId_thenOptionalEmpty(){
         //when
-        Optional<Payments> optionalPayment = paymentsRepository.findByOrder_OrderId(null);
+        Optional<Payment> optionalPayment = paymentRepository.findByOrder_OrderId(null);
         //then
         assertFalse(optionalPayment.isPresent());
     }
@@ -89,35 +89,35 @@ class PaymentsRepositoryTest {
     @Test
     void givenExistingPayment_whenFindAllByUserId_thenReturnPaymentList(){
         //when
-        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(payments.getUser().getUserId());
+        List<Payment> paymentList = paymentRepository.findAllByUser_UserId(payment.getUser().getUserId());
         //then
-        assertThat(paymentsList)
+        assertThat(paymentList)
                 .hasSize(1)
-                .contains(payments);
+                .contains(payment);
     }
 
     @Test
     void givenNonExistentUserId_whenFindAllByUserId_thenReturnEmptyList(){
         //when
-        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(9999L);
+        List<Payment> paymentList = paymentRepository.findAllByUser_UserId(9999L);
         //then
-        assertThat(paymentsList).isEmpty();
+        assertThat(paymentList).isEmpty();
 
     }
 
     @Test
     void givenInvalidUserId_whenFindAllByUserId_thenReturnEmptyList(){
         //when
-        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(-1L);
+        List<Payment> paymentList = paymentRepository.findAllByUser_UserId(-1L);
         //then
-        assertThat(paymentsList).isEmpty();
+        assertThat(paymentList).isEmpty();
     }
 
     @Test
     void givenNullUserId_whenFindAllByUserId_thenReturnEmptyList(){
         //when
-        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(null);
+        List<Payment> paymentList = paymentRepository.findAllByUser_UserId(null);
         //then
-        assertThat(paymentsList).isEmpty();
+        assertThat(paymentList).isEmpty();
     }
 }
