@@ -61,4 +61,11 @@ class UserDataRepositoryTest {
         assertFalse(optionalUserData.isPresent());
     }
 
+    @Test
+    void givenInvalidUserId_whenFindUserId_thenEmptyOptional(){
+        //when
+        Optional<UserData> optionalUserData = userDataRepository.findByUser_UserId(-1L);
+        //then
+        assertFalse(optionalUserData.isPresent());
+    }
 }
