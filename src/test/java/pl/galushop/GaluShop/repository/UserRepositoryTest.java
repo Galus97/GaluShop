@@ -56,4 +56,12 @@ class UserRepositoryTest {
         //then
         assertFalse(optionalUser.isPresent());
     }
+
+    @Test
+    void givenNullEmail_whenFindByEmail_thenEmptyOptional(){
+        //when
+        Optional<User> optionalUser = userRepository.findByEmail(null);
+        //then
+        assertFalse(optionalUser.isPresent());
+    }
 }
