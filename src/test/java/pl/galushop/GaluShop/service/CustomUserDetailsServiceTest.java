@@ -110,4 +110,14 @@ class CustomUserDetailsServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Email can not be null or blank");
     }
+
+    @Test
+    void givenBlankEmail_whenLoadUserByUsername_thenThrowUsernameNotFoundException(){
+        //Arrange
+        when(messageService.getMessage(anyString(), any())).thenReturn("Email can not be null or blank");
+        //Act & Assert
+        assertThatThrownBy(() -> customUserDetailsService.loadUserByUsername(""))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Email can not be null or blank");
+    }
 }
