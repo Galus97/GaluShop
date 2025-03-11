@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.CurrentEmployee;
 import pl.galushop.GaluShop.component.CurrentUser;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.entity.User;
@@ -52,6 +53,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                     employee.getPassword(),
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_EMPLOYEE")), employee);
         }
-        throw new UsernameNotFoundException(messageService.getMessage("error.userOrEmployeeNotFound", email));
+        throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_OR_EMPLOYEE_NOT_FOUND, email));
     }
 }
