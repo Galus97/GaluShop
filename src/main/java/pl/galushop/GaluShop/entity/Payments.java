@@ -25,7 +25,7 @@ import pl.galushop.GaluShop.component.PaymentStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "payments")
 public class Payments {
 
