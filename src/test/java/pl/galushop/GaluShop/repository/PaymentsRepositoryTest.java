@@ -100,10 +100,17 @@ class PaymentsRepositoryTest {
     @Test
     void givenNonExistentUserId_whenFindAllByUserId_thenReturnEmptyList(){
         //when
-        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(payments.getUser().getUserId());
+        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(9999L);
         //then
-        assertThat(paymentsList)
-                .hasSize(1)
-                .contains(payments);
+        assertThat(paymentsList).isEmpty();
+
+    }
+
+    @Test
+    void givenInvalidUserId_whenFindAllByUserId_thenReturnEmptyList(){
+        //when
+        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(-1L);
+        //then
+        assertThat(paymentsList).isEmpty();
     }
 }
