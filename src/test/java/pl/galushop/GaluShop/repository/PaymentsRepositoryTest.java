@@ -96,4 +96,14 @@ class PaymentsRepositoryTest {
                 .hasSize(1)
                 .contains(payments);
     }
+
+    @Test
+    void givenNonExistentUserId_whenFindAllByUserId_thenReturnEmptyList(){
+        //when
+        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(payments.getUser().getUserId());
+        //then
+        assertThat(paymentsList)
+                .hasSize(1)
+                .contains(payments);
+    }
 }
