@@ -116,7 +116,7 @@ public class PaymentsService {
         } else if (paymentsRequest.getPaymentsId() < 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentsRequest.getPaymentsId()));
         }
-        Order order = orderService.getOrderByUserId(paymentsRequest.getOrderId());
+        Order order = orderService.getOrder(paymentsRequest.getOrderId());
 
         Payments existingPayment = paymentsRepository.findById(paymentsRequest.getPaymentsId())
                 .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentsRequest.getPaymentsId())));
