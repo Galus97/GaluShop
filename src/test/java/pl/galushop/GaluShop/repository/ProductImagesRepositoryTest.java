@@ -1,13 +1,16 @@
 package pl.galushop.GaluShop.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 class ProductImagesRepositoryTest {
@@ -20,7 +23,7 @@ class ProductImagesRepositoryTest {
     private ProductImages productImages;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         Product persistedProduct = entityManager.persistAndFlush(Product.builder()
                 .productName("Phone")
                 .description("Valid description of phone")
@@ -36,4 +39,17 @@ class ProductImagesRepositoryTest {
                 .build();
         entityManager.persistAndFlush(productImages);
     }
+
+    @Test
+    void givenExistingProductId_whenFindAllByProductId_thenReturnProductImagesList() {
+        //when
+        List<ProductImages> productImagesList =
+                productImagesRepository.findAllByProduct_ProductId(productImages.getProduct().getProductId());
+        //then
+        assertThat(productImagesList)
+                .hasSize(1)
+                .contains(productImages);
+    }
+
+
 }
