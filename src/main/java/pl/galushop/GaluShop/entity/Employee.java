@@ -49,4 +49,12 @@ public class Employee {
     private boolean enabled;
 
     private String emailCode;
+
+    public Employee(String firstName, String lastName, String email, String password, String emailCode) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.emailCode = emailCode;
+    }
 }

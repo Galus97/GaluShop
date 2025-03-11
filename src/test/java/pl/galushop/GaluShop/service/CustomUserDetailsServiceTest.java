@@ -1,0 +1,123 @@
+package pl.galushop.GaluShop.service;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.repository.EmployeeRepository;
+import pl.galushop.GaluShop.repository.UserRepository;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class CustomUserDetailsServiceTest {
+
+    @Mock
+    UserRepository userRepository;
+    @Mock
+    EmployeeRepository employeeRepository;
+    @Mock
+    MessageService messageService;
+    @InjectMocks
+    CustomUserDetailsService customUserDetailsService;
+
+    private User user;
+    private Employee employee;
+
+    @BeforeEach
+    void setUp(){
+        user = User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@gmail.com")
+                .password("{noop}password")
+                .enabled(true)
+                .emailCode("1111")
+                .build();
+
+        employee = Employee.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@example.com")
+                .password("{noop}password")
+                .enabled(true)
+                .emailCode("2222")
+                .build();
+    }
+
+    @Test
+    void givenExistingUser_whenLoadUserByUsername_thenReturnUserDetails(){
+        // Arrange
+        when(userRepository.findByEmail("john.doe@gmail.com")).thenReturn(Optional.of(user));
+        //Act
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername("john.doe@gmail.com");
+        //Assert
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo("john.doe@gmail.com");
+        verify(userRepository, times(1)).findByEmail("john.doe@gmail.com");
+        verifyNoInteractions(employeeRepository);
+    }
+
+    @Test
+    void givenExistingEmployee_whenLoadUserByUsername_thenReturnUserDetails(){
+        //Arrange
+        when(employeeRepository.findByEmail("jane.doe@example.com")).thenReturn(Optional.of(employee));
+        //Act
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername("jane.doe@example.com");
+        //Assert
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo("jane.doe@example.com");
+        verify(employeeRepository, times(1)).findByEmail("jane.doe@example.com");
+        verify(userRepository, times(1)).findByEmail("jane.doe@example.com");
+    }
+
+    @Test
+    void givenNonExistentEmail_whenLoadUserByUsername_thenThrowUsernameNotFoundException(){
+        //Arrange
+        when(userRepository.findByEmail("nonExistent@mail.com")).thenReturn(Optional.empty());
+        when(employeeRepository.findByEmail("nonExistent@mail.com")).thenReturn(Optional.empty());
+        when(messageService.getMessage(anyString(), any())).thenReturn("User or Employee not found");
+        //Act & Assert
+        assertThatThrownBy(() -> customUserDetailsService.loadUserByUsername("nonExistent@mail.com"))
+                .isInstanceOf(UsernameNotFoundException.class)
+                .hasMessage("User or Employee not found");
+    }
+
+    @Test
+    void givenNullEmail_whenLoadUserByUsername_thenThrowUsernameNotFoundException(){
+        //Arrange
+        when(messageService.getMessage(anyString(), any())).thenReturn("Email can not be null or blank");
+        //Act & Assert
+        assertThatThrownBy(() -> customUserDetailsService.loadUserByUsername(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Email can not be null or blank");
+    }
+
+    @Test
+    void givenBlankEmail_whenLoadUserByUsername_thenThrowUsernameNotFoundException(){
+        //Arrange
+        when(messageService.getMessage(anyString(), any())).thenReturn("Email can not be null or blank");
+        //Act & Assert
+        assertThatThrownBy(() -> customUserDetailsService.loadUserByUsername(""))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Email can not be null or blank");
+    }
+}
