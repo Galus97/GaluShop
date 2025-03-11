@@ -1,10 +1,46 @@
 package pl.galushop.GaluShop.repository;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.entity.UserData;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class UserDataRepositoryTest {
+
+    @Autowired
+    TestEntityManager entityManager;
+    @Autowired
+    UserDataRepository userDataRepository;
+    private UserData userData;
+
+    @BeforeEach
+    void setUp(){
+        User persistedUser = entityManager.persistAndFlush(User.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@gmail.com")
+                .password("{noop}secretPassword")
+                .enabled(true)
+                .emailCode("1111")
+                .build());
+
+        userData = UserData.builder()
+                .city("Warsaw")
+                .street("Pulawska")
+                .streetNumber(10)
+                .apartmentNumber(20)
+                .zipCode("00-001")
+                .phoneNumber(555444666)
+                .user(persistedUser)
+                .build();
+
+        entityManager.persistAndFlush(userData);
+    }
+
 
 }
