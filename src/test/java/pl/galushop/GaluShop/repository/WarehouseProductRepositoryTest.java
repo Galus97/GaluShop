@@ -54,4 +54,13 @@ class WarehouseProductRepositoryTest {
         //then
         assertFalse(optionalWarehouseProduct.isPresent());
     }
+
+    @Test
+    void givenInvalidProductId_whenFindByProductId_thenReturnEmptyOptional(){
+        //when
+        Optional<WarehouseProduct> optionalWarehouseProduct =
+                warehouseProductRepository.findByProduct_ProductId(-1L);
+        //then
+        assertFalse(optionalWarehouseProduct.isPresent());
+    }
 }
