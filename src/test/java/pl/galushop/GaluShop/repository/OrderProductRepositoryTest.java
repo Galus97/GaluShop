@@ -58,17 +58,24 @@ class OrderProductRepositoryTest {
                 .product(product)
                 .quantity(1)
                 .build();
+        testEntityManager.persistAndFlush(orderProduct);
     }
 
     @Test
     void givenExistedOrder_whenFindByOrder_OrderId_thenReturnSuccess(){
-        //given
-        testEntityManager.persistAndFlush(orderProduct);
         //when
         List<OrderProduct> orderProductList = orderProductRepository.findByOrder_OrderId(1L);
         //then
         assertThat(orderProductList)
                 .hasSize(1)
                 .contains(orderProduct);
+    }
+
+    @Test
+    void givenNonExistedOrder_whenFindByOrder_OrderId_thenReturnEmptyList(){
+        //when
+        List<OrderProduct> orderProductList = orderProductRepository.findByOrder_OrderId(5L);
+        //then
+        assertThat(orderProductList).isEmpty();
     }
 }
