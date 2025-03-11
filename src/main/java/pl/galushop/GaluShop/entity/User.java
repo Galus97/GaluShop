@@ -48,4 +48,12 @@ public class User {
     private boolean enabled;
 
     private String emailCode;
+
+    public User(String firstName, String lastName, String email, String password, String emailCode) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.emailCode = emailCode;
+    }
 }
