@@ -1,11 +1,14 @@
 package pl.galushop.GaluShop.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,6 +43,14 @@ class UserDataRepositoryTest {
                 .build();
 
         entityManager.persistAndFlush(userData);
+    }
+
+    @Test
+    void givenExistingUserId_whenFindUserId_thenReturnUserData(){
+        //when
+        Optional<UserData> optionalUserData = userDataRepository.findByUser_UserId(userData.getUser().getUserId());
+        //then
+        assertEquals(userData, optionalUserData.get());
     }
 
 
