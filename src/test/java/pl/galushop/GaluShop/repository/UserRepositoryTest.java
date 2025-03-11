@@ -1,10 +1,13 @@
 package pl.galushop.GaluShop.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import pl.galushop.GaluShop.entity.User;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,5 +31,13 @@ class UserRepositoryTest {
                 .emailCode("1111")
                 .build();
         entityManager.persistAndFlush(user);
+    }
+
+    @Test
+    void givenExistingEmail_whenFindByEmail_thenReturnUser(){
+        //when
+        Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        //then
+        assertEquals(user, optionalUser.get());
     }
 }
