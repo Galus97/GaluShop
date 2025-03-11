@@ -68,4 +68,13 @@ class ProductImagesRepositoryTest {
         //then
         assertThat(productImagesList).isEmpty();
     }
+
+    @Test
+    void givenNullProductId_whenFindAllByProductId_thenReturnEmptyList() {
+        //when
+        List<ProductImages> productImagesList =
+                productImagesRepository.findAllByProduct_ProductId(null);
+        //then
+        assertThat(productImagesList).isEmpty();
+    }
 }
