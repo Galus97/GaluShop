@@ -8,6 +8,4 @@ import java.util.List;
 public interface ProductImagesRepository extends JpaRepository<ProductImages, Long> {
 
     List<ProductImages> findAllByProduct_ProductId(Long productId);
-
-    boolean existsByProduct_ProductId(Long productId);
 }
