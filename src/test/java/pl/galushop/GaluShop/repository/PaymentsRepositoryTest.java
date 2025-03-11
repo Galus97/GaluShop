@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -11,8 +12,12 @@ import pl.galushop.GaluShop.entity.Payments;
 import pl.galushop.GaluShop.entity.User;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 class PaymentsRepositoryTest {
@@ -47,5 +52,13 @@ class PaymentsRepositoryTest {
         entityManager.persistAndFlush(payments);
     }
 
+    @Test
+    void givenExistingPayment_whenFindByOrderId_thenReturnPayment(){
+        //when
+        Optional<Payments> optionalPayment = paymentsRepository.findByOrder_OrderId(payments.getOrder().getOrderId());
+        //then
+        assertTrue(optionalPayment.isPresent());
+        assertEquals(payments, optionalPayment.get());
+    }
 
 }
