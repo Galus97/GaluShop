@@ -6,17 +6,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.galushop.GaluShop.entity.Payments;
-import pl.galushop.GaluShop.service.PaymentsService;
+import pl.galushop.GaluShop.entity.Payment;
+import pl.galushop.GaluShop.service.PaymentService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payment/order")
 public class PaymentOrderController {
-    private final PaymentsService paymentsService;
+    private final PaymentService paymentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Payments> showOrderPayment(@PathVariable Long id){
-        return ResponseEntity.ok(paymentsService.getPaymentByOrderId(id));
+    public ResponseEntity<Payment> showOrderPayment(@PathVariable Long id){
+        return ResponseEntity.ok(paymentService.getPaymentByOrderId(id));
     }
 }

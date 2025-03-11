@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.PaymentsRequest;
+import pl.galushop.GaluShop.dto.PaymentRequest;
 import pl.galushop.GaluShop.entity.Order;
-import pl.galushop.GaluShop.entity.Payments;
+import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
-import pl.galushop.GaluShop.repository.PaymentsRepository;
+import pl.galushop.GaluShop.repository.PaymentRepository;
 
 import java.util.List;
 
@@ -17,8 +17,8 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class PaymentsService {
-    private final PaymentsRepository paymentsRepository;
+public class PaymentService {
+    private final PaymentRepository paymentRepository;
     private final MessageService messageService;
     private final OrderService orderService;
     private final UserService userService;
@@ -31,11 +31,11 @@ public class PaymentsService {
      * @throws IllegalArgumentException if the payment ID is null or invalid.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
-    public Payments getPaymentById(Long paymentId){
+    public Payment getPaymentById(Long paymentId){
         if(paymentId == null || paymentId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentId));
         }
-        return paymentsRepository.findById(paymentId)
+        return paymentRepository.findById(paymentId)
                 .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentId)));
     }
 
@@ -47,11 +47,11 @@ public class PaymentsService {
      * @throws IllegalArgumentException if the order ID is null or invalid.
      * @throws PaymentNotFoundException if no payment is found for the given order ID.
      */
-    public Payments getPaymentByOrderId(Long orderId){
+    public Payment getPaymentByOrderId(Long orderId){
         if(orderId == null || orderId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidOrderId", orderId));
         }
-        return paymentsRepository.findByOrder_OrderId(orderId)
+        return paymentRepository.findByOrder_OrderId(orderId)
                 .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFoundByOrderId", orderId)));
     }
 
@@ -62,27 +62,27 @@ public class PaymentsService {
      * @return A list of payments associated with the user.
      * @throws IllegalArgumentException if the user ID is null or invalid.
      */
-    public List<Payments> getAllPaymentsByUserId(Long userId){
+    public List<Payment> getAllPaymentsByUserId(Long userId){
         if(userId == null || userId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
         }
         userService.getUser(userId);
 
-        return paymentsRepository.findAllByUser_UserId(userId);
+        return paymentRepository.findAllByUser_UserId(userId);
     }
 
     /**
      * Saves a new payment associated with an order.
      *
-     * @param paymentsRequest The request object containing payment details.
+     * @param paymentRequest The request object containing payment details.
      * @return The created Payment
      * @throws IllegalArgumentException if the request object is null.
      * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
      */
     @Transactional
-    public Payments savePayment(PaymentsRequest paymentsRequest){
-        Payments payments = buildPayment(paymentsRequest);
-        return paymentsRepository.save(payments);
+    public Payment savePayment(PaymentRequest paymentRequest){
+        Payment payment = buildPayment(paymentRequest);
+        return paymentRepository.save(payment);
     }
 
 
@@ -97,52 +97,52 @@ public class PaymentsService {
         if(paymentId == null || paymentId < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentId));
         }
-        Payments payments = paymentsRepository.findById(paymentId).
+        Payment payment = paymentRepository.findById(paymentId).
                 orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentId)));
-        paymentsRepository.delete(payments);
+        paymentRepository.delete(payment);
     }
 
     /**
      * Updates an existing payment's details.
      *
-     * @param paymentsRequest The request object containing updated payment details.
+     * @param paymentRequest The request object containing updated payment details.
      * @throws IllegalArgumentException if the request object is null or contains an invalid ID.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
     @Transactional
-    public void updatePayment(PaymentsRequest paymentsRequest){
-        if(paymentsRequest == null){
+    public void updatePayment(PaymentRequest paymentRequest){
+        if(paymentRequest == null){
             throw new IllegalArgumentException(messageService.getMessage("paymentsRequestIsNull"));
-        } else if (paymentsRequest.getPaymentsId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentsRequest.getPaymentsId()));
+        } else if (paymentRequest.getPaymentId() < 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidPaymentId", paymentRequest.getPaymentId()));
         }
-        Order order = orderService.getOrder(paymentsRequest.getOrderId());
+        Order order = orderService.getOrder(paymentRequest.getOrderId());
 
-        Payments existingPayment = paymentsRepository.findById(paymentsRequest.getPaymentsId())
-                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentsRequest.getPaymentsId())));
-        existingPayment.setPaymentStatus(paymentsRequest.getPaymentStatus());
-        existingPayment.setTotalAmount(paymentsRequest.getTotalAmount());
+        Payment existingPayment = paymentRepository.findById(paymentRequest.getPaymentId())
+                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFound", paymentRequest.getPaymentId())));
+        existingPayment.setPaymentStatus(paymentRequest.getPaymentStatus());
+        existingPayment.setTotalAmount(paymentRequest.getTotalAmount());
         existingPayment.setOrder(order);
 
-        paymentsRepository.save(existingPayment);
+        paymentRepository.save(existingPayment);
     }
 
     /**
      * Builds a Payment entity from the given request
      *
-     * @param paymentsRequest The request object containing payment details.
+     * @param paymentRequest The request object containing payment details.
      * @throws IllegalArgumentException if the request object is null.
      * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
      */
-    private Payments buildPayment(PaymentsRequest paymentsRequest) {
-        if(paymentsRequest == null){
+    private Payment buildPayment(PaymentRequest paymentRequest) {
+        if(paymentRequest == null){
             throw new IllegalArgumentException(messageService.getMessage("error.paymentsRequestIsNull"));
         }
-        Order order = orderService.getOrder(paymentsRequest.getOrderId());
+        Order order = orderService.getOrder(paymentRequest.getOrderId());
 
-        return Payments.builder()
-                .totalAmount(paymentsRequest.getTotalAmount())
-                .paymentStatus(paymentsRequest.getPaymentStatus())
+        return Payment.builder()
+                .totalAmount(paymentRequest.getTotalAmount())
+                .paymentStatus(paymentRequest.getPaymentStatus())
                 .order(order)
                 .build();
     }

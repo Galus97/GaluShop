@@ -16,8 +16,8 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class PaymentsTest {
-    private Payments payments;
+class PaymentTest {
+    private Payment payment;
     private Order order;
     private User user;
     private Validator validator;
@@ -38,7 +38,7 @@ class PaymentsTest {
                 .orderProducts(Collections.emptyList())
                 .build();
 
-        payments = Payments.builder()
+        payment = Payment.builder()
                 .paymentId(1L)
                 .totalAmount(100.0)
                 .paymentStatus(PaymentStatus.PENDING)
@@ -49,16 +49,16 @@ class PaymentsTest {
 
     @Test
     void shouldCreatePaymentsUsingBuilder() {
-        assertNotNull(payments);
-        assertNotNull(payments.getTotalAmount());
-        assertNotNull(payments.getPaymentStatus());
-        assertNotNull(payments.getOrder());
-        assertNotNull(payments.getUser());
+        assertNotNull(payment);
+        assertNotNull(payment.getTotalAmount());
+        assertNotNull(payment.getPaymentStatus());
+        assertNotNull(payment.getOrder());
+        assertNotNull(payment.getUser());
     }
 
     @Test
     void shouldCreatePaymentsWithNoArgsConstructor() {
-        Payments emptyPayment = new Payments();
+        Payment emptyPayment = new Payment();
         assertThat(emptyPayment).isNotNull();
         assertThat(emptyPayment.getPaymentId()).isNull();
         assertThat(emptyPayment.getTotalAmount()).isNull();
@@ -69,33 +69,33 @@ class PaymentsTest {
 
     @Test
     void shouldValidateTotalAmountMinimumConstraint() {
-        Payments invalidPayments = Payments.builder()
+        Payment invalidPayment = Payment.builder()
                 .totalAmount(0.5)
                 .paymentStatus(PaymentStatus.PENDING)
                 .order(order)
                 .user(user)
                 .build();
 
-        Set<ConstraintViolation<Payments>> violations = validator.validate(invalidPayments);
+        Set<ConstraintViolation<Payment>> violations = validator.validate(invalidPayment);
         assertThat(violations).isNotEmpty();
     }
 
     @Test
     void shouldValidateNotNullPaymentStatus() {
-        Payments invalidPayments = Payments.builder()
+        Payment invalidPayment = Payment.builder()
                 .totalAmount(100.0)
                 .paymentStatus(null)
                 .order(order)
                 .user(user)
                 .build();
 
-        Set<ConstraintViolation<Payments>> violations = validator.validate(invalidPayments);
+        Set<ConstraintViolation<Payment>> violations = validator.validate(invalidPayment);
         assertThat(violations).isNotEmpty();
     }
 
     @Test
     void shouldUseLombokBuilderCorrectly() {
-        assertThat(payments).satisfies(p -> {
+        assertThat(payment).satisfies(p -> {
             assertThat(p.getPaymentId()).isEqualTo(1L);
             assertThat(p.getTotalAmount()).isEqualTo(100.0);
             assertThat(p.getPaymentStatus()).isEqualTo(PaymentStatus.PENDING);
@@ -106,7 +106,7 @@ class PaymentsTest {
 
     @Test
     void shouldHandleEqualityCorrectly() {
-        Payments samePayments = Payments.builder()
+        Payment samePayment = Payment.builder()
                 .paymentId(1L)
                 .totalAmount(100.0)
                 .paymentStatus(PaymentStatus.PENDING)
@@ -114,7 +114,7 @@ class PaymentsTest {
                 .user(user)
                 .build();
 
-        Payments differentPayments = Payments.builder()
+        Payment differentPayment = Payment.builder()
                 .paymentId(2L)
                 .totalAmount(200.0)
                 .paymentStatus(PaymentStatus.NEW)
@@ -122,14 +122,14 @@ class PaymentsTest {
                 .user(new User())
                 .build();
 
-        assertThat(payments)
+        assertThat(payment)
                 .usingRecursiveComparison()
                 .ignoringExpectedNullFields()
-                .isEqualTo(samePayments);
+                .isEqualTo(samePayment);
 
-        assertThat(payments)
+        assertThat(payment)
                 .usingRecursiveComparison()
                 .ignoringExpectedNullFields()
-                .isNotEqualTo(differentPayments);
+                .isNotEqualTo(differentPayment);
     }
 }

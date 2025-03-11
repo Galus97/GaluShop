@@ -27,7 +27,7 @@ import pl.galushop.GaluShop.component.PaymentStatus;
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "payments")
-public class Payments {
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
