@@ -61,4 +61,11 @@ class PaymentsRepositoryTest {
         assertEquals(payments, optionalPayment.get());
     }
 
+    @Test
+    void givenNonExistentOrderId_whenFindByOrderId_thenOptionalEmpty(){
+        //when
+        Optional<Payments> optionalPayment = paymentsRepository.findByOrder_OrderId(9999L);
+        //then
+        assertFalse(optionalPayment.isPresent());
+    }
 }
