@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
@@ -16,8 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @TestPropertySource(properties = {
-        "spring.cloud.config.enabled=false",
-        "spring.config.import="
+        "spring.cloud.config.enabled=false"
 })
 class EmployeeRepositoryTest {
 
@@ -33,15 +31,10 @@ class EmployeeRepositoryTest {
                 .firstName("Jane")
                 .lastName("Doe")
                 .email("jane.doe@example.com")
-                .password("secretPassword")
+                .password("{noop}secretPassword")
                 .enabled(true)
                 .emailCode("1111")
                 .build();
-    }
-
-    @AfterEach
-    void tearDown(){
-        entityManager.clear();
     }
 
     @Test
@@ -53,5 +46,13 @@ class EmployeeRepositoryTest {
         //then
         assertTrue(optionalEmployee.isPresent());
         assertEquals(employee.getEmail(), optionalEmployee.get().getEmail());
+    }
+
+    @Test
+    void givenNonExistentEmployee_whenFindByEmail_thenReturnEmptyOptional(){
+        //when
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmail("nonexistemail@example.com");
+        //then
+        assertFalse(optionalEmployee.isPresent());
     }
 }
