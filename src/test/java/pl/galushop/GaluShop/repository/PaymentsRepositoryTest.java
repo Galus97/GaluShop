@@ -18,7 +18,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
@@ -110,6 +109,14 @@ class PaymentsRepositoryTest {
     void givenInvalidUserId_whenFindAllByUserId_thenReturnEmptyList(){
         //when
         List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(-1L);
+        //then
+        assertThat(paymentsList).isEmpty();
+    }
+
+    @Test
+    void givenNullUserId_whenFindAllByUserId_thenReturnEmptyList(){
+        //when
+        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(null);
         //then
         assertThat(paymentsList).isEmpty();
     }
