@@ -1,11 +1,14 @@
 package pl.galushop.GaluShop.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,5 +37,12 @@ class WarehouseProductRepositoryTest {
         entityManager.persistAndFlush(warehouseProduct);
     }
 
-
+    @Test
+    void givenExistingProductId_whenFindByProductId_thenReturnWarehouseProduct(){
+        //when
+        Optional<WarehouseProduct> optionalWarehouseProduct =
+                warehouseProductRepository.findByProduct_ProductId(warehouseProduct.getProduct().getProductId());
+        //then
+        assertEquals(warehouseProduct, optionalWarehouseProduct.get());
+    }
 }
