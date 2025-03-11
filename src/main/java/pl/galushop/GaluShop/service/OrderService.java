@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
     private static final String INVALID_ORDER_ID = "error.invalidOrderId";
-    private static final String ORDER_NOT_FOUND_BY_USER = "error.orderNotFoundByUserId";
     private static final String INVALID_USER_ID = "error.invalidUserId";
     private static final String ORDER_NOT_FOUND = "error.orderNotFound";
 
@@ -83,29 +82,7 @@ public class OrderService {
         //Throws exception if user doesn't exist in database
         userService.throwIfUserDoesntExist(userId);
 
-        return orderRepository.findAllByUser_UserId(userId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND_BY_USER, userId)));
-    }
-
-    /**
-     * Retrieves an order by the associated user ID.
-     *
-     * @param userId The ID of the user.
-     * @return The retrieved order entity.
-     * @throws IllegalArgumentException if the user ID is null or invalid.
-     * @throws UserNotFoundException if the user is not found.
-     * @throws OrderNotFoundException if no order is found for the user.
-     */
-    public Order getOrderByUserId(Long userId) {
-        if (userId == null || userId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage(INVALID_USER_ID, userId));
-        }
-        //Throws exception if user doesn't exist in database
-        userService.throwIfUserDoesntExist(userId);
-
-        return orderRepository.findByUser_UserId(userId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND_BY_USER, userId)));
-
+        return orderRepository.findAllByUser_UserId(userId);
     }
 
     /**
