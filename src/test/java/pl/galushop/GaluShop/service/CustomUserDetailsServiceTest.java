@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -69,5 +70,18 @@ class CustomUserDetailsServiceTest {
         assertThat(userDetails.getUsername()).isEqualTo("john.doe@gmail.com");
         verify(userRepository, times(1)).findByEmail("john.doe@gmail.com");
         verifyNoInteractions(employeeRepository);
+    }
+
+    @Test
+    void givenExistingEmployee_whenLoadUserByUsername_thenReturnUserDetails(){
+        //Arrange
+        when(employeeRepository.findByEmail("jane.doe@example.com")).thenReturn(Optional.of(employee));
+        //Act
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername("jane.doe@example.com");
+        //Assert
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo("jane.doe@example.com");
+        verify(employeeRepository, times(1)).findByEmail("jane.doe@example.com");
+        verify(userRepository, times(1)).findByEmail("jane.doe@example.com");
     }
 }
