@@ -12,8 +12,10 @@ import pl.galushop.GaluShop.entity.Payments;
 import pl.galushop.GaluShop.entity.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -77,4 +79,21 @@ class PaymentsRepositoryTest {
         assertFalse(optionalPayment.isPresent());
     }
 
+    @Test
+    void givenNullOrderId_whenFindByOrderId_thenOptionalEmpty(){
+        //when
+        Optional<Payments> optionalPayment = paymentsRepository.findByOrder_OrderId(null);
+        //then
+        assertFalse(optionalPayment.isPresent());
+    }
+
+    @Test
+    void givenExistingPayment_whenFindAllByUserId_thenReturnPaymentList(){
+        //when
+        List<Payments> paymentsList = paymentsRepository.findAllByUser_UserId(payments.getUser().getUserId());
+        //then
+        assertThat(paymentsList)
+                .hasSize(1)
+                .contains(payments);
+    }
 }
