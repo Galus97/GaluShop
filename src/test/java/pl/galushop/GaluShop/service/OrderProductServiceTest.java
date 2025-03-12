@@ -7,14 +7,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.OrderProductDto;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class OrderProductServiceTest {
@@ -45,7 +49,6 @@ class OrderProductServiceTest {
     void givenExistingOrderProduct_whenSaveOrderProduct_thenSaveCorrectly() {
         // Act
         orderProductService.saveOrderProduct(orderProduct);
-
         // Assert
         verify(orderProductRepository, times(1)).save(orderProduct);
     }
@@ -56,5 +59,16 @@ class OrderProductServiceTest {
         assertThrows(IllegalArgumentException.class, () -> {
             orderProductService.saveOrderProduct(null);
         });
+    }
+
+    @Test
+    void givenExistingId_whenGetOrderProductsByOrderId_thenReturnOrderProductDtoList() {
+        // Arrange
+        when(orderProductRepository.findByOrder_OrderId(1L)).thenReturn(List.of(orderProduct));
+        // Act
+        List<OrderProductDto> result = orderProductService.getOrderProductsByOrderId(1L);
+        // Assert
+        assertEquals(1, result.size());
+        verify(orderProductRepository, times(1)).findByOrder_OrderId(1L);
     }
 }
