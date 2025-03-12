@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -169,5 +169,23 @@ class EmployeeServiceTest {
         assertEquals("jane.smith@example.com", existingEmployee.getEmail());
         assertEquals("hashedPassword", existingEmployee.getPassword());
         verify(employeeRepository).save(existingEmployee);
+    }
+
+    @Test
+    void givenNonExistentEmployee_whenUpdateEmployee_thenThrowEmployeeNotFoundException(){
+        //Arrange
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .employeeId(9999L)
+                .firstName("Mark")
+                .lastName("ZuckerBerg")
+                .email("mark@example.com")
+                .password("oldPassword")
+                .build();
+        when(employeeRepository.findById(9999L)).thenReturn(Optional.empty());
+        //Act & Assert
+        assertThrows(EmployeeNotFoundException.class, () -> {
+           employeeService.updateEmployee(employeeRequest);
+        });
+        verify(employeeRepository, never()).save(any());
     }
 }
