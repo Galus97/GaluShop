@@ -73,5 +73,14 @@ class EmailServiceTest {
         assertEquals("1234", verificationCode);
     }
 
-    
+    @Test
+    void givenInvalidEmail_whenGetVerificationCode_thenThrowException(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.getVerificationCode("");
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
+    }
+
+
 }
