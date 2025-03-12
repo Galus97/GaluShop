@@ -82,5 +82,12 @@ class EmailServiceTest {
         verifyNoInteractions(cache);
     }
 
-
+    @Test
+    void givenNullEmail_whenGetVerificationCode_thenThrowException(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.getVerificationCode(null);
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
+    }
 }
