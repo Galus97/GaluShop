@@ -83,5 +83,11 @@ class EmployeeServiceTest {
         verify(employeeRepository, times(1)).delete(employee);
     }
 
-
+    @Test
+    void givenInvalidId_whenDeleteEmployee_thenThrowIllegalArgumentException(){
+        //Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.deleteEmployee(-1L);
+        });
+    }
 }
