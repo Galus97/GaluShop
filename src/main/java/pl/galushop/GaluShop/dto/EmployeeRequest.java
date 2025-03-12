@@ -1,8 +1,10 @@
 package pl.galushop.GaluShop.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class EmployeeRequest {
     private Long employeeId;
     private String firstName;

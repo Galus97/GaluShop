@@ -149,5 +149,25 @@ class EmployeeServiceTest {
         verify(employeeRepository).save(existingEmployee);
     }
 
+    @Test
+    void givenRequestWithoutPassword_whenUpdateEmployee_thenUpdatedValuesCorrectly(){
+        //Arrange
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .employeeId(1L)
+                .firstName("Jane")
+                .lastName("Smith")
+                .email("jane.smith@example.com")
+                .password(null)
+                .build();
 
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(existingEmployee));
+        //Act
+        employeeService.updateEmployee(employeeRequest);
+        //Assert
+        assertEquals("Jane", existingEmployee.getFirstName());
+        assertEquals("Smith", existingEmployee.getLastName());
+        assertEquals("jane.smith@example.com", existingEmployee.getEmail());
+        assertEquals("hashedPassword", existingEmployee.getPassword());
+        verify(employeeRepository).save(existingEmployee);
+    }
 }
