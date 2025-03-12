@@ -53,5 +53,14 @@ class EmailServiceTest {
         verifyNoInteractions(javaMailSender);
         verifyNoInteractions(cache);
     }
+    @Test
+    void givenNullEmail_whenSendEmail_thenThrowException(){
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.sendEmail(null);
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
+    }
 
+    
 }
