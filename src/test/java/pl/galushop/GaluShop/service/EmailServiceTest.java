@@ -17,6 +17,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,13 +35,23 @@ class EmailServiceTest {
 
 
     @Test
-    void givenValidEmail_whenSendEmail_thenSendMessageAndCacheCode(){
-        //given
+    void givenValidEmail_whenSendEmail_thenSendMessageAndCacheCode() {
+        //Arrange
         when(cacheManager.getCache("verificationCodes")).thenReturn(cache);
-        //when
+        //Act
         emailService.sendEmail("valid@gmail.com");
-        //then
+        //Assert
         verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
         verify(cache, times(1)).put(eq("valid@gmail.com"), anyString());
     }
+
+    @Test
+    void givenInvalidEmail_whenSendEmail_thenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.sendEmail("");
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
+    }
+
 }
