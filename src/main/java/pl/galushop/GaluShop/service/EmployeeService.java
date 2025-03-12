@@ -42,8 +42,7 @@ public class EmployeeService {
      */
     public void deleteEmployee(Long employeeId){
         throwIfIdIsInvalid(employeeId);
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeId)));
+        Employee employee = getEmployeeOrThrowIfNotFound(employeeId);
         employeeRepository.delete(employee);
     }
 
@@ -56,7 +55,7 @@ public class EmployeeService {
      */
     @Transactional
     public void updateEmployee(EmployeeRequest employeeRequest){
-        Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest);
+        Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
         existingEmployee.setFirstName(existingEmployee.getFirstName());
         existingEmployee.setLastName(existingEmployee.getLastName());
@@ -68,9 +67,9 @@ public class EmployeeService {
         employeeRepository.save(existingEmployee);
     }
 
-    private Employee getEmployeeOrThrowIfNotFound(EmployeeRequest employeeRequest){
-        return employeeRepository.findById(employeeRequest.getEmployeeId())
-                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeRequest.getEmployeeId())));
+    private Employee getEmployeeOrThrowIfNotFound(Long id){
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, id)));
     }
 
     private void throwIfIdIsInvalid(Long id){
