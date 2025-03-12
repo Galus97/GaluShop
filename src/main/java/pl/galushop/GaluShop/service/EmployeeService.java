@@ -58,9 +58,9 @@ public class EmployeeService {
     public void updateEmployee(EmployeeRequest employeeRequest){
         Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
-        existingEmployee.setFirstName(existingEmployee.getFirstName());
-        existingEmployee.setLastName(existingEmployee.getLastName());
-        existingEmployee.setEmail(existingEmployee.getEmail());
+        existingEmployee.setFirstName(employeeRequest.getFirstName());
+        existingEmployee.setLastName(employeeRequest.getLastName());
+        existingEmployee.setEmail(employeeRequest.getEmail());
         if(employeeRequest.getPassword() != null && !employeeRequest.getPassword().isBlank()){
             existingEmployee.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
         }

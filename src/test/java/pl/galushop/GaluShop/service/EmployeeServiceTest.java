@@ -1,5 +1,6 @@
 package pl.galushop.GaluShop.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -7,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.EmployeeRequest;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
@@ -20,6 +22,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +35,20 @@ class EmployeeServiceTest {
     MessageService messageService;
     @InjectMocks
     EmployeeService employeeService;
+
+    private Employee existingEmployee;
+
+    @BeforeEach
+    void setUp() {
+        existingEmployee = Employee.builder()
+                .employeeId(1L)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .password("hashedPassword")
+                .enabled(true)
+                .build();
+    }
 
     @Test
     void givenExistingId_whenGetEmployee_thenReturnEmployee(){
@@ -84,6 +101,16 @@ class EmployeeServiceTest {
     }
 
     @Test
+    void givenNonExistentId_whenDeleteEmployee_thenThrowEmployeeNotFoundException(){
+        //Arrange
+        when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
+        //Act & Assert
+        assertThrows(EmployeeNotFoundException.class, () -> {
+            employeeService.deleteEmployee(1L);
+        });
+    }
+
+    @Test
     void givenInvalidId_whenDeleteEmployee_thenThrowIllegalArgumentException(){
         //Act & Assert
         assertThrows(IllegalArgumentException.class, () -> {
@@ -98,4 +125,29 @@ class EmployeeServiceTest {
             employeeService.deleteEmployee(null);
         });
     }
+
+    @Test
+    void givenExistingEmployee_whenUpdateEmployee_thenUpdatedValuesCorrectly(){
+        //Arrange
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .employeeId(1L)
+                .firstName("Jane")
+                .lastName("Smith")
+                .email("jane.smith@example.com")
+                .password("newPassword")
+                .build();
+
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(existingEmployee));
+        when(passwordEncoder.encode("newPassword")).thenReturn("hashedNewPassword");
+        //Act
+        employeeService.updateEmployee(employeeRequest);
+        //Assert
+        assertEquals("Jane", existingEmployee.getFirstName());
+        assertEquals("Smith", existingEmployee.getLastName());
+        assertEquals("jane.smith@example.com", existingEmployee.getEmail());
+        assertEquals("hashedNewPassword", existingEmployee.getPassword());
+        verify(employeeRepository).save(existingEmployee);
+    }
+
+
 }
