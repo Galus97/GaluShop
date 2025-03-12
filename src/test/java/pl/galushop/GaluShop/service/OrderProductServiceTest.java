@@ -49,4 +49,12 @@ class OrderProductServiceTest {
         // Assert
         verify(orderProductRepository, times(1)).save(orderProduct);
     }
+
+    @Test
+    void givenNullOrderProduct_whenSaveOrderProduct_thenThrowIllegalArgumentException(){
+        //Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            orderProductService.saveOrderProduct(null);
+        });
+    }
 }
