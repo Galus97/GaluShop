@@ -58,4 +58,12 @@ class EmployeeServiceTest {
             employeeService.getEmployee(-1L);
         });
     }
+
+    @Test
+    void givenNullId_whenThrowIfIdIsInvalid_thenReturnIllegalArgumentException(){
+        //Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.getEmployee(null);
+        });
+    }
 }
