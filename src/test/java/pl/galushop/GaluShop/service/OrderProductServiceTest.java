@@ -56,9 +56,8 @@ class OrderProductServiceTest {
     @Test
     void givenNullOrderProduct_whenSaveOrderProduct_thenThrowIllegalArgumentException(){
         //Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> {
-            orderProductService.saveOrderProduct(null);
-        });
+        assertThrows(IllegalArgumentException.class,
+                () -> orderProductService.saveOrderProduct(null));
     }
 
     @Test
@@ -70,5 +69,12 @@ class OrderProductServiceTest {
         // Assert
         assertEquals(1, result.size());
         verify(orderProductRepository, times(1)).findByOrder_OrderId(1L);
+    }
+
+    @Test
+    void getOrderProductsByOrderId_ShouldThrowException_WhenOrderIdIsInvalid() {
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class,
+                () -> orderProductService.getOrderProductsByOrderId(-1L));
     }
 }
