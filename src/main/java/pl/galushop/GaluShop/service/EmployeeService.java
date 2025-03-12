@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
+import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.EmployeeRequest;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
-
-import java.util.NoSuchElementException;
 
 /**
  * Service class responsible for managing employee operations.
@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MessageService messageService;
 
     /**
      * Retrieves an employee by their ID.
@@ -28,8 +29,9 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
     public Employee getEmployee(Long employeeId){
+        throwIfIdIsInvalid(employeeId);
         return employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeId)));
     }
 
     /**
@@ -39,8 +41,9 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
     public void deleteEmployee(Long employeeId){
+        throwIfIdIsInvalid(employeeId);
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeId + " not found"));
+                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeId)));
         employeeRepository.delete(employee);
     }
 
@@ -53,8 +56,8 @@ public class EmployeeService {
      */
     @Transactional
     public void updateEmployee(EmployeeRequest employeeRequest){
-        Employee existingEmployee = employeeRepository.findById(employeeRequest.getEmployeeId())
-                .orElseThrow(() -> new EmployeeNotFoundException("Employee with ID " + employeeRequest.getEmployeeId() + " not found"));
+        Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest);
+
         existingEmployee.setFirstName(existingEmployee.getFirstName());
         existingEmployee.setLastName(existingEmployee.getLastName());
         existingEmployee.setEmail(existingEmployee.getEmail());
@@ -64,5 +67,11 @@ public class EmployeeService {
 
         employeeRepository.save(existingEmployee);
     }
+
+    private Employee getEmployeeOrThrowIfNotFound(EmployeeRequest employeeRequest){
+        return employeeRepository.findById(employeeRequest.getEmployeeId())
+                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeRequest.getEmployeeId())));
+    }
+
 
 }
