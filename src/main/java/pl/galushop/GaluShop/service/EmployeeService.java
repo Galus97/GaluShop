@@ -73,5 +73,9 @@ public class EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeRequest.getEmployeeId())));
     }
 
-
+    private void throwIfIdIsInvalid(Long id){
+        if(id == null || id <= 0){
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_EMPLOYEE_ID, id));
+        }
+    }
 }
