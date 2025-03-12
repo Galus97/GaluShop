@@ -8,12 +8,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,5 +39,15 @@ class EmployeeServiceTest {
         Employee resultEmployee = employeeService.getEmployee(employee.getEmployeeId());
         //Assert
         assertThat(resultEmployee).isEqualTo(employee);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetEmployee_thenThrowException(){
+        //Arrange
+        when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
+        //Act
+        assertThrows(EmployeeNotFoundException.class, () -> {
+            employeeService.getEmployee(9999L);
+        });
     }
 }
