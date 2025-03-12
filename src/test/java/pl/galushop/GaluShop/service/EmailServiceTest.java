@@ -62,5 +62,16 @@ class EmailServiceTest {
         verifyNoInteractions(cache);
     }
 
+    @Test
+    void givenValidEmail_whenGetVerificationCode_thenReturnCode(){
+        //Arrange
+        when(cacheManager.getCache("verificationCodes")).thenReturn(cache);
+        when(cache.get("valid@gmail.com", String.class)).thenReturn("1234");
+        //Act
+        String verificationCode = emailService.getVerificationCode("valid@gmail.com");
+        //Assert
+        assertEquals("1234", verificationCode);
+    }
+
     
 }
