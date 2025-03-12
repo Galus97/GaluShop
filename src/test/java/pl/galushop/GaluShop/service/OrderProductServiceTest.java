@@ -1,8 +1,11 @@
 package pl.galushop.GaluShop.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
@@ -10,7 +13,10 @@ import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class OrderProductServiceTest {
     @Mock
     private OrderProductRepository orderProductRepository;
@@ -35,5 +41,12 @@ class OrderProductServiceTest {
 
         orderProduct = new OrderProduct(order, product, 2);
     }
+    @Test
+    void givenExistingOrderProduct_whenSaveOrderProduct_thenSaveCorrectly() {
+        // Act
+        orderProductService.saveOrderProduct(orderProduct);
 
+        // Assert
+        verify(orderProductRepository, times(1)).save(orderProduct);
+    }
 }
