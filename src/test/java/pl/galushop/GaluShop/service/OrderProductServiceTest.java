@@ -88,4 +88,22 @@ class OrderProductServiceTest {
         // Assert
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void givenExistingId_whenOrderProductsByProductId_thenReturnOrderProductDtoList() {
+        // Arrange
+        when(orderProductRepository.findByProduct_ProductId(1L)).thenReturn(List.of(orderProduct));
+        // Act
+        List<OrderProductDto> result = orderProductService.getOrderProductsByProductId(1L);
+        // Assert
+        assertEquals(1, result.size());
+        verify(orderProductRepository, times(1)).findByProduct_ProductId(1L);
+    }
+
+    @Test
+    void givenInvalidId_whenOrderProductsByProductId_ThrowIllegalArgumentException() {
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class,
+                () -> orderProductService.getOrderProductsByProductId(-1L));
+    }
 }
