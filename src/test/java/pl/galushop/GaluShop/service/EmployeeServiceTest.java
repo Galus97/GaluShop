@@ -42,12 +42,20 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void givenNonExistentId_whenGetEmployee_thenThrowException(){
+    void givenNonExistentId_whenGetEmployee_thenThrowEmployeeNotFoundException(){
         //Arrange
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
-        //Act
+        //Act & Assert
         assertThrows(EmployeeNotFoundException.class, () -> {
             employeeService.getEmployee(9999L);
+        });
+    }
+
+    @Test
+    void givenInvalidId_whenThrowIfIdIsInvalid_thenReturnIllegalArgumentException(){
+        //Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.getEmployee(-1L);
         });
     }
 }
