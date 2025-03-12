@@ -13,6 +13,7 @@ import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,9 +73,19 @@ class OrderProductServiceTest {
     }
 
     @Test
-    void getOrderProductsByOrderId_ShouldThrowException_WhenOrderIdIsInvalid() {
+    void givenInvalidId_whenGetOrderProductsByOrderId_ThrowIllegalArgumentException() {
         // Act & Assert
         assertThrows(IllegalArgumentException.class,
                 () -> orderProductService.getOrderProductsByOrderId(-1L));
+    }
+
+    @Test
+    void givenNonExistentId_whenGetOrderProductsByOrderId_thenReturnEmptyList() {
+        // Arrange
+        when(orderProductRepository.findByOrder_OrderId(1L)).thenReturn(Collections.emptyList());
+        // Act
+        List<OrderProductDto> result = orderProductService.getOrderProductsByOrderId(1L);
+        // Assert
+        assertTrue(result.isEmpty());
     }
 }
