@@ -8,6 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 
 import java.util.Random;
@@ -32,9 +33,7 @@ public class EmailService {
      */
     @Async
     public void sendEmail(String email) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidEmailAddress", email));
-        }
+        throwIfEmailIsInvalid(email);
         String emailActiveCode = generateActiveCode();
         cacheManager.getCache("verificationCodes").put(email, emailActiveCode);
 
@@ -58,6 +57,7 @@ public class EmailService {
      */
     @Cacheable(value = "verificationCodes", key = "#email")
     public String getVerificationCode(String email){
+        throwIfEmailIsInvalid(email);
         return cacheManager.getCache("verificationCodes").get(email, String.class);
     }
 
@@ -69,5 +69,11 @@ public class EmailService {
     private String generateActiveCode() {
         Random random = new Random();
         return String.valueOf(random.nextInt(1000, 9999));
+    }
+
+    private void throwIfEmailIsInvalid(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.EMAIL_IS_INVALID, email));
+        }
     }
 }
