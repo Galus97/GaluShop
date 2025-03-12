@@ -90,4 +90,12 @@ class EmployeeServiceTest {
             employeeService.deleteEmployee(-1L);
         });
     }
+
+    @Test
+    void givenNullId_whenDeleteEmployee_thenThrowIllegalArgumentException(){
+        //Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> {
+            employeeService.deleteEmployee(null);
+        });
+    }
 }
