@@ -38,6 +38,7 @@ public class EmployeeService {
      * Deletes an employee by their ID.
      *
      * @param employeeId The ID of the employee to delete.
+     * @throws IllegalArgumentException if id is null or less then 1
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
     public void deleteEmployee(Long employeeId){
