@@ -106,4 +106,14 @@ class OrderProductServiceTest {
         assertThrows(IllegalArgumentException.class,
                 () -> orderProductService.getOrderProductsByProductId(-1L));
     }
+
+    @Test
+    void givenNonExistentId_whenOrderProductsByProductId_thenReturnEmptyList() {
+        // Arrange
+        when(orderProductRepository.findByProduct_ProductId(1L)).thenReturn(Collections.emptyList());
+        // Act
+        List<OrderProductDto> result = orderProductService.getOrderProductsByProductId(1L);
+        // Assert
+        assertTrue(result.isEmpty());
+    }
 }
