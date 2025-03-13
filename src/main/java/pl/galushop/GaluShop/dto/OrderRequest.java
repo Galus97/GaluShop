@@ -2,7 +2,6 @@ package pl.galushop.GaluShop.dto;
 
 import lombok.Data;
 import pl.galushop.GaluShop.component.OrderStatus;
-import pl.galushop.GaluShop.entity.OrderProductId;
 
 import java.time.LocalDateTime;
 import java.util.List;
