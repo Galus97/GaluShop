@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.galushop.GaluShop.dto.OrderRequest;
+import pl.galushop.GaluShop.dto.OrderResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.service.OrderService;
 
@@ -18,7 +20,7 @@ public class UserAllOrdersController {
     private final OrderService orderService;
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<Order>> showAllUserOrders(@PathVariable Long id){
+    public ResponseEntity<List<OrderResponse>> showAllUserOrders(@PathVariable Long id){
         return ResponseEntity.ok(orderService.getAllOrdersByUser(id));
     }
 }
