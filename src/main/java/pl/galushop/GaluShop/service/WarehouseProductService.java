@@ -38,6 +38,7 @@ public class WarehouseProductService {
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID, productId)));
     }
 
+
     /**
      * Adds a new product to the warehouse.
      *

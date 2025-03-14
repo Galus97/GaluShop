@@ -3,8 +3,10 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.OrderRequest;
+import pl.galushop.GaluShop.dto.OrderResponse;
 import pl.galushop.GaluShop.dto.ProductQuantityRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
@@ -25,9 +27,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private static final String INVALID_ORDER_ID = "error.invalidOrderId";
-    private static final String INVALID_USER_ID = "error.invalidUserId";
-    private static final String ORDER_NOT_FOUND = "error.orderNotFound";
 
     private final OrderRepository orderRepository;
     private final UserService userService;
@@ -41,15 +40,18 @@ public class OrderService {
      * @param orderId The ID of the order to retrieve.
      * @return The retrieved order entity.
      * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException if no order is found with the given ID.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
      */
-    public Order getOrder(Long orderId){
-        if(orderId == null || orderId <= 0){
-            throw new IllegalArgumentException(messageService.getMessage(INVALID_ORDER_ID, orderId));
-        }
-        return orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND, orderId)));
+    public OrderResponse getOrderResponse(Long orderId) {
+        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        return OrderResponse.fromEntity(getOrderOrThrowIfNotExist(orderId));
     }
+
+    public Order getOrderEntity(Long orderId) {
+        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        return getOrderOrThrowIfNotExist(orderId);
+    }
+
 
     /**
      * Saves a new order to the database.
@@ -57,13 +59,14 @@ public class OrderService {
      *
      * @param orderRequest The request object containing order details.
      * @return The created Order
-     * @throws UserNotFoundException if the user associated with the order is not found.
+     * @throws UserNotFoundException    if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
+
     @Transactional
-    public Order saveOrder(OrderRequest orderRequest) {
+    public OrderResponse saveOrder(OrderRequest orderRequest) {
         Order order = buildOrder(orderRequest);
-        return orderRepository.save(order);
+        return OrderResponse.fromEntity(orderRepository.save(order));
     }
 
     /**
@@ -72,17 +75,19 @@ public class OrderService {
      * @param userId The ID of the user.
      * @return A list of orders associated with the user.
      * @throws IllegalArgumentException if the user ID is null or invalid.
-     * @throws UserNotFoundException if the user is not found.
-     * @throws OrderNotFoundException if no orders are found for the user.
+     * @throws UserNotFoundException    if the user is not found.
+     * @throws OrderNotFoundException   if no orders are found for the user.
      */
-    public List<Order> getAllOrdersByUser(Long userId) {
-        if (userId == null || userId < 0){
-            throw new IllegalArgumentException(messageService.getMessage(INVALID_USER_ID, userId));
-        }
+    public List<OrderResponse> getAllOrdersByUser(Long userId) {
+        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+
         //Throws exception if user doesn't exist in database
         userService.throwIfUserDoesntExist(userId);
 
-        return orderRepository.findAllByUser_UserId(userId);
+        return orderRepository.findAllByUser_UserId(userId)
+                .stream()
+                .map(OrderResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -90,15 +95,12 @@ public class OrderService {
      *
      * @param orderId The ID of the order to delete.
      * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException if no order is found with the given ID.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
      */
-    public void deleteOrder(Long orderId){
-        if(orderId == null || orderId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage(INVALID_ORDER_ID, orderId));
-        }
-        Order order = orderRepository.findById(orderId).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND, orderId)));
-        orderRepository.delete(order);
+    public void deleteOrder(Long orderId) {
+        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+
+        orderRepository.delete(getOrderOrThrowIfNotExist(orderId));
     }
 
     /**
@@ -106,20 +108,19 @@ public class OrderService {
      *
      * @param orderRequest The request object containing updated order details.
      * @throws IllegalArgumentException if the request object contains an invalid order ID.
-     * @throws OrderNotFoundException if no order is found with the given ID.
-     * @throws UserNotFoundException if the user associated with the order is not found.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
+     * @throws UserNotFoundException    if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
-    public void updateOrder(OrderRequest orderRequest){
-        if(orderRequest.getOrderId() == null || orderRequest.getOrderId() < 0){
-            throw new IllegalArgumentException(messageService.getMessage(INVALID_ORDER_ID, orderRequest.getOrderId()));
-        }
-        Order existingOrder = orderRepository.findById(orderRequest.getOrderId()).orElseThrow(
-                () -> new OrderNotFoundException(messageService.getMessage(ORDER_NOT_FOUND, orderRequest.getOrderId())));
+    public OrderResponse updateOrder(OrderRequest orderRequest) {
+        throwIfIdIsInvalid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
+
+        Order existingOrder = getOrderOrThrowIfNotExist(orderRequest.getOrderId());
         Order updatedOrder = buildOrder(orderRequest);
         updatedOrder.setOrderId(existingOrder.getOrderId());
-        orderRepository.save(updatedOrder);
+
+        return OrderResponse.fromEntity(orderRepository.save(updatedOrder));
     }
 
     /**
@@ -128,26 +129,27 @@ public class OrderService {
      *
      * @param orderRequest The request object containing order details.
      * @return The constructed Order entity.
-     * @throws UserNotFoundException if the user associated with the order is not found.
+     * @throws UserNotFoundException    if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
-    private Order buildOrder (OrderRequest orderRequest){
+    private Order buildOrder(OrderRequest orderRequest) {
         User user = userService.getUser(orderRequest.getUserId());
 
-        List<Long> productIds = orderRequest.getProductQuantityRequests().stream()
-                .map(ProductQuantityRequest::getProductId).toList();
-
-        Map<Long, Product> productsMap = productService.getAllProductByIds(productIds).stream()
-                .collect(Collectors.toMap(Product::getProductId, product -> product));
+        Map<Long, Product> productsMap = productService.getAllProductByIds(
+                orderRequest.getProductQuantityRequests().stream()
+                        .map(ProductQuantityRequest::getProductId)
+                        .toList()
+        ).stream().collect(Collectors.toMap(Product::getProductId, product -> product));
 
         List<OrderProduct> orderProducts = orderRequest.getProductQuantityRequests().stream()
                 .map(pq -> {
                     Product product = productsMap.get(pq.getProductId());
-                    if(product == null){
-                        throw new ProductNotFoundException(messageService.getMessage("error.productNotFound", pq.getProductId()));
+                    if (product == null) {
+                        throw new ProductNotFoundException(
+                                messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, pq.getProductId())
+                        );
                     }
                     return OrderProduct.builder()
-                            .order(null)
                             .product(product)
                             .quantity(pq.getQuantity())
                             .build();
@@ -161,8 +163,19 @@ public class OrderService {
                 .build();
 
         orderProducts.forEach(op -> op.setOrder(order));
-        orderProducts.forEach(orderProductService::saveOrderProduct);
 
         return order;
+    }
+
+
+    private void throwIfIdIsInvalid(Long id, String message) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage(message, id));
+        }
+    }
+
+    private Order getOrderOrThrowIfNotExist(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(
+                () -> new OrderNotFoundException(messageService.getMessage(ErrorMessages.ORDER_NOT_FOUND, orderId)));
     }
 }
