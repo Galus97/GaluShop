@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.WarehouseProductRequest;
 import pl.galushop.GaluShop.entity.Product;
@@ -19,13 +20,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class WarehouseProductService {
-    private static final String PRODUCT_ID_IS_INVALID = "error.invalidProductId";
-    private static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";
-    private static final String WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID = "error.warehouseProductNotFoundByProductId";
-    private static final String WAREHOUSE_NOT_FOUND = "error.warehouseProductNotFound";
-    private static final String WAREHOUSE_IS_NULL = "error.warehouseProductIsNull";
-    private static final String INVALID_FIELDS_IN_REQUEST = "error.invalidFieldsWarehouseProduct";
-
     private final WarehouseProductRepository warehouseRepository;
     private final ProductService productService;
     private final MessageService messageService;
@@ -39,10 +33,11 @@ public class WarehouseProductService {
      * @throws WarehouseProductNotFoundException If no warehouse product is found.
      */
     public WarehouseProduct getWarehouseProduct(Long productId) {
-        throwIfIdIsInvalid(productId, PRODUCT_ID_IS_INVALID);
+        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return warehouseRepository.findById(productId)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID, productId)));
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID, productId)));
     }
+
 
     /**
      * Adds a new product to the warehouse.
@@ -75,9 +70,9 @@ public class WarehouseProductService {
      * @throws WarehouseProductNotFoundException If the warehouse product is not found.
      */
     public void deleteWarehouseProduct(Long warehouseId) {
-        throwIfIdIsInvalid(warehouseId, WAREHOUSE_ID_IS_INVALID);
+        throwIfIdIsInvalid(warehouseId, ErrorMessages.WAREHOUSE_ID_IS_INVALID);
         WarehouseProduct warehouseProduct = warehouseRepository.findById(warehouseId)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(WAREHOUSE_NOT_FOUND, warehouseId)));
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_NOT_FOUND, warehouseId)));
 
         warehouseRepository.delete(warehouseProduct);
     }
@@ -91,7 +86,7 @@ public class WarehouseProductService {
     @Transactional
     public void updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest){
         WarehouseProduct existingWarehouseProduct = warehouseRepository.findById(warehouseProductRequest.getWarehouseProductId())
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(WAREHOUSE_NOT_FOUND, warehouseProductRequest.getWarehouseProductId())));
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_NOT_FOUND, warehouseProductRequest.getWarehouseProductId())));
 
         Product product = productService.getProduct(warehouseProductRequest.getProductId());
         existingWarehouseProduct.setProduct(product);
@@ -110,12 +105,12 @@ public class WarehouseProductService {
      */
     @Transactional
     public void updateQuantityByProductId(Long productId, Integer quantity) {
-        throwIfIdIsInvalid(productId, PRODUCT_ID_IS_INVALID);
+        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         if(quantity == null || quantity < 0){
             throw new IllegalArgumentException(messageService.getMessage("error.invalidQuantity"));
         }
         WarehouseProduct existingWarehouseProduct = warehouseRepository.findByProduct_ProductId(productId)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(WAREHOUSE_IS_NULL)));
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_IS_NULL)));
 
         existingWarehouseProduct.setQuantity(quantity);
         warehouseRepository.save(existingWarehouseProduct);
@@ -148,11 +143,11 @@ public class WarehouseProductService {
 
     private void throwIfRequestIsInvalid(WarehouseProductRequest warehouseProductRequest){
         if (warehouseProductRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(WAREHOUSE_IS_NULL));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.WAREHOUSE_IS_NULL));
         }
         if(warehouseProductRequest.getProductId() == null || warehouseProductRequest.getProductId() < 0
                 || warehouseProductRequest.getQuantity() == null  || warehouseProductRequest.getQuantity() < 0){
-            throw new IllegalArgumentException(messageService.getMessage(INVALID_FIELDS_IN_REQUEST));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_FIELDS_IN_REQUEST));
         }
     }
 }

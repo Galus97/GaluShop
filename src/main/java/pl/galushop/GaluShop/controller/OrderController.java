@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.OrderRequest;
+import pl.galushop.GaluShop.dto.OrderResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.service.OrderService;
 
@@ -23,21 +24,21 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order> showOrder(@PathVariable Long id){
-        return ResponseEntity.ok(orderService.getOrder(id));
+    public ResponseEntity<OrderResponse> showOrder(@PathVariable Long id){
+        return ResponseEntity.ok(orderService.getOrderResponse(id));
     }
 
     @PostMapping
-    public ResponseEntity<Order> saveOrder(@RequestBody OrderRequest orderRequest) {
-        Order savedOrder = orderService.saveOrder(orderRequest);
-        return ResponseEntity.created(URI.create("/order/" + savedOrder.getOrderId()))
+    public ResponseEntity<OrderResponse> saveOrder(@RequestBody OrderRequest orderRequest) {
+        OrderResponse savedOrder = orderService.saveOrder(orderRequest);
+        return ResponseEntity.created(URI.create("/order/" + savedOrder.orderId()))
                 .body(savedOrder);
     }
 
     @PutMapping
-    public ResponseEntity<Order> updateOrder(@RequestBody OrderRequest orderRequest) {
+    public ResponseEntity<OrderResponse> updateOrder(@RequestBody OrderRequest orderRequest) {
         orderService.updateOrder(orderRequest);
-        return ResponseEntity.ok(orderService.getOrder(orderRequest.getOrderId()));
+        return ResponseEntity.ok(orderService.getOrderResponse(orderRequest.getOrderId()));
     }
 
     @DeleteMapping("/{id}")
