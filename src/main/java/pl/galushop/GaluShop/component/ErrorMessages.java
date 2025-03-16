@@ -5,6 +5,11 @@ public final class ErrorMessages {
     public static final String EMAIL_IS_INVALID = "error.invalidEmail";
     public static final String ERROR = "error";
     public static final String INVALID_QUANTITY = "error.invalidQuantity";
+    public static final String LIST_IS_INVALID = "error.listIsNullOrEmpty";
+    public static final String VERIFICATION_CODE = "verificationCodes";
+    public static final String EMAIL_TEXT = "email.text";
+    public static final String EMAIL_FORM = "email.form";
+    public static final String EMAIL_SUBJECT = "email.subject";
 
     //Employee
     public static final String EMPLOYEE_NOT_FOUND = "error.employeeNotFound";
@@ -14,17 +19,26 @@ public final class ErrorMessages {
     public static final String INVALID_ORDER_ID = "error.invalidOrderId";
     public static final String ORDER_NOT_FOUND = "error.orderNotFound";
 
+    //OrderProduct
+    public static final String ORDER_PRODUCT_IS_NULL = "error.orderProductIsNull";
+
     //Product
     public static final String PRODUCT_NOT_FOUND = "error.productNotFound";
     public static final String INVALID_PRODUCT_ID = "error.invalidProductId";
 
-    //OrderProduct
-    public static final String ORDER_PRODUCT_IS_NULL = "error.orderProductIsNull";
+    //ProductImages
+    public static final String INVALID_PRODUCT_IMAGES_ID = "error.invalidProductImagesId";
+    public static final String PRODUCT_IMAGES_NOT_FOUND = "error.productImagesNotFoundException";
 
     //User
     public static final String INVALID_USER_ID = "error.invalidUserId";
     public static final String USER_NOT_FOUND = "error.userNotFound";
     public static final String INVALID_USER_REQUEST = "error.invalidUserRequest";
+
+    //UserData
+    public static final String INVALID_USER_DATA_ID = "error.invalidUserDataId";
+    public static final String USER_DATA_NOT_FOUND = "error.userDataNotFound";
+
 
     //WarehouseProduct
     public static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";
@@ -32,4 +46,8 @@ public final class ErrorMessages {
     public static final String WAREHOUSE_NOT_FOUND = "error.warehouseProductNotFound";
     public static final String WAREHOUSE_IS_NULL = "error.warehouseProductIsNull";
     public static final String INVALID_FIELDS_IN_REQUEST = "error.invalidFieldsWarehouseProduct";
+
+    //Payment
+    public static final String INVALID_PAYMENT_ID = "error.invalidPaymentId";
+    public static final String PAYMENT_NOT_FOUND = "error.paymentNotFound";
 }
