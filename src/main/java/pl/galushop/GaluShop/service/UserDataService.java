@@ -10,6 +10,7 @@ import pl.galushop.GaluShop.dto.UserDataRequest;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.exception.UserDataNotFoundException;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
@@ -46,8 +47,7 @@ public class UserDataService {
      */
     public UserData getUserData(Long userDataId) {
         throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
-        return userDataRepository.findById(userDataId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
+        return getUserDataOrThrow(userDataId);
     }
 
     /**
@@ -62,7 +62,8 @@ public class UserDataService {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
 
         return userDataRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userId)));
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
+                        ErrorMessages.USER_DATA_NOT_FOUND, userId)));
     }
 
     /**
@@ -74,9 +75,8 @@ public class UserDataService {
      */
     public void deleteUserData(Long userDataId) {
         throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
+        UserData userData = getUserDataOrThrow(userDataId);
 
-        UserData userData = userDataRepository.findById(userDataId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
         userDataRepository.delete(userData);
     }
 
@@ -91,8 +91,7 @@ public class UserDataService {
     public void updateUserData(UserDataRequest userDataRequest) {
         throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
 
-        UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserDataId())));
+        UserData existingUserData = getUserDataOrThrow(userDataRequest.getUserDataId());
 
         existingUserData.setCity(userDataRequest.getCity());
         existingUserData.setStreet(userDataRequest.getStreet());
@@ -116,7 +115,8 @@ public class UserDataService {
         throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
 
         User user = userRepository.findById(userDataRequest.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserId())));
+                .orElseThrow(() -> new UserNotFoundException(messageService.getMessage(
+                        ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserId())));
 
         return UserData.builder()
                 .userDataId(null)
@@ -134,5 +134,11 @@ public class UserDataService {
         if(id == null || id <= 0){
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
+    }
+
+    private UserData getUserDataOrThrow(Long userDataId) {
+        return userDataRepository.findById(userDataId)
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
+                        ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
     }
 }
