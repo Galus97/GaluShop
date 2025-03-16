@@ -34,13 +34,7 @@ public class RegisterEmployeeService {
      * @throws ValidationException if the validation fails.
      */
     public Employee saveNewEmployee(EmployeeRequest employeeRequest) throws ValidationException{
-        Employee employee = Employee.builder()
-                .firstName(employeeRequest.getFirstName())
-                .lastName(employeeRequest.getLastName())
-                .email(employeeRequest.getEmail())
-                .emailCode(emailService.getVerificationCode(employeeRequest.getEmail()))
-                .password(passwordEncoder.encode(employeeRequest.getPassword()))
-                .build();
+        Employee employee = buildEmployeeFromRequest(employeeRequest);
 
         List<String> validationFailures = registerValidator.validateErrors(employee);
         if(validationFailures.isEmpty()){
@@ -49,5 +43,15 @@ public class RegisterEmployeeService {
         } else {
             throw new ValidationException(validationFailures);
         }
+    }
+
+    private Employee buildEmployeeFromRequest(EmployeeRequest employeeRequest) {
+        return Employee.builder()
+                .firstName(employeeRequest.getFirstName())
+                .lastName(employeeRequest.getLastName())
+                .email(employeeRequest.getEmail())
+                .emailCode(emailService.getVerificationCode(employeeRequest.getEmail()))
+                .password(passwordEncoder.encode(employeeRequest.getPassword()))
+                .build();
     }
 }
