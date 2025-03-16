@@ -33,8 +33,7 @@ public class UserDataService {
      */
     @Transactional
     public UserData saveUserData(UserDataRequest userDataRequest) {
-        UserData userData = buildUserData(userDataRequest);
-        return userDataRepository.save(userData);
+        return userDataRepository.save(buildUserData(userDataRequest));
     }
 
     /**
@@ -46,9 +45,7 @@ public class UserDataService {
      * @throws UserDataNotFoundException if user data is not found.
      */
     public UserData getUserData(Long userDataId) {
-        if(userDataId == null || userDataId < 0){
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_ID, userDataId));
-        }
+        throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
         return userDataRepository.findById(userDataId)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
     }
@@ -62,9 +59,8 @@ public class UserDataService {
      * @throws UserDataNotFoundException if no user data is found for the user.
      */
     public UserData getUserDataByUserId(Long userId) {
-        if(userId == null || userId < 0){
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_ID, userId));
-        }
+        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+
         return userDataRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userId)));
     }
@@ -77,9 +73,8 @@ public class UserDataService {
      * @throws UserDataNotFoundException if the user data is not found.
      */
     public void deleteUserData(Long userDataId) {
-        if(userDataId == null || userDataId < 0){
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_ID, userDataId));
-        }
+        throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
+
         UserData userData = userDataRepository.findById(userDataId)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
         userDataRepository.delete(userData);
@@ -94,9 +89,7 @@ public class UserDataService {
      */
     @Transactional
     public void updateUserData(UserDataRequest userDataRequest) {
-        if (userDataRequest.getUserDataId() == null || userDataRequest.getUserDataId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_ID, userDataRequest.getUserDataId()));
-        }
+        throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
 
         UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserDataId())));
@@ -120,9 +113,7 @@ public class UserDataService {
      * @throws UsernameNotFoundException if the user is not found.
      */
     private UserData buildUserData(UserDataRequest userDataRequest) {
-        if(userDataRequest == null){
-            throw new IllegalArgumentException();
-        }
+        throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
 
         User user = userRepository.findById(userDataRequest.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserId())));
@@ -137,5 +128,11 @@ public class UserDataService {
                 .zipCode(userDataRequest.getZipCode())
                 .phoneNumber(userDataRequest.getPhoneNumber())
                 .build();
+    }
+
+    private void throwIfIdIsInvalid(Long id, String message){
+        if(id == null || id <= 0){
+            throw new IllegalArgumentException(messageService.getMessage(message, id));
+        }
     }
 }
