@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.UserDataRequest;
 import pl.galushop.GaluShop.entity.User;
@@ -46,10 +47,10 @@ public class UserDataService {
      */
     public UserData getUserData(Long userDataId) {
         if(userDataId == null || userDataId < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_ID, userDataId));
         }
         return userDataRepository.findById(userDataId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataId)));
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
     }
 
     /**
@@ -62,10 +63,10 @@ public class UserDataService {
      */
     public UserData getUserDataByUserId(Long userId) {
         if(userId == null || userId < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_ID, userId));
         }
         return userDataRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userId)));
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userId)));
     }
 
     /**
@@ -77,10 +78,10 @@ public class UserDataService {
      */
     public void deleteUserData(Long userDataId) {
         if(userDataId == null || userDataId < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_ID, userDataId));
         }
         UserData userData = userDataRepository.findById(userDataId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataId)));
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
         userDataRepository.delete(userData);
     }
 
@@ -94,11 +95,11 @@ public class UserDataService {
     @Transactional
     public void updateUserData(UserDataRequest userDataRequest) {
         if (userDataRequest.getUserDataId() == null || userDataRequest.getUserDataId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserDataId", userDataRequest.getUserDataId()));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_ID, userDataRequest.getUserDataId()));
         }
 
         UserData existingUserData = userDataRepository.findById(userDataRequest.getUserDataId())
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage("error.userDataNotFound", userDataRequest.getUserDataId())));
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserDataId())));
 
         existingUserData.setCity(userDataRequest.getCity());
         existingUserData.setStreet(userDataRequest.getStreet());
@@ -124,7 +125,7 @@ public class UserDataService {
         }
 
         User user = userRepository.findById(userDataRequest.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userDataRequest.getUserId())));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserId())));
 
         return UserData.builder()
                 .userDataId(null)
