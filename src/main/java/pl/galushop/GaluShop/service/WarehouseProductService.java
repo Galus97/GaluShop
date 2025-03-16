@@ -107,7 +107,7 @@ public class WarehouseProductService {
     public void updateQuantityByProductId(Long productId, Integer quantity) {
         throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         if(quantity == null || quantity < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidQuantity"));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_QUANTITY));
         }
         WarehouseProduct existingWarehouseProduct = warehouseRepository.findByProduct_ProductId(productId)
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_IS_NULL)));
