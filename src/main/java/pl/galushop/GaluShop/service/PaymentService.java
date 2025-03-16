@@ -35,8 +35,7 @@ public class PaymentService {
     public Payment getPaymentById(Long paymentId){
         throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
 
-        return paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND, paymentId)));
+        return getPaymentOrThrow(paymentId);
     }
 
     /**
@@ -64,7 +63,7 @@ public class PaymentService {
     public List<Payment> getAllPaymentsByUserId(Long userId){
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
 
-        //Throw if user not found
+        //Throws exception if user doesn't exist in database
         userService.getUser(userId);
 
         return paymentRepository.findAllByUser_UserId(userId);
@@ -94,9 +93,7 @@ public class PaymentService {
     public void deletePayment(Long paymentId){
         throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
 
-        Payment payment = paymentRepository.findById(paymentId).
-                orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND, paymentId)));
-        paymentRepository.delete(payment);
+        paymentRepository.delete(getPaymentOrThrow(paymentId));
     }
 
     /**
@@ -112,8 +109,7 @@ public class PaymentService {
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
 
-        Payment existingPayment = paymentRepository.findById(paymentRequest.getPaymentId())
-                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND, paymentRequest.getPaymentId())));
+        Payment existingPayment = getPaymentOrThrow(paymentRequest.getPaymentId());
         existingPayment.setPaymentStatus(paymentRequest.getPaymentStatus());
         existingPayment.setTotalAmount(paymentRequest.getTotalAmount());
         existingPayment.setOrder(order);
@@ -144,5 +140,10 @@ public class PaymentService {
         if(id == null || id <= 0){
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
+    }
+
+    private Payment getPaymentOrThrow(Long paymentId) {
+        return paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND, paymentId)));
     }
 }
