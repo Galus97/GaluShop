@@ -3,11 +3,10 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.dto.ProductRequest;
 import pl.galushop.GaluShop.entity.Product;
-import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
@@ -32,11 +31,16 @@ public class ProductService {
      * @throws ProductNotFoundException if no product is found with the given ID.
      */
     public Product getProduct(Long productId) {
-        if (productId == null || productId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
-        }
+        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+
         return productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
+                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, productId)));
+    }
+
+    private void throwIfIdIsInvalid(Long id, String message){
+        if(id == null || id <= 0){
+            throw new IllegalArgumentException(messageService.getMessage(message, id));
+        }
     }
 
     /**
@@ -61,10 +65,10 @@ public class ProductService {
      */
     public void deleteProduct(Long productId) {
         if(productId == null || productId < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_ID, productId));
         }
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productId)));
+                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, productId)));
         productRepository.delete(product);
     }
 
@@ -78,10 +82,10 @@ public class ProductService {
     @Transactional
     public void updateProduct(ProductRequest productRequest) {
         if(productRequest == null || productRequest.getProductId() < 0){
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productRequest.getProductId()));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_ID, productRequest.getProductId()));
         }
         Product existingProduct = productRepository.findById(productRequest.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage("error.productNotFound", productRequest.getProductId())));
+                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, productRequest.getProductId())));
         existingProduct.setProductName(productRequest.getProductName());
         existingProduct.setDescription(productRequest.getDescription());
         existingProduct.setPrice(productRequest.getPrice());
@@ -99,8 +103,8 @@ public class ProductService {
      * @throws IllegalArgumentException if the provided list is null.
      */
     public List<Product> getAllProductByIds(List<Long> productIds){
-        if(productIds == null){
-            throw new IllegalArgumentException(messageService.getMessage("error.listIsNull"));
+        if(productIds == null || productIds.isEmpty()){
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.LIST_IS_INVALID, productIds.size()));
         }
         return productRepository.findAllById(productIds);
     }
