@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.UserRequest;
 import pl.galushop.GaluShop.entity.User;
@@ -29,11 +30,8 @@ public class UserService {
      * @throws UsernameNotFoundException if no user is found with the given ID.
      */
     public User getUser(Long userId){
-        if (userId == null || userId < 1) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
-        }
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId)));
+        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+        return getUserOrThrow(userId);
     }
 
     /**
@@ -44,12 +42,9 @@ public class UserService {
      * @throws UsernameNotFoundException if no user is found with the given ID.
      */
     public void deleteUser(Long userId){
-        if (userId == null || userId < 1) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
-        }
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId)));
-        userRepository.delete(user);
+        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+
+        userRepository.delete(getUserOrThrow(userId));
     }
 
     /**
@@ -62,11 +57,9 @@ public class UserService {
      */
     @Transactional
     public void updateUser(UserRequest userRequest){
-        if (userRequest.getUserId() == null || userRequest.getUserId() < 1) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserRequest"));
-        }
-        User existingUser = userRepository.findById(userRequest.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userRequest.getUserId())));
+        throwIfIdIsInvalid(userRequest.getUserId(), ErrorMessages.INVALID_USER_ID);
+        
+        User existingUser = getUserOrThrow(userRequest.getUserId());
 
         existingUser.setFirstName(userRequest.getFirstName());
         existingUser.setLastName(userRequest.getLastName());
@@ -79,9 +72,20 @@ public class UserService {
         userRepository.save(existingUser);
     }
 
+    private User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
+    }
+
     public void throwIfUserDoesntExist(Long userId){
         if(!userRepository.existsById(userId)){
-            throw new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId));
+            throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
+        }
+    }
+
+    private void throwIfIdIsInvalid(Long userId, String message) {
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage(message, userId));
         }
     }
 }

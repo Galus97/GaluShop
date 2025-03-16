@@ -3,6 +3,8 @@ package pl.galushop.GaluShop.component;
 public final class ErrorMessages {
     public static final String USER_OR_EMPLOYEE_NOT_FOUND = "error.userOrEmployeeNotFound";
     public static final String EMAIL_IS_INVALID = "error.invalidEmail";
+    public static final String ERROR = "error";
+    public static final String INVALID_QUANTITY = "error.invalidQuantity";
 
     //Employee
     public static final String EMPLOYEE_NOT_FOUND = "error.employeeNotFound";
@@ -21,6 +23,8 @@ public final class ErrorMessages {
 
     //User
     public static final String INVALID_USER_ID = "error.invalidUserId";
+    public static final String USER_NOT_FOUND = "error.userNotFound";
+    public static final String INVALID_USER_REQUEST = "error.invalidUserRequest";
 
     //WarehouseProduct
     public static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";
