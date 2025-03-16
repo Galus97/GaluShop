@@ -30,8 +30,7 @@ public class EmployeeService {
      */
     public Employee getEmployee(Long employeeId){
         throwIfIdIsInvalid(employeeId);
-        return employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeId)));
+        return getEmployeeOrThrowIfNotFound(employeeId);
     }
 
     /**
@@ -43,8 +42,8 @@ public class EmployeeService {
      */
     public void deleteEmployee(Long employeeId){
         throwIfIdIsInvalid(employeeId);
-        Employee employee = getEmployeeOrThrowIfNotFound(employeeId);
-        employeeRepository.delete(employee);
+
+        employeeRepository.delete(getEmployeeOrThrowIfNotFound(employeeId));
     }
 
     /**

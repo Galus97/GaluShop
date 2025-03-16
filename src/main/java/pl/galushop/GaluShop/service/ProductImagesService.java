@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.entity.ProductImages;
@@ -29,8 +30,7 @@ public class ProductImagesService {
      */
     @Transactional
     public ProductImages saveProductImages(ProductImageRequest productImageRequest) {
-        ProductImages productImages = buildProductImages(productImageRequest);
-        return productImagesRepository.save(productImages);
+        return productImagesRepository.save(buildProductImages(productImageRequest));
     }
 
     /**
@@ -42,11 +42,8 @@ public class ProductImagesService {
      * @throws ProductImagesNotFoundException if no image is found with the given ID.
      */
     public ProductImages getProductImages(Long imagesId) {
-        if (imagesId == null || imagesId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", imagesId));
-        }
-        return productImagesRepository.findById(imagesId)
-                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", imagesId)));
+        throwIfIdIsInvalid(imagesId);
+        return getImagesOrThrow(imagesId);
     }
 
     /**
@@ -58,12 +55,9 @@ public class ProductImagesService {
      */
     @Transactional
     public void updateProductImages(ProductImageRequest productImageRequest) {
-        if (productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
-        }
-        ProductImages exisitngProductImages = productImagesRepository.findById(productImageRequest.getImagesId())
-                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", productImageRequest.getImagesId())));
+        throwIfIdIsInvalid(productImageRequest.getImagesId());
 
+        ProductImages exisitngProductImages = getImagesOrThrow(productImageRequest.getImagesId());
         exisitngProductImages.setProduct(productImageRequest.getProduct());
         exisitngProductImages.setImgSrc(productImageRequest.getImgSrc());
         exisitngProductImages.setAltImg(productImageRequest.getAltImg());
@@ -79,12 +73,8 @@ public class ProductImagesService {
      * @throws ProductImagesNotFoundException if no image is found with the given ID.
      */
     public void deleteProductImages(Long imagesId) {
-        if (imagesId == null || imagesId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", imagesId));
-        }
-        ProductImages productImages = productImagesRepository.findById(imagesId)
-                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", imagesId)));
-        productImagesRepository.delete(productImages);
+        throwIfIdIsInvalid(imagesId);
+        productImagesRepository.delete(getImagesOrThrow(imagesId));
     }
 
     /**
@@ -95,10 +85,7 @@ public class ProductImagesService {
      * @throws IllegalArgumentException if the product ID is null or invalid.
      */
     public List<ProductImages> getAllImagesByProductId(Long productId) {
-        if (productId == null || productId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
-        }
-
+        throwIfIdIsInvalid(productId);
         return productImagesRepository.findAllByProduct_ProductId(productId);
     }
 
@@ -110,13 +97,23 @@ public class ProductImagesService {
      * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
      */
     private ProductImages buildProductImages(ProductImageRequest productImageRequest) {
-        if (productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
-        }
+        throwIfIdIsInvalid(productImageRequest.getImagesId());
+
         return ProductImages.builder()
                 .product(productImageRequest.getProduct())
                 .imgSrc(productImageRequest.getImgSrc())
                 .altImg(productImageRequest.getAltImg())
                 .build();
+    }
+
+    private void throwIfIdIsInvalid(Long id){
+        if(id == null || id <= 0){
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, id));
+        }
+    }
+
+    private ProductImages getImagesOrThrow(Long imagesId) {
+        return productImagesRepository.findById(imagesId)
+                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_NOT_FOUND, imagesId)));
     }
 }
