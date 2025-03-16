@@ -34,13 +34,7 @@ public class RegisterUserService {
      * @throws ValidationException if the validation fails.
      */
     public User saveNewUser(UserRequest userRequest) throws ValidationException {
-        User user = User.builder()
-                .firstName(userRequest.getFirstName())
-                .lastName(userRequest.getLastName())
-                .email(userRequest.getEmail())
-                .emailCode(emailService.getVerificationCode(userRequest.getEmail()))
-                .password(passwordEncoder.encode(userRequest.getPassword()))
-                .build();
+        User user = buildUserFromRequest(userRequest);
 
         List<String> validationFailures = registerValidator.validateErrors(user);
         if (validationFailures.isEmpty()) {
@@ -49,5 +43,15 @@ public class RegisterUserService {
         } else {
             throw new ValidationException(validationFailures);
         }
+    }
+
+    private User buildUserFromRequest(UserRequest userRequest) {
+        return User.builder()
+                .firstName(userRequest.getFirstName())
+                .lastName(userRequest.getLastName())
+                .email(userRequest.getEmail())
+                .emailCode(emailService.getVerificationCode(userRequest.getEmail()))
+                .password(passwordEncoder.encode(userRequest.getPassword()))
+                .build();
     }
 }
