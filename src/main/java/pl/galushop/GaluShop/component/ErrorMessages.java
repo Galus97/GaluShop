@@ -23,6 +23,8 @@ public final class ErrorMessages {
 
     //User
     public static final String INVALID_USER_ID = "error.invalidUserId";
+    public static final String USER_NOT_FOUND = "error.userNotFound";
+    public static final String INVALID_USER_REQUEST = "error.invalidUserRequest";
 
     //WarehouseProduct
     public static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";

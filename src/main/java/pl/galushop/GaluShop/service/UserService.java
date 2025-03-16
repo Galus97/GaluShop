@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.UserRequest;
 import pl.galushop.GaluShop.entity.User;
@@ -30,10 +31,10 @@ public class UserService {
      */
     public User getUser(Long userId){
         if (userId == null || userId < 1) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_ID, userId));
         }
         return userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId)));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
     }
 
     /**
@@ -45,10 +46,10 @@ public class UserService {
      */
     public void deleteUser(Long userId){
         if (userId == null || userId < 1) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserId", userId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_ID, userId));
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId)));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
         userRepository.delete(user);
     }
 
@@ -63,10 +64,10 @@ public class UserService {
     @Transactional
     public void updateUser(UserRequest userRequest){
         if (userRequest.getUserId() == null || userRequest.getUserId() < 1) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidUserRequest"));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
         }
         User existingUser = userRepository.findById(userRequest.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userRequest.getUserId())));
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userRequest.getUserId())));
 
         existingUser.setFirstName(userRequest.getFirstName());
         existingUser.setLastName(userRequest.getLastName());
@@ -81,7 +82,7 @@ public class UserService {
 
     public void throwIfUserDoesntExist(Long userId){
         if(!userRepository.existsById(userId)){
-            throw new UsernameNotFoundException(messageService.getMessage("error.userNotFound", userId));
+            throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
         }
     }
 }
