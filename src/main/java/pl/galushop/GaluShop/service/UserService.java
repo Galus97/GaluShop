@@ -43,9 +43,8 @@ public class UserService {
      */
     public void deleteUser(Long userId){
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
-        userRepository.delete(user);
+
+        userRepository.delete(getUserOrThrow(userId));
     }
 
     /**
@@ -60,8 +59,7 @@ public class UserService {
     public void updateUser(UserRequest userRequest){
         throwIfIdIsInvalid(userRequest.getUserId(), ErrorMessages.INVALID_USER_ID);
         
-        User existingUser = userRepository.findById(userRequest.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userRequest.getUserId())));
+        User existingUser = getUserOrThrow(userRequest.getUserId());
 
         existingUser.setFirstName(userRequest.getFirstName());
         existingUser.setLastName(userRequest.getLastName());
@@ -74,6 +72,10 @@ public class UserService {
         userRepository.save(existingUser);
     }
 
+    private User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
+    }
 
     public void throwIfUserDoesntExist(Long userId){
         if(!userRepository.existsById(userId)){
