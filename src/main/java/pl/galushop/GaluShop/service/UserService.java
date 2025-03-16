@@ -30,11 +30,8 @@ public class UserService {
      * @throws UsernameNotFoundException if no user is found with the given ID.
      */
     public User getUser(Long userId){
-        if (userId == null || userId < 1) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_ID, userId));
-        }
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
+        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+        return getUserOrThrow(userId);
     }
 
     /**
@@ -45,9 +42,7 @@ public class UserService {
      * @throws UsernameNotFoundException if no user is found with the given ID.
      */
     public void deleteUser(Long userId){
-        if (userId == null || userId < 1) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_ID, userId));
-        }
+        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
         userRepository.delete(user);
@@ -63,9 +58,8 @@ public class UserService {
      */
     @Transactional
     public void updateUser(UserRequest userRequest){
-        if (userRequest.getUserId() == null || userRequest.getUserId() < 1) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
-        }
+        throwIfIdIsInvalid(userRequest.getUserId(), ErrorMessages.INVALID_USER_ID);
+        
         User existingUser = userRepository.findById(userRequest.getUserId())
                 .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userRequest.getUserId())));
 
@@ -80,9 +74,16 @@ public class UserService {
         userRepository.save(existingUser);
     }
 
+
     public void throwIfUserDoesntExist(Long userId){
         if(!userRepository.existsById(userId)){
             throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
+        }
+    }
+
+    private void throwIfIdIsInvalid(Long userId, String message) {
+        if (userId == null || userId <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage(message, userId));
         }
     }
 }
