@@ -35,14 +35,14 @@ public class EmailService {
     public void sendEmail(String email) {
         throwIfEmailIsInvalid(email);
         String emailActiveCode = generateActiveCode();
-        cacheManager.getCache("verificationCodes").put(email, emailActiveCode);
+        cacheManager.getCache(ErrorMessages.VERIFICATION_CODE).put(email, emailActiveCode);
 
         SimpleMailMessage message = new SimpleMailMessage();
-        String text = messageService.getMessage("email.text", emailActiveCode);
+        String text = messageService.getMessage(ErrorMessages.EMAIL_TEXT, emailActiveCode);
 
         message.setTo(email);
-        message.setFrom(messageService.getMessage("email.from"));
-        message.setSubject(messageService.getMessage("email.subject"));
+        message.setFrom(messageService.getMessage(ErrorMessages.EMAIL_FORM));
+        message.setSubject(messageService.getMessage(ErrorMessages.EMAIL_SUBJECT));
         message.setText(text);
 
         javaMailSender.send(message);
@@ -55,10 +55,10 @@ public class EmailService {
      * @param email the recipient's email address
      * @return the stored verification code, or null if not found
      */
-    @Cacheable(value = "verificationCodes", key = "#email")
+    @Cacheable(value = ErrorMessages.VERIFICATION_CODE, key = "#email")
     public String getVerificationCode(String email){
         throwIfEmailIsInvalid(email);
-        return cacheManager.getCache("verificationCodes").get(email, String.class);
+        return cacheManager.getCache(ErrorMessages.VERIFICATION_CODE).get(email, String.class);
     }
 
     /**
