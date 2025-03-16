@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.ProductImageRequest;
 import pl.galushop.GaluShop.entity.ProductImages;
@@ -29,8 +30,7 @@ public class ProductImagesService {
      */
     @Transactional
     public ProductImages saveProductImages(ProductImageRequest productImageRequest) {
-        ProductImages productImages = buildProductImages(productImageRequest);
-        return productImagesRepository.save(productImages);
+        return productImagesRepository.save(buildProductImages(productImageRequest));
     }
 
     /**
@@ -43,10 +43,10 @@ public class ProductImagesService {
      */
     public ProductImages getProductImages(Long imagesId) {
         if (imagesId == null || imagesId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", imagesId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, imagesId));
         }
         return productImagesRepository.findById(imagesId)
-                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", imagesId)));
+                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_NOT_FOUND, imagesId)));
     }
 
     /**
@@ -59,10 +59,10 @@ public class ProductImagesService {
     @Transactional
     public void updateProductImages(ProductImageRequest productImageRequest) {
         if (productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, productImageRequest.getImagesId()));
         }
         ProductImages exisitngProductImages = productImagesRepository.findById(productImageRequest.getImagesId())
-                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", productImageRequest.getImagesId())));
+                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_NOT_FOUND, productImageRequest.getImagesId())));
 
         exisitngProductImages.setProduct(productImageRequest.getProduct());
         exisitngProductImages.setImgSrc(productImageRequest.getImgSrc());
@@ -80,10 +80,10 @@ public class ProductImagesService {
      */
     public void deleteProductImages(Long imagesId) {
         if (imagesId == null || imagesId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", imagesId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, imagesId));
         }
         ProductImages productImages = productImagesRepository.findById(imagesId)
-                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage("error.productImagesNotFoundException", imagesId)));
+                .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_NOT_FOUND, imagesId)));
         productImagesRepository.delete(productImages);
     }
 
@@ -96,7 +96,7 @@ public class ProductImagesService {
      */
     public List<ProductImages> getAllImagesByProductId(Long productId) {
         if (productId == null || productId < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductId", productId));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, productId));
         }
 
         return productImagesRepository.findAllByProduct_ProductId(productId);
@@ -111,7 +111,7 @@ public class ProductImagesService {
      */
     private ProductImages buildProductImages(ProductImageRequest productImageRequest) {
         if (productImageRequest.getImagesId() == null || productImageRequest.getImagesId() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidProductImagesId", productImageRequest.getImagesId()));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, productImageRequest.getImagesId()));
         }
         return ProductImages.builder()
                 .product(productImageRequest.getProduct())
