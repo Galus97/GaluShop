@@ -32,10 +32,9 @@ public class WarehouseProductService {
      * @throws IllegalArgumentException If the provided ID is null or negative.
      * @throws WarehouseProductNotFoundException If no warehouse product is found.
      */
-    public WarehouseProduct getWarehouseProduct(Long productId) {
+    public WarehouseProduct getWarehouseProductEntity(Long productId) {
         throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
-        return warehouseRepository.findById(productId)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID, productId)));
+        return getWarehouseProductOrThrow(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID);
     }
 
 
@@ -49,8 +48,7 @@ public class WarehouseProductService {
      */
     @Transactional
     public WarehouseProduct saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
-        WarehouseProduct warehouseProduct = buildWarehouseProduct(warehouseProductRequest);
-        return warehouseRepository.save(warehouseProduct);
+        return warehouseRepository.save(buildWarehouseProduct(warehouseProductRequest));
     }
 
     /**
@@ -71,8 +69,7 @@ public class WarehouseProductService {
      */
     public void deleteWarehouseProduct(Long warehouseId) {
         throwIfIdIsInvalid(warehouseId, ErrorMessages.WAREHOUSE_ID_IS_INVALID);
-        WarehouseProduct warehouseProduct = warehouseRepository.findById(warehouseId)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_NOT_FOUND, warehouseId)));
+        WarehouseProduct warehouseProduct = getWarehouseProductOrThrow(warehouseId, ErrorMessages.WAREHOUSE_NOT_FOUND);
 
         warehouseRepository.delete(warehouseProduct);
     }
@@ -85,8 +82,8 @@ public class WarehouseProductService {
      */
     @Transactional
     public void updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest){
-        WarehouseProduct existingWarehouseProduct = warehouseRepository.findById(warehouseProductRequest.getWarehouseProductId())
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(ErrorMessages.WAREHOUSE_NOT_FOUND, warehouseProductRequest.getWarehouseProductId())));
+        WarehouseProduct existingWarehouseProduct = getWarehouseProductOrThrow(warehouseProductRequest.getProductId(),
+                ErrorMessages.WAREHOUSE_NOT_FOUND);
 
         Product product = productService.getProduct(warehouseProductRequest.getProductId());
         existingWarehouseProduct.setProduct(product);
@@ -149,5 +146,10 @@ public class WarehouseProductService {
                 || warehouseProductRequest.getQuantity() == null  || warehouseProductRequest.getQuantity() < 0){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_FIELDS_IN_REQUEST));
         }
+    }
+
+    private WarehouseProduct getWarehouseProductOrThrow(Long productId, String message) {
+        return warehouseRepository.findById(productId)
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(message, productId)));
     }
 }

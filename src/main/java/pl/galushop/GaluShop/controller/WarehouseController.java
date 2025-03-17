@@ -24,7 +24,7 @@ public class WarehouseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<WarehouseProduct> showWarehouseProduct(@PathVariable Long id){
-        return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(id));
+        return ResponseEntity.ok(warehouseProductService.getWarehouseProductEntity(id));
     }
 
     @PostMapping
@@ -37,7 +37,7 @@ public class WarehouseController {
     @PutMapping
     public ResponseEntity<WarehouseProduct> updateWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
         warehouseProductService.updateWarehouseProduct(warehouseProductRequest);
-        return ResponseEntity.ok(warehouseProductService.getWarehouseProduct(warehouseProductRequest.getWarehouseProductId()));
+        return ResponseEntity.ok(warehouseProductService.getWarehouseProductEntity(warehouseProductRequest.getWarehouseProductId()));
     }
 
     @DeleteMapping("/{id}")
