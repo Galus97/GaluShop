@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
@@ -18,7 +19,7 @@ public class WarehouseAllProductController {
 
 
     @GetMapping("/allProduct")
-    public ResponseEntity<List<WarehouseProduct>> showAllProductInWarehouse(){
+    public ResponseEntity<List<WarehouseProductResponse>> showAllProductInWarehouse(){
         return ResponseEntity.ok(warehouseProductService.getAllProductInWarehouse());
     }
 }

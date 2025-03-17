@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.dto;
+package pl.galushop.GaluShop.dto.request;
 
 import lombok.Data;
 

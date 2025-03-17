@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.galushop.GaluShop.dto.OrderRequest;
-import pl.galushop.GaluShop.dto.OrderResponse;
-import pl.galushop.GaluShop.entity.Order;
+import pl.galushop.GaluShop.dto.request.OrderRequest;
+import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.service.OrderService;
 
 import java.net.URI;
@@ -37,8 +36,7 @@ public class OrderController {
 
     @PutMapping
     public ResponseEntity<OrderResponse> updateOrder(@RequestBody OrderRequest orderRequest) {
-        orderService.updateOrder(orderRequest);
-        return ResponseEntity.ok(orderService.getOrderResponse(orderRequest.getOrderId()));
+        return ResponseEntity.ok(orderService.updateOrder(orderRequest));
     }
 
     @DeleteMapping("/{id}")

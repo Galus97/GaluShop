@@ -1,10 +1,12 @@
-package pl.galushop.GaluShop.dto;
+package pl.galushop.GaluShop.dto.request;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class UserRequest {
-    private Long userId;
+@Builder
+public class EmployeeRequest {
+    private Long employeeId;
     private String firstName;
     private String lastName;
     private String email;
