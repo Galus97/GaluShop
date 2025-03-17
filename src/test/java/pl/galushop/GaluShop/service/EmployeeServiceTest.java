@@ -57,7 +57,7 @@ class EmployeeServiceTest {
         employee.setEmployeeId(1L);
         when(employeeRepository.findById(employee.getEmployeeId())).thenReturn(Optional.of(employee));
         //Act
-        Employee resultEmployee = employeeService.getEmployee(employee.getEmployeeId());
+        Employee resultEmployee = employeeService.getEmployeeEntity(employee.getEmployeeId());
         //Assert
         assertThat(resultEmployee).isEqualTo(employee);
     }
@@ -68,7 +68,7 @@ class EmployeeServiceTest {
         when(employeeRepository.findById(anyLong())).thenReturn(Optional.empty());
         //Act & Assert
         assertThrows(EmployeeNotFoundException.class, () -> {
-            employeeService.getEmployee(9999L);
+            employeeService.getEmployeeEntity(9999L);
         });
     }
 
@@ -76,7 +76,7 @@ class EmployeeServiceTest {
     void givenInvalidId_whenThrowIfIdIsInvalid_thenReturnIllegalArgumentException(){
         //Act & Assert
         assertThrows(IllegalArgumentException.class, () -> {
-            employeeService.getEmployee(-1L);
+            employeeService.getEmployeeEntity(-1L);
         });
     }
 
@@ -84,7 +84,7 @@ class EmployeeServiceTest {
     void givenNullId_whenThrowIfIdIsInvalid_thenReturnIllegalArgumentException(){
         //Act & Assert
         assertThrows(IllegalArgumentException.class, () -> {
-            employeeService.getEmployee(null);
+            employeeService.getEmployeeEntity(null);
         });
     }
 
