@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
+import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.EmployeeService;
@@ -26,15 +27,15 @@ public class EmployeeController {
     private final RegisterEmployeeService registerEmployeeService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> showEmployee(@PathVariable Long id){
-        return ResponseEntity.ok(employeeService.getEmployee(id));
+    public ResponseEntity<EmployeeResponse> showEmployee(@PathVariable Long id){
+        return ResponseEntity.ok(employeeService.getEmployeeResponse(id));
     }
 
     @PostMapping
     public ResponseEntity<?> saveEmployee(@RequestBody EmployeeRequest employeeRequest) {
         try {
-            Employee savedEmployee = registerEmployeeService.saveNewEmployee(employeeRequest);
-            return ResponseEntity.created(URI.create("/employee/" + savedEmployee.getEmployeeId()))
+            EmployeeResponse savedEmployee = registerEmployeeService.saveNewEmployee(employeeRequest);
+            return ResponseEntity.created(URI.create("/employee/" + savedEmployee.employeeId()))
                     .body(savedEmployee);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(e.getValidationErrors());
@@ -42,9 +43,8 @@ public class EmployeeController {
     }
 
     @PutMapping
-    private ResponseEntity<Employee> updateEmployee(@RequestBody EmployeeRequest employeeRequest){
-        employeeService.updateEmployee(employeeRequest);
-        return ResponseEntity.ok(employeeService.getEmployee(employeeRequest.getEmployeeId()));
+    private ResponseEntity<EmployeeResponse> updateEmployee(@RequestBody EmployeeRequest employeeRequest){
+        return ResponseEntity.ok(employeeService.updateEmployee(employeeRequest));
     }
 
     @DeleteMapping("/{id}")
