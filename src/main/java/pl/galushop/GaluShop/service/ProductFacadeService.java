@@ -3,8 +3,8 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.galushop.GaluShop.dto.ProductImageRequest;
-import pl.galushop.GaluShop.dto.ProductRequest;
+import pl.galushop.GaluShop.dto.request.ProductImageRequest;
+import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
 

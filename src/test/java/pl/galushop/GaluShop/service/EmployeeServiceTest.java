@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.EmployeeRequest;
+import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;

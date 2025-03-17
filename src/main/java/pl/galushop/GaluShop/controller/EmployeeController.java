@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.galushop.GaluShop.dto.EmployeeRequest;
+import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.EmployeeService;

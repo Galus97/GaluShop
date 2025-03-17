@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.ProductImageRequest;
+import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;

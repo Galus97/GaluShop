@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.PaymentRequest;
+import pl.galushop.GaluShop.dto.request.PaymentRequest;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
