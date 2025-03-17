@@ -34,8 +34,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest){
         try {
-            User savedUser = registerUserService.saveNewUser(userRequest);
-            return ResponseEntity.created(URI.create("/user/" + savedUser.getUserId()))
+            UserResponse savedUser = registerUserService.saveNewUser(userRequest);
+            return ResponseEntity.created(URI.create("/user/" + savedUser.userId()))
                     .body(savedUser);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(e.getValidationErrors());
