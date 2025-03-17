@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
+import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
@@ -33,13 +34,13 @@ public class RegisterEmployeeService {
      * @return The created Employee
      * @throws ValidationException if the validation fails.
      */
-    public Employee saveNewEmployee(EmployeeRequest employeeRequest) throws ValidationException{
+    public EmployeeResponse saveNewEmployee(EmployeeRequest employeeRequest) throws ValidationException{
         Employee employee = buildEmployeeFromRequest(employeeRequest);
 
         List<String> validationFailures = registerValidator.validateErrors(employee);
         if(validationFailures.isEmpty()){
             emailService.sendEmail(employeeRequest.getEmail());
-            return employeeRepository.save(employee);
+            return EmployeeResponse.fromEntity(employeeRepository.save(employee));
         } else {
             throw new ValidationException(validationFailures);
         }
