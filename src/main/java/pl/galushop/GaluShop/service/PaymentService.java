@@ -64,7 +64,7 @@ public class PaymentService {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
 
         //Throws exception if user doesn't exist in database
-        userService.getUser(userId);
+        userService.getUserEntity(userId);
 
         return paymentRepository.findAllByUser_UserId(userId);
     }

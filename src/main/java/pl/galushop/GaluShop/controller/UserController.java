@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.UserRequest;
+import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.RegisterUserService;
@@ -26,15 +27,15 @@ public class UserController {
     private final RegisterUserService registerUserService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> showUser(@PathVariable Long id){
-        return ResponseEntity.ok(userService.getUser(id));
+    public ResponseEntity<UserResponse> showUser(@PathVariable Long id){
+        return ResponseEntity.ok(userService.getUserResponse(id));
     }
 
     @PostMapping
     public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest){
         try {
-            User savedUser = registerUserService.saveNewUser(userRequest);
-            return ResponseEntity.created(URI.create("/user/" + savedUser.getUserId()))
+            UserResponse savedUser = registerUserService.saveNewUser(userRequest);
+            return ResponseEntity.created(URI.create("/user/" + savedUser.userId()))
                     .body(savedUser);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(e.getValidationErrors());
@@ -42,9 +43,8 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(@RequestBody UserRequest userRequest){
-        userService.updateUser(userRequest);
-        return ResponseEntity.ok(userService.getUser(userRequest.getUserId()));
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest userRequest){
+        return ResponseEntity.ok(userService.updateUser(userRequest));
     }
 
     @DeleteMapping("/{id}")

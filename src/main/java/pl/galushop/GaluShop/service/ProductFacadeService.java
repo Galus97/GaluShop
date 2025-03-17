@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
+import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
 
@@ -26,14 +27,14 @@ public class ProductFacadeService {
      * @return Thr created Product
      */
     @Transactional
-    public Product saveProductWithImages(ProductRequest productRequest){
+    public ProductResponse saveProductWithImages(ProductRequest productRequest){
         Product product = productService.saveProduct(productRequest);
 
         for(ProductImageRequest imageRequest : productRequest.getProductImages()){
             imageRequest.setProduct(product);
             productImagesService.saveProductImages(imageRequest);
         }
-        return product;
+        return ProductResponse.fromEntity(product);
     }
 
     /**
@@ -43,7 +44,7 @@ public class ProductFacadeService {
      * @return List of product images.
      */
     public List<ProductImages> getAllImagesByProductId(Long productId) {
-        productService.getProduct(productId);
+        productService.getProductEntity(productId);
         return productImagesService.getAllImagesByProductId(productId);
     }
 }

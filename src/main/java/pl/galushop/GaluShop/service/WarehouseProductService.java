@@ -95,7 +95,7 @@ public class WarehouseProductService {
         WarehouseProduct existingWarehouseProduct = getWarehouseProductOrThrow(warehouseProductRequest.getProductId(),
                 ErrorMessages.WAREHOUSE_NOT_FOUND);
 
-        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+        Product product = productService.getProductEntity(warehouseProductRequest.getProductId());
         existingWarehouseProduct.setProduct(product);
         existingWarehouseProduct.setQuantity(warehouseProductRequest.getQuantity());
 
@@ -134,7 +134,7 @@ public class WarehouseProductService {
     private WarehouseProduct buildWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
         throwIfRequestIsInvalid(warehouseProductRequest);
 
-        Product product = productService.getProduct(warehouseProductRequest.getProductId());
+        Product product = productService.getProductEntity(warehouseProductRequest.getProductId());
         return WarehouseProduct.builder()
                 .warehouseProductId(null)
                 .product(product)

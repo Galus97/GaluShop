@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
+import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
@@ -28,9 +29,14 @@ public class EmployeeService {
      * @return The retrieved employee entity.
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
-    public Employee getEmployee(Long employeeId){
+    public Employee getEmployeeEntity(Long employeeId){
         throwIfIdIsInvalid(employeeId);
         return getEmployeeOrThrowIfNotFound(employeeId);
+    }
+
+    public EmployeeResponse getEmployeeResponse(Long employeeId){
+        throwIfIdIsInvalid(employeeId);
+        return EmployeeResponse.fromEntity(getEmployeeOrThrowIfNotFound(employeeId));
     }
 
     /**
@@ -54,7 +60,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException if no employee is found with the given ID.
      */
     @Transactional
-    public void updateEmployee(EmployeeRequest employeeRequest){
+    public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest){
         Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
         existingEmployee.setFirstName(employeeRequest.getFirstName());
@@ -64,7 +70,7 @@ public class EmployeeService {
             existingEmployee.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
         }
 
-        employeeRepository.save(existingEmployee);
+        return EmployeeResponse.fromEntity(employeeRepository.save(existingEmployee));
     }
 
     private Employee getEmployeeOrThrowIfNotFound(Long id){

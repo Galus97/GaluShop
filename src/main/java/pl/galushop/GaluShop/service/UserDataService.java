@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.UserDataRequest;
+import pl.galushop.GaluShop.dto.response.UserDataResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.exception.UserDataNotFoundException;
@@ -33,8 +34,8 @@ public class UserDataService {
      * @throws UsernameNotFoundException if the user does not exist
      */
     @Transactional
-    public UserData saveUserData(UserDataRequest userDataRequest) {
-        return userDataRepository.save(buildUserData(userDataRequest));
+    public UserDataResponse saveUserData(UserDataRequest userDataRequest) {
+        return UserDataResponse.fromEntity(userDataRepository.save(buildUserData(userDataRequest)));
     }
 
     /**
@@ -45,9 +46,9 @@ public class UserDataService {
      * @throws IllegalArgumentException if the ID is null or negative.
      * @throws UserDataNotFoundException if user data is not found.
      */
-    public UserData getUserData(Long userDataId) {
+    public UserDataResponse getUserDataResponse(Long userDataId) {
         throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
-        return getUserDataOrThrow(userDataId);
+        return UserDataResponse.fromEntity(getUserDataOrThrow(userDataId, ErrorMessages.USER_DATA_NOT_FOUND));
     }
 
     /**
@@ -58,12 +59,10 @@ public class UserDataService {
      * @throws IllegalArgumentException if the user ID is null or negative.
      * @throws UserDataNotFoundException if no user data is found for the user.
      */
-    public UserData getUserDataByUserId(Long userId) {
+    public UserDataResponse getUserDataByUserId(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
 
-        return userDataRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
-                        ErrorMessages.USER_DATA_NOT_FOUND, userId)));
+        return UserDataResponse.fromEntity(getUserDataOrThrow(userId, ErrorMessages.USER_DATA_NOT_FOUND));
     }
 
     /**
@@ -75,7 +74,7 @@ public class UserDataService {
      */
     public void deleteUserData(Long userDataId) {
         throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
-        UserData userData = getUserDataOrThrow(userDataId);
+        UserData userData = getUserDataOrThrow(userDataId, ErrorMessages.USER_DATA_NOT_FOUND);
 
         userDataRepository.delete(userData);
     }
@@ -88,10 +87,10 @@ public class UserDataService {
      * @throws UserDataNotFoundException if the user data is not found.
      */
     @Transactional
-    public void updateUserData(UserDataRequest userDataRequest) {
+    public UserDataResponse updateUserData(UserDataRequest userDataRequest) {
         throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
 
-        UserData existingUserData = getUserDataOrThrow(userDataRequest.getUserDataId());
+        UserData existingUserData = getUserDataOrThrow(userDataRequest.getUserDataId(), ErrorMessages.USER_DATA_NOT_FOUND);
 
         existingUserData.setCity(userDataRequest.getCity());
         existingUserData.setStreet(userDataRequest.getStreet());
@@ -100,7 +99,7 @@ public class UserDataService {
         existingUserData.setZipCode(userDataRequest.getZipCode());
         existingUserData.setPhoneNumber(userDataRequest.getPhoneNumber());
 
-        userDataRepository.save(existingUserData);
+        return UserDataResponse.fromEntity(userDataRepository.save(existingUserData));
     }
 
     /**
@@ -136,9 +135,8 @@ public class UserDataService {
         }
     }
 
-    private UserData getUserDataOrThrow(Long userDataId) {
+    private UserData getUserDataOrThrow(Long userDataId, String message) {
         return userDataRepository.findById(userDataId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
-                        ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(message, userDataId)));
     }
 }

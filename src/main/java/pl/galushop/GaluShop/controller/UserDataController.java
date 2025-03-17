@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.UserDataRequest;
+import pl.galushop.GaluShop.dto.response.UserDataResponse;
 import pl.galushop.GaluShop.entity.UserData;
 import pl.galushop.GaluShop.service.UserDataService;
 
@@ -22,22 +23,26 @@ import java.net.URI;
 public class UserDataController {
     private final UserDataService userDataService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserData> showUserData(@PathVariable Long id){
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserDataResponse> showUserDataByUserId(@PathVariable Long id){
         return ResponseEntity.ok(userDataService.getUserDataByUserId(id));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDataResponse> showUserData(@PathVariable Long id){
+        return ResponseEntity.ok(userDataService.getUserDataResponse(id));
+    }
+
     @PostMapping
-    public ResponseEntity<UserData> saveUserData(@RequestBody UserDataRequest userDataRequest){
-        UserData savedUserData = userDataService.saveUserData(userDataRequest);
-        return ResponseEntity.created(URI.create("/userData/" + savedUserData.getUserDataId()))
+    public ResponseEntity<UserDataResponse> saveUserData(@RequestBody UserDataRequest userDataRequest){
+        UserDataResponse savedUserData = userDataService.saveUserData(userDataRequest);
+        return ResponseEntity.created(URI.create("/userData/" + savedUserData.userDataId()))
                 .body(savedUserData);
     }
 
     @PutMapping
-    public ResponseEntity<UserData> updateUserData(@RequestBody UserDataRequest userDataRequest){
-        userDataService.updateUserData(userDataRequest);
-        return ResponseEntity.ok(userDataService.getUserData(userDataRequest.getUserDataId()));
+    public ResponseEntity<UserDataResponse> updateUserData(@RequestBody UserDataRequest userDataRequest){
+        return ResponseEntity.ok(userDataService.updateUserData(userDataRequest));
     }
 
     @DeleteMapping("/{id}")

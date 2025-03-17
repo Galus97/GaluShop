@@ -6,11 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
+import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing product operations.
@@ -30,9 +32,14 @@ public class ProductService {
      * @throws IllegalArgumentException if the product ID is null or invalid.
      * @throws ProductNotFoundException if no product is found with the given ID.
      */
-    public Product getProduct(Long productId) {
+    public Product getProductEntity(Long productId) {
         throwIfIdIsInvalid(productId);
         return getProductOrThrow(productId);
+    }
+
+    public ProductResponse getProductResponse(Long productId){
+        throwIfIdIsInvalid(productId);
+        return ProductResponse.fromEntity(getProductOrThrow(productId));
     }
 
     /**
@@ -42,9 +49,15 @@ public class ProductService {
      * @throws IllegalArgumentException if the product request is null.
      */
     @Transactional
-    public Product saveProduct(ProductRequest productRequest) {
+    public Product saveProduct(ProductRequest productRequest){
         return productRepository.save(buildProduct(productRequest));
     }
+
+    @Transactional
+    public ProductResponse saveProductResponse(ProductRequest productRequest) {
+        return ProductResponse.fromEntity(productRepository.save(buildProduct(productRequest)));
+    }
+
 
 
     /**
@@ -67,7 +80,7 @@ public class ProductService {
      * @throws ProductNotFoundException if no product is found with the given ID.
      */
     @Transactional
-    public void updateProduct(ProductRequest productRequest) {
+    public ProductResponse updateProduct(ProductRequest productRequest) {
         throwIfIdIsInvalid(productRequest.getProductId());
 
         Product existingProduct = getProductOrThrow(productRequest.getProductId());
@@ -77,7 +90,7 @@ public class ProductService {
         existingProduct.setCategory(productRequest.getCategory());
         existingProduct.setCategoryId(productRequest.getCategoryId());
 
-        productRepository.save(existingProduct);
+        return ProductResponse.fromEntity(productRepository.save(existingProduct));
     }
 
     /**
