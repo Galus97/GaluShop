@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.WarehouseProductRequest;
+import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
@@ -23,21 +24,20 @@ public class WarehouseController {
     private final WarehouseProductService warehouseProductService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<WarehouseProduct> showWarehouseProduct(@PathVariable Long id){
-        return ResponseEntity.ok(warehouseProductService.getWarehouseProductEntity(id));
+    public ResponseEntity<WarehouseProductResponse> showWarehouseProduct(@PathVariable Long id){
+        return ResponseEntity.ok(warehouseProductService.getWarehouseProductResponse(id));
     }
 
     @PostMapping
-    public ResponseEntity<WarehouseProduct> saveWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest) {
-        WarehouseProduct savedWarehouseProduct = warehouseProductService.saveWarehouseProduct(warehouseProductRequest);
-        return ResponseEntity.created(URI.create("/warehouse/" + savedWarehouseProduct.getWarehouseProductId()))
+    public ResponseEntity<WarehouseProductResponse> saveWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest) {
+        WarehouseProductResponse savedWarehouseProduct = warehouseProductService.saveWarehouseProduct(warehouseProductRequest);
+        return ResponseEntity.created(URI.create("/warehouse/" + savedWarehouseProduct.warehouseProductId()))
                 .body(savedWarehouseProduct);
     }
 
     @PutMapping
-    public ResponseEntity<WarehouseProduct> updateWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
-        warehouseProductService.updateWarehouseProduct(warehouseProductRequest);
-        return ResponseEntity.ok(warehouseProductService.getWarehouseProductEntity(warehouseProductRequest.getWarehouseProductId()));
+    public ResponseEntity<WarehouseProductResponse> updateWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
+        return ResponseEntity.ok(warehouseProductService.updateWarehouseProduct(warehouseProductRequest));
     }
 
     @DeleteMapping("/{id}")
