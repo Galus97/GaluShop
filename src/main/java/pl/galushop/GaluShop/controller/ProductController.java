@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
+import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.service.ProductFacadeService;
 import pl.galushop.GaluShop.service.ProductService;
@@ -25,21 +26,20 @@ public class ProductController {
     private final ProductFacadeService productFacadeService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> showProduct(@PathVariable Long id){
-        return ResponseEntity.ok(productService.getProduct(id));
+    public ResponseEntity<ProductResponse> showProduct(@PathVariable Long id){
+        return ResponseEntity.ok(productService.getProductResponse(id));
     }
 
     @PostMapping
-    public ResponseEntity<Product> saveProduct(@RequestBody ProductRequest productRequest) {
-        Product savedProduct = productFacadeService.saveProductWithImages(productRequest);
-        return ResponseEntity.created(URI.create("/product/" + savedProduct.getProductId()))
+    public ResponseEntity<ProductResponse> saveProduct(@RequestBody ProductRequest productRequest) {
+        ProductResponse savedProduct = productFacadeService.saveProductWithImages(productRequest);
+        return ResponseEntity.created(URI.create("/product/" + savedProduct.productId()))
                 .body(savedProduct);
     }
 
     @PutMapping
-    public ResponseEntity<Product> updateProduct(@RequestBody ProductRequest productRequest){
-        productService.updateProduct(productRequest);
-        return ResponseEntity.ok(productService.getProduct(productRequest.getProductId()));
+    public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductRequest productRequest){
+        return ResponseEntity.ok(productService.updateProduct(productRequest));
     }
 
     @DeleteMapping("/{id}")
