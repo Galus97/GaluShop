@@ -43,7 +43,7 @@ public class ProductFacadeService {
      * @return List of product images.
      */
     public List<ProductImages> getAllImagesByProductId(Long productId) {
-        productService.getProduct(productId);
+        productService.getProductEntity(productId);
         return productImagesService.getAllImagesByProductId(productId);
     }
 }
