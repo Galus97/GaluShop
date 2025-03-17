@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.UserRequest;
+import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.repository.UserRepository;
 
@@ -29,9 +30,14 @@ public class UserService {
      * @throws IllegalArgumentException if the userId is null or less than 1.
      * @throws UsernameNotFoundException if no user is found with the given ID.
      */
-    public User getUser(Long userId){
+    public User getUserEntity(Long userId){
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
         return getUserOrThrow(userId);
+    }
+
+    public UserResponse getUserResponse(Long userId){
+        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+        return UserResponse.fromEntity(getUserOrThrow(userId));
     }
 
     /**
@@ -56,7 +62,7 @@ public class UserService {
      * @throws UsernameNotFoundException if no user is found with the given ID.
      */
     @Transactional
-    public void updateUser(UserRequest userRequest){
+    public UserResponse updateUser(UserRequest userRequest){
         throwIfIdIsInvalid(userRequest.getUserId(), ErrorMessages.INVALID_USER_ID);
         
         User existingUser = getUserOrThrow(userRequest.getUserId());
@@ -69,7 +75,7 @@ public class UserService {
             existingUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         }
 
-        userRepository.save(existingUser);
+        return UserResponse.fromEntity(userRepository.save(existingUser));
     }
 
     private User getUserOrThrow(Long userId) {

@@ -133,7 +133,7 @@ public class OrderService {
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     private Order buildOrder(OrderRequest orderRequest) {
-        User user = userService.getUser(orderRequest.getUserId());
+        User user = userService.getUserEntity(orderRequest.getUserId());
 
         Map<Long, Product> productsMap = productService.getAllProductByIds(
                 orderRequest.getProductQuantityRequests().stream()
