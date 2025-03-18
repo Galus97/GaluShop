@@ -4,16 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.OrderProductDto;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
-import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
-import pl.galushop.GaluShop.entity.Product;
-import pl.galushop.GaluShop.exception.OrderNotFoundException;
-import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
-import pl.galushop.GaluShop.repository.OrderRepository;
-import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
