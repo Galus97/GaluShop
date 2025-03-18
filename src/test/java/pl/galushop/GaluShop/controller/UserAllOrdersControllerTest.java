@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
-import pl.galushop.GaluShop.dto.OrderProductDto;
+import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.service.OrderService;
 
@@ -37,13 +37,13 @@ class UserAllOrdersControllerTest {
     @Test
     void whenShowAllUserOrders_then() throws Exception{
         //given
-        List<OrderProductDto> orderProductDtoList = List.of( new OrderProductDto(1L, 1L, 10));
+        List<OrderProductResponse> OrderProductResponseList = List.of( new OrderProductResponse(1L, 1L, 10));
         List<OrderResponse> orderResponseList = List.of(new OrderResponse(
                 1L,
                 LocalDateTime.of(2025, 3, 13, 12, 12, 12),
                 OrderStatus.PROCESSED,
                 1L,
-                orderProductDtoList));
+                OrderProductResponseList));
         when(orderService.getAllOrdersByUser(anyLong())).thenReturn(orderResponseList);
         //then
         mockMvc.perform(get("/order/user/1"))
