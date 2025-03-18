@@ -6,12 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.PaymentRequest;
+import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
 import pl.galushop.GaluShop.repository.PaymentRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing payment operations.
@@ -32,10 +34,10 @@ public class PaymentService {
      * @throws IllegalArgumentException if the payment ID is null or invalid.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
-    public Payment getPaymentById(Long paymentId){
+    public PaymentResponse getPaymentResponseById(Long paymentId){
         throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
 
-        return getPaymentOrThrow(paymentId);
+        return PaymentResponse.fromEntity(getPaymentOrThrow(paymentId, ErrorMessages.PAYMENT_NOT_FOUND));
     }
 
     /**
@@ -46,11 +48,10 @@ public class PaymentService {
      * @throws IllegalArgumentException if the order ID is null or invalid.
      * @throws PaymentNotFoundException if no payment is found for the given order ID.
      */
-    public Payment getPaymentByOrderId(Long orderId){
+    public PaymentResponse getPaymentResponseByOrderId(Long orderId){
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
 
-        return paymentRepository.findByOrder_OrderId(orderId)
-                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage("error.paymentsNotFoundByOrderId", orderId)));
+        return PaymentResponse.fromEntity(getPaymentOrThrow(orderId, ErrorMessages.PAYMENT_NOT_FOUND_BY_ORDER));
     }
 
     /**
@@ -60,13 +61,16 @@ public class PaymentService {
      * @return A list of payments associated with the user.
      * @throws IllegalArgumentException if the user ID is null or invalid.
      */
-    public List<Payment> getAllPaymentsByUserId(Long userId){
+    public List<PaymentResponse> getAllPaymentResponseByUserId(Long userId){
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
 
         //Throws exception if user doesn't exist in database
         userService.getUserEntity(userId);
 
-        return paymentRepository.findAllByUser_UserId(userId);
+        return paymentRepository.findAllByUser_UserId(userId)
+                .stream()
+                .map(PaymentResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -78,8 +82,8 @@ public class PaymentService {
      * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
      */
     @Transactional
-    public Payment savePayment(PaymentRequest paymentRequest){
-        return paymentRepository.save(buildPayment(paymentRequest));
+    public PaymentResponse savePayment(PaymentRequest paymentRequest){
+        return PaymentResponse.fromEntity(paymentRepository.save(buildPayment(paymentRequest)));
     }
 
 
@@ -93,7 +97,7 @@ public class PaymentService {
     public void deletePayment(Long paymentId){
         throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
 
-        paymentRepository.delete(getPaymentOrThrow(paymentId));
+        paymentRepository.delete(getPaymentOrThrow(paymentId, ErrorMessages.INVALID_PAYMENT_ID));
     }
 
     /**
@@ -104,17 +108,17 @@ public class PaymentService {
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
     @Transactional
-    public void updatePayment(PaymentRequest paymentRequest){
+    public PaymentResponse updatePayment(PaymentRequest paymentRequest){
         throwIfIdIsInvalid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
 
-        Payment existingPayment = getPaymentOrThrow(paymentRequest.getPaymentId());
+        Payment existingPayment = getPaymentOrThrow(paymentRequest.getPaymentId(), ErrorMessages.PAYMENT_NOT_FOUND);
         existingPayment.setPaymentStatus(paymentRequest.getPaymentStatus());
         existingPayment.setTotalAmount(paymentRequest.getTotalAmount());
         existingPayment.setOrder(order);
 
-        paymentRepository.save(existingPayment);
+        return PaymentResponse.fromEntity(paymentRepository.save(existingPayment));
     }
 
     /**
@@ -142,8 +146,8 @@ public class PaymentService {
         }
     }
 
-    private Payment getPaymentOrThrow(Long paymentId) {
-        return paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND, paymentId)));
+    private Payment getPaymentOrThrow(Long id, String message) {
+        return paymentRepository.findById(id)
+                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(message, id)));
     }
 }
