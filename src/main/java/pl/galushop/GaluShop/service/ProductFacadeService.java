@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
+import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
@@ -43,7 +44,7 @@ public class ProductFacadeService {
      * @param productId The ID of the product.
      * @return List of product images.
      */
-    public List<ProductImages> getAllImagesByProductId(Long productId) {
+    public List<ProductImagesResponse> getAllImagesByProductId(Long productId) {
         productService.getProductEntity(productId);
         return productImagesService.getAllImagesByProductId(productId);
     }

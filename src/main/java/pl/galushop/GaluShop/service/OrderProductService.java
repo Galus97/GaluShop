@@ -4,15 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.OrderProductDto;
-import pl.galushop.GaluShop.entity.Order;
+import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.entity.OrderProduct;
-import pl.galushop.GaluShop.entity.Product;
-import pl.galushop.GaluShop.exception.OrderNotFoundException;
-import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
-import pl.galushop.GaluShop.repository.OrderRepository;
-import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,10 +26,10 @@ public class OrderProductService {
      * @param orderProduct The order product entity to save.
      * @throws IllegalArgumentException if the provided orderProduct is null.
      */
-    public void saveOrderProduct(OrderProduct orderProduct){
+    public OrderProductResponse saveOrderProduct(OrderProduct orderProduct){
         throwIfObjectIsNull(orderProduct);
 
-        orderProductRepository.save(orderProduct);
+        return OrderProductResponse.fromEntity(orderProductRepository.save(orderProduct));
     }
 
     /**
@@ -45,11 +39,11 @@ public class OrderProductService {
      * @return A list of DTO order product entities associated with the order.
      * @throws IllegalArgumentException if the order ID is null or invalid.
      */
-    public List<OrderProductDto> getOrderProductsByOrderId(Long orderId){
+    public List<OrderProductResponse> getOrderProductsByOrderId(Long orderId){
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return orderProductRepository.findByOrder_OrderId(orderId)
                 .stream()
-                .map(OrderProductDto::fromEntity)
+                .map(OrderProductResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -60,11 +54,11 @@ public class OrderProductService {
      * @return A list of DTO order product entities associated with the order.
      * @throws IllegalArgumentException if the order ID is null or invalid.
      */
-    public List<OrderProductDto> getOrderProductsByProductId(Long productId){
+    public List<OrderProductResponse> getOrderProductsByProductId(Long productId){
         throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return orderProductRepository.findByProduct_ProductId(productId)
                 .stream()
-                .map(OrderProductDto::fromEntity)
+                .map(OrderProductResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 

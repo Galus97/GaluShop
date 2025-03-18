@@ -1,12 +1,11 @@
 package pl.galushop.GaluShop.dto.response;
 
-import pl.galushop.GaluShop.dto.OrderProductDto;
 import pl.galushop.GaluShop.entity.Product;
 
 import java.util.List;
 
 public record ProductResponse (Long productId, String productName, String description, Double price,
-                               String category, Integer categoryId, List<OrderProductDto> products){
+                               String category, Integer categoryId, List<OrderProductResponse> products){
 
     public static ProductResponse fromEntity(Product product){
         return new ProductResponse(
@@ -16,7 +15,7 @@ public record ProductResponse (Long productId, String productName, String descri
                 product.getPrice(),
                 product.getCategory(),
                 product.getCategoryId(),
-                product.getOrderProducts().stream().map(OrderProductDto::fromEntity).toList()
+                product.getOrderProducts().stream().map(OrderProductResponse::fromEntity).toList()
         );
     }
 }

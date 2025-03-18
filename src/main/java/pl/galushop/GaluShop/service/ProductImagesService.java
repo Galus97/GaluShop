@@ -6,11 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
+import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
 import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing product images operations.
@@ -29,8 +31,8 @@ public class ProductImagesService {
      * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
      */
     @Transactional
-    public ProductImages saveProductImages(ProductImageRequest productImageRequest) {
-        return productImagesRepository.save(buildProductImages(productImageRequest));
+    public ProductImagesResponse saveProductImages(ProductImageRequest productImageRequest) {
+        return ProductImagesResponse.fromEntity(productImagesRepository.save(buildProductImages(productImageRequest)));
     }
 
     /**
@@ -41,9 +43,9 @@ public class ProductImagesService {
      * @throws IllegalArgumentException if the image ID is null or invalid.
      * @throws ProductImagesNotFoundException if no image is found with the given ID.
      */
-    public ProductImages getProductImages(Long imagesId) {
+    public ProductImagesResponse getProductImages(Long imagesId) {
         throwIfIdIsInvalid(imagesId);
-        return getImagesOrThrow(imagesId);
+        return ProductImagesResponse.fromEntity(getImagesOrThrow(imagesId));
     }
 
     /**
@@ -54,7 +56,7 @@ public class ProductImagesService {
      * @throws ProductImagesNotFoundException if no image is found with the given ID.
      */
     @Transactional
-    public void updateProductImages(ProductImageRequest productImageRequest) {
+    public ProductImagesResponse updateProductImages(ProductImageRequest productImageRequest) {
         throwIfIdIsInvalid(productImageRequest.getImagesId());
 
         ProductImages exisitngProductImages = getImagesOrThrow(productImageRequest.getImagesId());
@@ -62,7 +64,7 @@ public class ProductImagesService {
         exisitngProductImages.setImgSrc(productImageRequest.getImgSrc());
         exisitngProductImages.setAltImg(productImageRequest.getAltImg());
 
-        productImagesRepository.save(exisitngProductImages);
+        return ProductImagesResponse.fromEntity(productImagesRepository.save(exisitngProductImages));
     }
 
     /**
@@ -84,9 +86,12 @@ public class ProductImagesService {
      * @return A list of product images associated with the product.
      * @throws IllegalArgumentException if the product ID is null or invalid.
      */
-    public List<ProductImages> getAllImagesByProductId(Long productId) {
+    public List<ProductImagesResponse> getAllImagesByProductId(Long productId) {
         throwIfIdIsInvalid(productId);
-        return productImagesRepository.findAllByProduct_ProductId(productId);
+        return productImagesRepository.findAllByProduct_ProductId(productId)
+                .stream()
+                .map(ProductImagesResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /**
