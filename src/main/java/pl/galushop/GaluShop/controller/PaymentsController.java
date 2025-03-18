@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.PaymentRequest;
+import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.service.PaymentService;
 
@@ -23,21 +24,20 @@ public class PaymentsController {
     private final PaymentService paymentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Payment> showPayment(@PathVariable Long id){
-        return ResponseEntity.ok(paymentService.getPaymentById(id));
+    public ResponseEntity<PaymentResponse> showPayment(@PathVariable Long id){
+        return ResponseEntity.ok(paymentService.getPaymentResponseById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Payment> savePayment(@RequestBody PaymentRequest paymentRequest){
-        Payment savedPayment = paymentService.savePayment(paymentRequest);
-        return ResponseEntity.created(URI.create("/payments/" + savedPayment.getPaymentId()))
+    public ResponseEntity<PaymentResponse> savePayment(@RequestBody PaymentRequest paymentRequest){
+        PaymentResponse savedPayment = paymentService.savePayment(paymentRequest);
+        return ResponseEntity.created(URI.create("/payments/" + savedPayment.paymentId()))
                 .body(savedPayment);
     }
 
     @PutMapping
-    public ResponseEntity<Payment> updatePayment(@RequestBody PaymentRequest paymentRequest){
-        paymentService.updatePayment(paymentRequest);
-        return ResponseEntity.ok(paymentService.getPaymentById(paymentRequest.getPaymentId()));
+    public ResponseEntity<PaymentResponse> updatePayment(@RequestBody PaymentRequest paymentRequest){
+        return ResponseEntity.ok(paymentService.updatePayment(paymentRequest));
     }
 
     @DeleteMapping("/{id}")
