@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.service.PaymentService;
 
@@ -16,7 +17,7 @@ public class PaymentOrderController {
     private final PaymentService paymentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Payment> showOrderPayment(@PathVariable Long id){
-        return ResponseEntity.ok(paymentService.getPaymentByOrderId(id));
+    public ResponseEntity<PaymentResponse> showOrderPayment(@PathVariable Long id){
+        return ResponseEntity.ok(paymentService.getPaymentResponseByOrderId(id));
     }
 }
