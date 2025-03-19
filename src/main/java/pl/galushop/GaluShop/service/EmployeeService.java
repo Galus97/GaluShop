@@ -61,6 +61,7 @@ public class EmployeeService {
      */
     @Transactional
     public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest){
+        throwIfIdIsInvalid(employeeRequest.getEmployeeId());
         Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
         existingEmployee.setFirstName(employeeRequest.getFirstName());
@@ -69,7 +70,6 @@ public class EmployeeService {
         if(employeeRequest.getPassword() != null && !employeeRequest.getPassword().isBlank()){
             existingEmployee.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
         }
-
         return EmployeeResponse.fromEntity(employeeRepository.save(existingEmployee));
     }
 
