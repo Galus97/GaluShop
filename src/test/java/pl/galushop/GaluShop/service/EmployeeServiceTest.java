@@ -49,10 +49,11 @@ class EmployeeServiceTest {
 
     @Test
     void givenExistingEmployeeId_whenGetEmployeeEntity_thenReturnsEmployee() {
+        //given
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
-
+        //when
         Employee foundEmployee = employeeService.getEmployeeEntity(1L);
-
+        //then
         assertNotNull(foundEmployee);
         assertEquals(1L, foundEmployee.getEmployeeId());
         verify(employeeRepository, times(1)).findById(1L);
@@ -60,19 +61,21 @@ class EmployeeServiceTest {
 
     @Test
     void givenNonExistingEmployeeId_whenGetEmployeeEntity_thenThrowsException() {
+        //given
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
         when(messageService.getMessage(any(), any())).thenReturn("Employee not found");
-
+        //then
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.getEmployeeEntity(1L));
         verify(employeeRepository, times(1)).findById(1L);
     }
 
     @Test
     void givenExistingEmployeeId_whenGetEmployeeResponse_thenReturnsResponse() {
+        //given
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
-
+        //when
         EmployeeResponse response = employeeService.getEmployeeResponse(1L);
-
+        //then
         assertNotNull(response);
         assertEquals("John", response.firstName());
         verify(employeeRepository, times(1)).findById(1L);
@@ -80,24 +83,27 @@ class EmployeeServiceTest {
 
     @Test
     void givenExistingEmployeeId_whenDeleteEmployee_thenDeletesEmployee() {
+        //given
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
-
+        //when
         employeeService.deleteEmployee(1L);
-
+        //then
         verify(employeeRepository, times(1)).delete(employee);
     }
 
     @Test
     void givenNonExistingEmployeeId_whenDeleteEmployee_thenThrowsException() {
+        //given
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
         when(messageService.getMessage(any(), any())).thenReturn("Employee not found");
-
+        //then
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.deleteEmployee(1L));
         verify(employeeRepository, never()).delete(any());
     }
 
     @Test
     void givenValidEmployeeRequest_whenUpdateEmployee_thenUpdatesEmployeeDetails() {
+        //given
         EmployeeRequest request = EmployeeRequest.builder()
                 .employeeId(1L)
                 .firstName("Jane")
@@ -109,9 +115,9 @@ class EmployeeServiceTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
         when(passwordEncoder.encode("newPassword")).thenReturn("encodedNewPassword");
         when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
+        //when
         EmployeeResponse response = employeeService.updateEmployee(request);
-
+        //then
         assertNotNull(response);
         assertEquals("Jane", response.firstName());
         assertEquals("Smith", response.lastName());
@@ -121,6 +127,7 @@ class EmployeeServiceTest {
 
     @Test
     void givenNonExistingEmployeeId_whenUpdateEmployee_thenThrowsException() {
+        //given
         EmployeeRequest request = EmployeeRequest.builder()
                 .employeeId(1L)
                 .firstName("Jane")
@@ -130,7 +137,7 @@ class EmployeeServiceTest {
                 .build();
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
         when(messageService.getMessage(any(), any())).thenReturn("Employee not found");
-
+        //then
         assertThrows(EmployeeNotFoundException.class, () -> employeeService.updateEmployee(request));
     }
 }
