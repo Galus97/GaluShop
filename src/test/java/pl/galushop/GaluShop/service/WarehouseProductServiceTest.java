@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.parameters.P;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
@@ -15,6 +16,7 @@ import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -77,4 +79,15 @@ class WarehouseProductServiceTest {
         verify(repository, times(0)).findById(any());
     }
 
+    @Test
+    void givenExistingId_whenGetWarehouseProductResponse_thenReturnWarehouseProductResponse(){
+        //given
+        when(repository.findById(1L)).thenReturn(Optional.of(warehouseProduct));
+        //when
+        WarehouseProductResponse warehouseProductResponse = service.getWarehouseProductResponse(1L);
+        //then
+        assertNotNull(warehouseProductResponse);
+        assertEquals(1L, warehouseProductResponse.warehouseProductId());
+        verify(repository, times(1)).findById(1L);
+    }
 }
