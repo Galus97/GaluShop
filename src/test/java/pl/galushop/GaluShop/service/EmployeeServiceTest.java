@@ -48,7 +48,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void shouldReturnEmployeeEntityWhenExists() {
+    void givenExistingEmployeeId_whenGetEmployeeEntity_thenReturnsEmployee() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
 
         Employee foundEmployee = employeeService.getEmployeeEntity(1L);
@@ -59,7 +59,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenEmployeeNotFound() {
+    void givenNonExistingEmployeeId_whenGetEmployeeEntity_thenThrowsException() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
         when(messageService.getMessage(any(), any())).thenReturn("Employee not found");
 
@@ -68,7 +68,18 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void shouldDeleteEmployeeWhenExists() {
+    void givenExistingEmployeeId_whenGetEmployeeResponse_thenReturnsResponse() {
+        when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
+
+        EmployeeResponse response = employeeService.getEmployeeResponse(1L);
+
+        assertNotNull(response);
+        assertEquals("John", response.firstName());
+        verify(employeeRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void givenExistingEmployeeId_whenDeleteEmployee_thenDeletesEmployee() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
 
         employeeService.deleteEmployee(1L);
@@ -77,7 +88,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenDeletingNonExistentEmployee() {
+    void givenNonExistingEmployeeId_whenDeleteEmployee_thenThrowsException() {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
         when(messageService.getMessage(any(), any())).thenReturn("Employee not found");
 
@@ -86,7 +97,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void shouldUpdateEmployeeDetails() {
+    void givenValidEmployeeRequest_whenUpdateEmployee_thenUpdatesEmployeeDetails() {
         EmployeeRequest request = EmployeeRequest.builder()
                 .employeeId(1L)
                 .firstName("Jane")
@@ -109,7 +120,7 @@ class EmployeeServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUpdatingNonExistentEmployee() {
+    void givenNonExistingEmployeeId_whenUpdateEmployee_thenThrowsException() {
         EmployeeRequest request = EmployeeRequest.builder()
                 .employeeId(1L)
                 .firstName("Jane")
