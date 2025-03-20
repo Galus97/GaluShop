@@ -59,7 +59,6 @@ class WarehouseProductServiceTest {
     void givenNonExistentId_whenGetWarehouseProductEntity_thenThrowsException(){
         //given
         when(repository.findById(any())).thenReturn(Optional.empty());
-        when(messageService.getMessage(any(), any())).thenReturn("WarehouseProduct not found");
         //then
         assertThrows(WarehouseProductNotFoundException.class, () -> service.getWarehouseProductEntity(1L));
         verify(repository, times(1)).findById(1L);
@@ -88,6 +87,15 @@ class WarehouseProductServiceTest {
         //then
         assertNotNull(warehouseProductResponse);
         assertEquals(1L, warehouseProductResponse.warehouseProductId());
+        verify(repository, times(1)).findById(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetWarehouseProductResponse_thenThrowsException(){
+        //given
+        when(repository.findById(any())).thenReturn(Optional.empty());
+        //then
+        assertThrows(WarehouseProductNotFoundException.class, () -> service.getWarehouseProductResponse(1L));
         verify(repository, times(1)).findById(1L);
     }
 }
