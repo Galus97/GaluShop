@@ -6,8 +6,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.parameters.P;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.request.WarehouseProductRequest;
+import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
@@ -57,7 +58,6 @@ class WarehouseProductServiceTest {
     void givenNonExistentId_whenGetWarehouseProductEntity_thenThrowsException(){
         //given
         when(repository.findById(any())).thenReturn(Optional.empty());
-        when(messageService.getMessage(any(), any())).thenReturn("WarehouseProduct not found");
         //then
         assertThrows(WarehouseProductNotFoundException.class, () -> service.getWarehouseProductEntity(1L));
         verify(repository, times(1)).findById(1L);
@@ -77,4 +77,41 @@ class WarehouseProductServiceTest {
         verify(repository, times(0)).findById(any());
     }
 
+    @Test
+    void givenExistingId_whenGetWarehouseProductResponse_thenReturnWarehouseProductResponse(){
+        //given
+        when(repository.findById(1L)).thenReturn(Optional.of(warehouseProduct));
+        //when
+        WarehouseProductResponse warehouseProductResponse = service.getWarehouseProductResponse(1L);
+        //then
+        assertNotNull(warehouseProductResponse);
+        assertEquals(1L, warehouseProductResponse.warehouseProductId());
+        verify(repository, times(1)).findById(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenGetWarehouseProductResponse_thenThrowsException(){
+        //given
+        when(repository.findById(any())).thenReturn(Optional.empty());
+        //then
+        assertThrows(WarehouseProductNotFoundException.class, () -> service.getWarehouseProductResponse(1L));
+        verify(repository, times(1)).findById(1L);
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveWarehouseProduct_thenReturnsWarehouseProductResponse(){
+        //given
+        WarehouseProductRequest request = new WarehouseProductRequest();
+        request.setProductId(1L);
+        request.setProductId(1L);
+        request.setQuantity(10);
+        when(repository.save(warehouseProduct)).thenReturn(warehouseProduct);
+        //when
+        WarehouseProductResponse warehouseProductResponse = service.saveWarehouseProduct(request);
+        //then
+        assertNotNull(warehouseProductResponse);
+        assertEquals(warehouseProduct.getWarehouseProductId(), warehouseProductResponse.warehouseProductId());
+        assertEquals(warehouseProduct.getQuantity(), warehouseProductResponse.quantity());
+        verify(repository, times(1)).save(warehouseProduct);
+    }
 }
