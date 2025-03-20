@@ -70,4 +70,11 @@ class WarehouseProductServiceTest {
         verify(repository, times(0)).findById(any());
     }
 
+    @Test
+    void givenNullId_whenGetWarehouseProductEntity_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getWarehouseProductEntity(null));
+        verify(repository, times(0)).findById(any());
+    }
+
 }
