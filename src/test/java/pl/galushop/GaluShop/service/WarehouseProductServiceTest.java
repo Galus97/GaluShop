@@ -14,6 +14,9 @@ import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
 import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,9 +40,11 @@ class WarehouseProductServiceTest {
     private WarehouseProductRequest request;
     @BeforeEach
     void setUp(){
+        Product product = new Product();
+        product.setProductId(1L);
         warehouseProduct = WarehouseProduct.builder()
                 .warehouseProductId(1L)
-                .product(new Product())
+                .product(product)
                 .quantity(10)
                 .build();
 
@@ -114,6 +119,7 @@ class WarehouseProductServiceTest {
         //then
         assertNotNull(warehouseProductResponse);
         assertEquals(warehouseProduct.getWarehouseProductId(), warehouseProductResponse.warehouseProductId());
+        assertEquals(warehouseProduct.getProduct().getProductId(), warehouseProductResponse.productId());
         assertEquals(warehouseProduct.getQuantity(), warehouseProductResponse.quantity());
         verify(repository, times(1)).save(warehouseProduct);
     }
@@ -134,6 +140,22 @@ class WarehouseProductServiceTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.saveWarehouseProduct(request));
         verify(repository, times(0)).save(warehouseProduct);
+    }
+
+    @Test
+    void givenWarehouseProductList_whenGetAllProductInWarehouse_thenReturnsWarehouseProductResponseList(){
+        //given
+        List<WarehouseProduct> warehouseProductList = Arrays.asList(warehouseProduct);
+        when(repository.findAll()).thenReturn(warehouseProductList);
+        //when
+        List<WarehouseProductResponse> allProductInWarehouse = service.getAllProductInWarehouse();
+        //then
+        assertNotNull(allProductInWarehouse);
+        assertEquals(1, allProductInWarehouse.size());
+        assertEquals(1, allProductInWarehouse.get(0).warehouseProductId());
+        assertEquals(1L, allProductInWarehouse.get(0).productId());
+        assertEquals(10, allProductInWarehouse.get(0).quantity());
+        verify(repository, times(1)).findAll();
     }
 
     @Test
