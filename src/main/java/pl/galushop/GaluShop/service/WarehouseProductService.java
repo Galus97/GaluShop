@@ -56,6 +56,7 @@ public class WarehouseProductService {
      */
     @Transactional
     public WarehouseProductResponse saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
+        throwIfRequestIsInvalid(warehouseProductRequest);
         return WarehouseProductResponse.fromEntity
                 (warehouseRepository.save(buildWarehouseProduct(warehouseProductRequest)));
     }
@@ -92,6 +93,7 @@ public class WarehouseProductService {
      */
     @Transactional
     public WarehouseProductResponse updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest){
+        throwIfRequestIsInvalid(warehouseProductRequest);
         WarehouseProduct existingWarehouseProduct = getWarehouseProductOrThrow(warehouseProductRequest.getProductId(),
                 ErrorMessages.WAREHOUSE_NOT_FOUND);
 
@@ -152,14 +154,14 @@ public class WarehouseProductService {
         if (warehouseProductRequest == null) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.WAREHOUSE_IS_NULL));
         }
-        if(warehouseProductRequest.getProductId() == null || warehouseProductRequest.getProductId() < 0
+        if(warehouseProductRequest.getProductId() == null || warehouseProductRequest.getProductId() <= 0
                 || warehouseProductRequest.getQuantity() == null  || warehouseProductRequest.getQuantity() < 0){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_FIELDS_IN_REQUEST));
         }
     }
 
-    private WarehouseProduct getWarehouseProductOrThrow(Long productId, String message) {
-        return warehouseRepository.findById(productId)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(message, productId)));
+    private WarehouseProduct getWarehouseProductOrThrow(Long id, String message) {
+        return warehouseRepository.findById(id)
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(message, id)));
     }
 }
