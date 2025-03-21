@@ -215,6 +215,16 @@ class WarehouseProductServiceTest {
         verify(repository, times(0)).findById(any());
         verify(repository, times(0)).save(any());
     }
+
+    @Test
+    void givenInvalidQuantity_whenUpdateWarehouseProduct_thenThrowsException(){
+        //given
+        request.setQuantity(-1); //Invalid value
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.updateWarehouseProduct(request));
+        verify(repository, times(0)).findById(any());
+        verify(repository, times(0)).save(any());
+    }
 }
 
 
