@@ -166,6 +166,26 @@ class WarehouseProductServiceTest {
         assertEquals(25, warehouseProductResponse.quantity());
         verify(repository, times(1)).save(updatedWarehouseProduct);
     }
+
+    @Test
+    void givenNonExistentWarehouseProduct_whenUpdateWarehouseProduct_thenThrowsException(){
+        //given
+        WarehouseProductRequest request = new WarehouseProductRequest();
+        request.setWarehouseProductId(1L);
+        request.setProductId(33L);
+        request.setQuantity(25);
+
+        when(repository.findById(any())).thenReturn(Optional.empty());
+
+        //then
+        assertThrows(WarehouseProductNotFoundException.class, () -> service.updateWarehouseProduct(request));
+        verify(repository, times(1)).findById(any());
+        verify(repository, times(0)).save(any());
+    }
+
+
+
+
 }
 
 
