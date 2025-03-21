@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.OrderProductDto;
+import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
@@ -24,13 +24,13 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderProductServiceTest {
     @Mock
-    private OrderProductRepository orderProductRepository;
+    private OrderProductRepository repository;
 
     @Mock
     private MessageService messageService;
 
     @InjectMocks
-    private OrderProductService orderProductService;
+    private OrderProductService service;
 
     private Order order;
     private Product product;
@@ -48,72 +48,80 @@ class OrderProductServiceTest {
     }
     @Test
     void givenExistingOrderProduct_whenSaveOrderProduct_thenSaveCorrectly() {
-        // Act
-        orderProductService.saveOrderProduct(orderProduct);
-        // Assert
-        verify(orderProductRepository, times(1)).save(orderProduct);
+        //given
+        when(repository.save(orderProduct)).thenReturn(orderProduct);
+        //when
+        OrderProductResponse orderProductResponse = service.saveOrderProduct(orderProduct);
+        //then
+        assertEquals(1L, orderProductResponse.orderId());
+        assertEquals(1L, orderProductResponse.productId());
+        verify(repository, times(1)).save(orderProduct);
     }
 
     @Test
     void givenNullOrderProduct_whenSaveOrderProduct_thenThrowIllegalArgumentException(){
-        //Act & Assert
+        //then
         assertThrows(IllegalArgumentException.class,
-                () -> orderProductService.saveOrderProduct(null));
+                () -> service.saveOrderProduct(null));
     }
 
     @Test
     void givenExistingId_whenGetOrderProductsByOrderId_thenReturnOrderProductDtoList() {
-        // Arrange
-        when(orderProductRepository.findByOrder_OrderId(1L)).thenReturn(List.of(orderProduct));
-        // Act
-        List<OrderProductDto> result = orderProductService.getOrderProductsByOrderId(1L);
-        // Assert
+        //given
+        when(repository.findByOrder_OrderId(1L)).thenReturn(List.of(orderProduct));
+        //when
+        List<OrderProductResponse> result = service.getOrderProductsByOrderId(1L);
+        //then
         assertEquals(1, result.size());
-        verify(orderProductRepository, times(1)).findByOrder_OrderId(1L);
+        assertEquals(1L, result.get(0).orderId());
+        assertEquals(1L, result.get(0).productId());
+        verify(repository, times(1)).findByOrder_OrderId(1L);
     }
 
     @Test
     void givenInvalidId_whenGetOrderProductsByOrderId_ThrowIllegalArgumentException() {
-        // Act & Assert
+        //then
         assertThrows(IllegalArgumentException.class,
-                () -> orderProductService.getOrderProductsByOrderId(-1L));
+                () -> service.getOrderProductsByOrderId(-1L));
     }
 
     @Test
     void givenNonExistentId_whenGetOrderProductsByOrderId_thenReturnEmptyList() {
-        // Arrange
-        when(orderProductRepository.findByOrder_OrderId(1L)).thenReturn(Collections.emptyList());
-        // Act
-        List<OrderProductDto> result = orderProductService.getOrderProductsByOrderId(1L);
-        // Assert
+        //given
+        when(repository.findByOrder_OrderId(1L)).thenReturn(Collections.emptyList());
+        //when
+        List<OrderProductResponse> result = service.getOrderProductsByOrderId(1L);
+        //then
         assertTrue(result.isEmpty());
     }
 
     @Test
     void givenExistingId_whenOrderProductsByProductId_thenReturnOrderProductDtoList() {
-        // Arrange
-        when(orderProductRepository.findByProduct_ProductId(1L)).thenReturn(List.of(orderProduct));
-        // Act
-        List<OrderProductDto> result = orderProductService.getOrderProductsByProductId(1L);
-        // Assert
+        // given
+        when(repository.findByProduct_ProductId(1L)).thenReturn(List.of(orderProduct));
+        //when
+        List<OrderProductResponse> result = service.getOrderProductsByProductId(1L);
+        //then
         assertEquals(1, result.size());
-        verify(orderProductRepository, times(1)).findByProduct_ProductId(1L);
+        assertEquals(1L, result.get(0).orderId());
+        assertEquals(1L, result.get(0).productId());
+        verify(repository, times(1)).findByProduct_ProductId(1L);
     }
 
     @Test
     void givenInvalidId_whenOrderProductsByProductId_ThrowIllegalArgumentException() {
-        // Act & Assert
+        //then
         assertThrows(IllegalArgumentException.class,
-                () -> orderProductService.getOrderProductsByProductId(-1L));
+                () -> service.getOrderProductsByProductId(-1L));
     }
 
     @Test
     void givenNonExistentId_whenOrderProductsByProductId_thenReturnEmptyList() {
-        // Arrange
-        when(orderProductRepository.findByProduct_ProductId(1L)).thenReturn(Collections.emptyList());
-        // Act
-        List<OrderProductDto> result = orderProductService.getOrderProductsByProductId(1L);
-        // Assert
+        //given
+        when(repository.findByProduct_ProductId(1L)).thenReturn(Collections.emptyList());
+        //when
+        List<OrderProductResponse> result = service.getOrderProductsByProductId(1L);
+        //then
         assertTrue(result.isEmpty());
     }
 }
