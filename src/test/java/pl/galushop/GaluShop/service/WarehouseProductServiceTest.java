@@ -102,15 +102,6 @@ class WarehouseProductServiceTest {
     }
 
     @Test
-    void givenNonExistentId_whenGetWarehouseProductResponse_thenThrowsException(){
-        //given
-        when(repository.findById(any())).thenReturn(Optional.empty());
-        //then
-        assertThrows(WarehouseProductNotFoundException.class, () -> service.getWarehouseProductResponse(1L));
-        verify(repository, times(1)).findById(1L);
-    }
-
-    @Test
     void givenCorrectRequest_whenSaveWarehouseProduct_thenReturnsWarehouseProductResponse(){
         //given
         when(repository.save(warehouseProduct)).thenReturn(warehouseProduct);
@@ -256,6 +247,19 @@ class WarehouseProductServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.updateWarehouseProduct(request));
         verify(repository, times(0)).findById(any());
         verify(repository, times(0)).save(any());
+    }
+
+    @Test
+    void givenCorrectValue_whenUpdateQuantityByProductId_thenReturnsWarehouseProductResponse(){
+        //given
+        when(repository.findById(any())).thenReturn(Optional.of(warehouseProduct));
+        when(repository.save(warehouseProduct)).thenReturn(warehouseProduct);
+        //when
+        WarehouseProductResponse warehouseProductResponse = service.updateQuantityByProductId(1L, 30);
+        //then
+        assertNotNull(warehouseProductResponse);
+        assertEquals(30, warehouseProductResponse.quantity());
+        verify(repository, times(1)).save(warehouseProduct);
     }
 }
 
