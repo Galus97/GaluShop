@@ -159,6 +159,16 @@ class WarehouseProductServiceTest {
     }
 
     @Test
+    void givenExistingWarehouseProduct_whenDeleteWarehouseProduct_thenDeletesWarehouseProduct(){
+        //given
+        when(repository.findById(1L)).thenReturn(Optional.of(warehouseProduct));
+        //when
+        service.deleteWarehouseProduct(1L);
+        //then
+        verify(repository, times(1)).delete(warehouseProduct);
+    }
+
+    @Test
     void givenCorrectRequest_whenUpdateWarehouseProduct_thenReturnsWarehouseProductResponse(){
         //given
         WarehouseProductRequest requestUpdate = new WarehouseProductRequest();
