@@ -114,4 +114,58 @@ class WarehouseProductServiceTest {
         assertEquals(warehouseProduct.getQuantity(), warehouseProductResponse.quantity());
         verify(repository, times(1)).save(warehouseProduct);
     }
+
+    @Test
+    void givenInvalidProductId_whenSaveWarehouseProduct_thenThrowsException(){
+        //given
+        WarehouseProductRequest request = new WarehouseProductRequest();
+        request.setProductId(1L);
+        request.setProductId(0L); //Incorrect value
+        request.setQuantity(1); //Incorrect value
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.saveWarehouseProduct(request));
+        verify(repository, times(0)).save(warehouseProduct);
+    }
+
+    @Test
+    void givenInvalidQuantity_whenSaveWarehouseProduct_thenThrowsException(){
+        //given
+        WarehouseProductRequest request = new WarehouseProductRequest();
+        request.setProductId(1L);
+        request.setProductId(1L);
+        request.setQuantity(-1); //Incorrect value
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.saveWarehouseProduct(request));
+        verify(repository, times(0)).save(warehouseProduct);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateWarehouseProduct_thenReturnsWarehouseProductResponse(){
+        //given
+        WarehouseProductRequest request = new WarehouseProductRequest();
+        request.setWarehouseProductId(1L);
+        request.setProductId(33L);
+        request.setQuantity(25);
+
+        Product product = new Product();
+        product.setProductId(33L);
+
+        WarehouseProduct updatedWarehouseProduct = WarehouseProduct.builder()
+                .warehouseProductId(1L)
+                .product(product)
+                .quantity(25)
+                .build();
+        when(repository.save(updatedWarehouseProduct)).thenReturn(updatedWarehouseProduct);
+        when(repository.findById(33L)).thenReturn(Optional.of(warehouseProduct));
+        //when
+        WarehouseProductResponse warehouseProductResponse = service.updateWarehouseProduct(request);
+        //then
+        assertNotNull(warehouseProductResponse);
+        assertEquals(1L, warehouseProductResponse.warehouseProductId());
+        assertEquals(33L, warehouseProductResponse.productId());
+        assertEquals(25, warehouseProductResponse.quantity());
+        verify(repository, times(1)).save(updatedWarehouseProduct);
+    }
 }
+
+
