@@ -33,6 +33,8 @@ class WarehouseProductServiceTest {
     @InjectMocks
     WarehouseProductService service;
     private WarehouseProduct warehouseProduct;
+
+    private WarehouseProductRequest request;
     @BeforeEach
     void setUp(){
         warehouseProduct = WarehouseProduct.builder()
@@ -40,6 +42,11 @@ class WarehouseProductServiceTest {
                 .product(new Product())
                 .quantity(10)
                 .build();
+
+        request = new WarehouseProductRequest();
+        request.setProductId(1L);
+        request.setProductId(1L);
+        request.setQuantity(10);
     }
 
     @Test
@@ -101,10 +108,6 @@ class WarehouseProductServiceTest {
     @Test
     void givenCorrectRequest_whenSaveWarehouseProduct_thenReturnsWarehouseProductResponse(){
         //given
-        WarehouseProductRequest request = new WarehouseProductRequest();
-        request.setProductId(1L);
-        request.setProductId(1L);
-        request.setQuantity(10);
         when(repository.save(warehouseProduct)).thenReturn(warehouseProduct);
         //when
         WarehouseProductResponse warehouseProductResponse = service.saveWarehouseProduct(request);
@@ -118,10 +121,7 @@ class WarehouseProductServiceTest {
     @Test
     void givenInvalidProductId_whenSaveWarehouseProduct_thenThrowsException(){
         //given
-        WarehouseProductRequest request = new WarehouseProductRequest();
-        request.setProductId(1L);
         request.setProductId(0L); //Incorrect value
-        request.setQuantity(1); //Incorrect value
         //then
         assertThrows(IllegalArgumentException.class, () -> service.saveWarehouseProduct(request));
         verify(repository, times(0)).save(warehouseProduct);
@@ -130,9 +130,6 @@ class WarehouseProductServiceTest {
     @Test
     void givenInvalidQuantity_whenSaveWarehouseProduct_thenThrowsException(){
         //given
-        WarehouseProductRequest request = new WarehouseProductRequest();
-        request.setProductId(1L);
-        request.setProductId(1L);
         request.setQuantity(-1); //Incorrect value
         //then
         assertThrows(IllegalArgumentException.class, () -> service.saveWarehouseProduct(request));
@@ -142,10 +139,10 @@ class WarehouseProductServiceTest {
     @Test
     void givenCorrectRequest_whenUpdateWarehouseProduct_thenReturnsWarehouseProductResponse(){
         //given
-        WarehouseProductRequest request = new WarehouseProductRequest();
-        request.setWarehouseProductId(1L);
-        request.setProductId(33L);
-        request.setQuantity(25);
+        WarehouseProductRequest requestUpdate = new WarehouseProductRequest();
+        requestUpdate.setWarehouseProductId(1L);
+        requestUpdate.setProductId(33L);
+        requestUpdate.setQuantity(25);
 
         Product product = new Product();
         product.setProductId(33L);
@@ -158,7 +155,7 @@ class WarehouseProductServiceTest {
         when(repository.save(updatedWarehouseProduct)).thenReturn(updatedWarehouseProduct);
         when(repository.findById(33L)).thenReturn(Optional.of(warehouseProduct));
         //when
-        WarehouseProductResponse warehouseProductResponse = service.updateWarehouseProduct(request);
+        WarehouseProductResponse warehouseProductResponse = service.updateWarehouseProduct(requestUpdate);
         //then
         assertNotNull(warehouseProductResponse);
         assertEquals(1L, warehouseProductResponse.warehouseProductId());
@@ -170,11 +167,6 @@ class WarehouseProductServiceTest {
     @Test
     void givenNonExistentWarehouseProduct_whenUpdateWarehouseProduct_thenThrowsException(){
         //given
-        WarehouseProductRequest request = new WarehouseProductRequest();
-        request.setWarehouseProductId(1L);
-        request.setProductId(33L);
-        request.setQuantity(25);
-
         when(repository.findById(any())).thenReturn(Optional.empty());
 
         //then
@@ -207,10 +199,17 @@ class WarehouseProductServiceTest {
     @Test
     void givenInvalidProductId_whenUpdateWarehouseProduct_thenThrowsException(){
         //given
-        WarehouseProductRequest request = new WarehouseProductRequest();
-        request.setWarehouseProductId(1L);
         request.setProductId(-2L); //Invalid value
-        request.setQuantity(25);
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.updateWarehouseProduct(request));
+        verify(repository, times(0)).findById(any());
+        verify(repository, times(0)).save(any());
+    }
+
+    @Test
+    void givenNullQuantity_whenUpdateWarehouseProduct_thenThrowsException(){
+        //given
+        request.setQuantity(null); //Invalid value
         //then
         assertThrows(IllegalArgumentException.class, () -> service.updateWarehouseProduct(request));
         verify(repository, times(0)).findById(any());
