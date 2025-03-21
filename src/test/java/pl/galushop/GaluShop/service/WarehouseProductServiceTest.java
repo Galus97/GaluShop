@@ -183,7 +183,13 @@ class WarehouseProductServiceTest {
         verify(repository, times(0)).save(any());
     }
 
-
+    @Test
+    void givenNullRequest_whenUpdateWarehouseProduct_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.updateWarehouseProduct(null));
+        verify(repository, times(0)).findById(any());
+        verify(repository, times(0)).save(any());
+    }
 
 
 }
