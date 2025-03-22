@@ -93,4 +93,15 @@ class UserServiceTest {
         assertEquals(user.getEmail(), userResponse.email());
         verify(repository, (times(1))).findById(any());
     }
+
+    @Test
+    void givenExistentId_whenDeleteUser_thenDeletesUser(){
+        //given
+        when(repository.findById(any())).thenReturn(Optional.of(user));
+        //when
+        service.deleteUser(1L);
+        //then
+        verify(repository, times(1)).delete(user);
+
+    }
 }
