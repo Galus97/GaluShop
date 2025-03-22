@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserRepository;
@@ -67,4 +68,29 @@ class UserServiceTest {
         verify(repository, (times(1))).findById(any());
     }
 
+    @Test
+    void givenInvalidId_whenGetUserEntity_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getUserEntity(-1L));
+        verify(repository, (times(0))).findById(any());
+    }
+
+    @Test
+    void givenNullId_whenGetUserEntity_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getUserEntity(null));
+        verify(repository, (times(0))).findById(any());
+    }
+
+    @Test
+    void givenExistingId_whenGetUserResponse_thenReturnsUserResponse(){
+        //given
+        when(repository.findById(any())).thenReturn(Optional.of(user));
+        //when
+        UserResponse userResponse = service.getUserResponse(1L);
+        //then
+        assertEquals(user.getUserId(), userResponse.userId());
+        assertEquals(user.getEmail(), userResponse.email());
+        verify(repository, (times(1))).findById(any());
+    }
 }
