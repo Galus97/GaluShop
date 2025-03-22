@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.util.Optional;
@@ -56,4 +57,14 @@ class UserServiceTest {
         assertEquals(user, userEntity);
         verify(repository, (times(1))).findById(any());
     }
+
+    @Test
+    void givenNonExistentId_whenGetUserEntity_thenThrowsException(){
+        //given
+        when(repository.findById(any())).thenReturn(Optional.empty());
+        //then
+        assertThrows(UserNotFoundException.class, () -> service.getUserEntity(1L));
+        verify(repository, (times(1))).findById(any());
+    }
+
 }
