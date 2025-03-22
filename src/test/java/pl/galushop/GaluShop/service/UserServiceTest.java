@@ -14,5 +14,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
+    @Mock
+    UserRepository repository;
+    @Mock
+    PasswordEncoder passwordEncoder;
+    @Mock
+    MessageService messageService;
+    @InjectMocks
+    UserService service;
+
+    private User user;
+
+    @BeforeEach
+    void setUp(){
+        user = User.builder()
+                .userId(1L)
+                .firstName("John")
+                .lastName("Smith")
+                .email("john.smith@mail.com")
+                .password("password")
+                .enabled(true)
+                .emailCode("1111")
+                .build();
+    }
+
 
 }
