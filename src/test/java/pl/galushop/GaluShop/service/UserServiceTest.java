@@ -136,4 +136,13 @@ class UserServiceTest {
         verify(repository, times(1)).findById(any());
         verify(repository, times(1)).save(updatedUser);
     }
+
+    @Test
+    void givenNonExistentUserId_whenThrowIfUserDoesntExist_thenThrowsException(){
+        //given
+        when(repository.existsById(any())).thenReturn(false);
+        //then
+        assertThrows(UserNotFoundException.class, () -> service.throwIfUserDoesntExist(any()));
+        verify(repository, times(1)).existsById(any());
+    }
 }
