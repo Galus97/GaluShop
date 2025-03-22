@@ -10,6 +10,7 @@ import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserRepository;
 
 /**
@@ -78,15 +79,16 @@ public class UserService {
         return UserResponse.fromEntity(userRepository.save(existingUser));
     }
 
-    private User getUserOrThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
-    }
-
+    //Used in OrderService -> getAllOrdersByUser
     public void throwIfUserDoesntExist(Long userId){
         if(!userRepository.existsById(userId)){
             throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
         }
+    }
+
+    private User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
     }
 
     private void throwIfIdIsInvalid(Long userId, String message) {

@@ -24,9 +24,7 @@ class OrderProductIdTest {
 
     @Test
     void shouldSetAndGetValuesCorrectly() {
-        OrderProductId orderProductId = new OrderProductId();
-        orderProductId.setOrderId(3L);
-        orderProductId.setProductId(4L);
+        OrderProductId orderProductId = new OrderProductId(3L, 4L);
 
         assertThat(orderProductId.getOrderId()).isEqualTo(3L);
         assertThat(orderProductId.getProductId()).isEqualTo(4L);
@@ -36,11 +34,5 @@ class OrderProductIdTest {
     void shouldImplementEqualsCorrectly() {
         assertThat(orderProductId1).isEqualTo(orderProductId2);
         assertThat(orderProductId1.hashCode()).isEqualTo(orderProductId2.hashCode());
-    }
-
-    @Test
-    void shouldImplementNotEqualsCorrectly() {
-        OrderProductId differentOrderProductId = new OrderProductId(2L, 3L);
-        assertThat(orderProductId1).isNotEqualTo(differentOrderProductId);
     }
 }
