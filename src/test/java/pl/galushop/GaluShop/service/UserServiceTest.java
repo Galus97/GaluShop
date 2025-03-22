@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
@@ -102,6 +103,37 @@ class UserServiceTest {
         service.deleteUser(1L);
         //then
         verify(repository, times(1)).delete(user);
+    }
 
+    @Test
+    void givenCorrectRequest_whenUpdateUser_thenReturnsUserResponse(){
+        //given
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUserId(1L);
+        userRequest.setFirstName("Jane");
+        userRequest.setLastName("Doe");
+        userRequest.setEmail("jane.doe@mail.com");
+        userRequest.setPassword("newPassword");
+
+        User updatedUser = User.builder()
+                .userId(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@mail.com")
+                .password("newPassword")
+                .enabled(true)
+                .emailCode("1111")
+                .build();
+
+        when(repository.findById(any())).thenReturn(Optional.of(user));
+        when(repository.save(updatedUser)).thenReturn(updatedUser);
+        //when
+        UserResponse userResponse = service.updateUser(userRequest);
+        //then
+        assertNotNull(userResponse);
+        assertEquals(userRequest.getUserId(), userResponse.userId());
+        assertEquals(userRequest.getEmail(), userResponse.email());
+        verify(repository, times(1)).findById(any());
+        verify(repository, times(1)).save(updatedUser);
     }
 }
