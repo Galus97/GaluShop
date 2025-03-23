@@ -17,8 +17,11 @@ import pl.galushop.GaluShop.repository.UserRepository;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,7 +42,7 @@ class UserDataServiceTest {
     private UserDataRequest userDataRequest;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         user = User.builder()
                 .userId(1L)
                 .firstName("John")
@@ -73,10 +76,10 @@ class UserDataServiceTest {
     }
 
     @Test
-    void givenCorrectRequest_whenSaveUserData_thenReturnsUserDataResponse(){
+    void givenCorrectRequest_whenSaveUserData_thenReturnsUserDataResponse() {
         //given
         when(repository.save(any())).thenReturn(userData);
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         //when
         UserDataResponse response = service.saveUserData(userDataRequest);
         //then
@@ -84,25 +87,39 @@ class UserDataServiceTest {
         assertEquals(userData.getUserDataId(), response.userDataId());
         assertEquals(userData.getCity(), response.city());
         assertEquals(userData.getZipCode(), response.zipCode());
-        verify(repository, times(1)).save(any());
-        verify(userRepository, times(1)).findById(any());
+        verify(repository, times(1)).save(any(UserData.class));
+        verify(userRepository, times(1)).findById(anyLong());
     }
 
     @Test
-    void givenNullRequest_whenSaveUserData_thenThrowsException(){
+    void givenNullRequest_whenSaveUserData_thenThrowsException() {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.saveUserData(null));
-        verify(repository, times(0)).save(any());
-        verify(userRepository, times(0)).findById(any());
+        verify(repository, times(0)).save(any(UserData.class));
+        verify(userRepository, times(0)).findById(anyLong());
     }
 
     @Test
-    void givenNotFoundUser_whenSaveUserData_thenThrowsException(){
+    void givenNotFoundUser_whenSaveUserData_thenThrowsException() {
         //given
-        when(userRepository.findById(any())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         //then
         assertThrows(UserNotFoundException.class, () -> service.saveUserData(userDataRequest));
-        verify(userRepository, times(1)).findById(any());
-        verify(repository, times(0)).save(any());
+        verify(userRepository, times(1)).findById(anyLong());
+        verify(repository, times(0)).save(any(UserData.class));
+    }
+
+    @Test
+    void givenExistingUserDataId_whenGetUserDataResponse_thenReturnsUserDataResponse() {
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(userData));
+        //when
+        UserDataResponse response = service.getUserDataResponse(1L);
+        //then
+        assertNotNull(response);
+        assertEquals(userData.getUserDataId(), response.userDataId());
+        assertEquals(userData.getStreet(), response.street());
+        assertEquals(userData.getPhoneNumber(), response.phoneNumber());
+        verify(repository, times(1)).findById(anyLong());
     }
 }
