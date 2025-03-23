@@ -11,6 +11,7 @@ import pl.galushop.GaluShop.dto.request.UserDataRequest;
 import pl.galushop.GaluShop.dto.response.UserDataResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
@@ -35,6 +36,7 @@ class UserDataServiceTest {
     UserDataService service;
     private UserData userData;
     private User user;
+    private UserDataRequest userDataRequest;
 
     @BeforeEach
     void setup(){
@@ -59,12 +61,7 @@ class UserDataServiceTest {
                 .user(user)
                 .build();
 
-    }
-
-    @Test
-    void givenCorrectRequest_whenSaveUserData_thenReturnsUserDataResponse(){
-        //given
-        UserDataRequest userDataRequest = new UserDataRequest();
+        userDataRequest = new UserDataRequest();
         userDataRequest.setUserId(null);
         userDataRequest.setCity("Warsaw");
         userDataRequest.setStreet("Pulawska");
@@ -73,7 +70,11 @@ class UserDataServiceTest {
         userDataRequest.setZipCode("00-001");
         userDataRequest.setPhoneNumber(666777888);
         userDataRequest.setUserId(1L);
+    }
 
+    @Test
+    void givenCorrectRequest_whenSaveUserData_thenReturnsUserDataResponse(){
+        //given
         when(repository.save(any())).thenReturn(userData);
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
         //when
@@ -93,5 +94,15 @@ class UserDataServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.saveUserData(null));
         verify(repository, times(0)).save(any());
         verify(userRepository, times(0)).findById(any());
+    }
+
+    @Test
+    void givenNotFoundUser_whenSaveUserData_thenThrowsException(){
+        //given
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
+        //then
+        assertThrows(UserNotFoundException.class, () -> service.saveUserData(userDataRequest));
+        verify(userRepository, times(1)).findById(any());
+        verify(repository, times(0)).save(any());
     }
 }
