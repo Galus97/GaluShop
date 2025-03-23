@@ -128,7 +128,7 @@ class UserDataServiceTest {
     void givenNonExistentUserData_whenGetUserDataResponse_thenThrowsException() {
         //given
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
-        //when
+        //then
         assertThrows(UserDataNotFoundException.class, () -> service.getUserDataResponse(1L));
         verify(repository, times(1)).findById(anyLong());
     }
@@ -151,8 +151,18 @@ class UserDataServiceTest {
     void givenNonExistentUserId_whenGetUserDataByUserId_thenThrowsException() {
         //given
         when(repository.findByUser_UserId(anyLong())).thenReturn(Optional.empty());
-        //when
+        //then
         assertThrows(UserDataNotFoundException.class, () -> service.getUserDataByUserId(1L));
         verify(repository, times(1)).findByUser_UserId(anyLong());
+    }
+
+    @Test
+    void givenExistingUserDataId_whenDeleteUserData_thenDeletesUserData() {
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(userData));
+        //when
+        service.deleteUserData(1L);
+        //then
+        verify(repository, times(1)).delete(any(UserData.class));
     }
 }
