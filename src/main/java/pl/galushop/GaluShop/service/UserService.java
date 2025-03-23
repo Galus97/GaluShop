@@ -82,7 +82,7 @@ public class UserService {
     //Used in OrderService -> getAllOrdersByUser
     public void throwIfUserDoesntExist(Long userId){
         if(!userRepository.existsById(userId)){
-            throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
+            throw new UserNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
         }
     }
 
