@@ -86,4 +86,12 @@ class UserDataServiceTest {
         verify(repository, times(1)).save(any());
         verify(userRepository, times(1)).findById(any());
     }
+
+    @Test
+    void givenNullRequest_whenSaveUserData_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.saveUserData(null));
+        verify(repository, times(0)).save(any());
+        verify(userRepository, times(0)).findById(any());
+    }
 }
