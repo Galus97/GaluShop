@@ -30,11 +30,12 @@ public class UserDataService {
      *
      * @param userDataRequest the user data request containing user details
      * @return The created UserData
-     * @throws IllegalArgumentException if the request is null
+     * @throws IllegalArgumentException  if the request is null
      * @throws UsernameNotFoundException if the user does not exist
      */
     @Transactional
     public UserDataResponse saveUserData(UserDataRequest userDataRequest) {
+        throwIfRequestIsInvalid(userDataRequest);
         return UserDataResponse.fromEntity(userDataRepository.save(buildUserData(userDataRequest)));
     }
 
@@ -43,7 +44,7 @@ public class UserDataService {
      *
      * @param userDataId the ID of the user data.
      * @return the found user data entity.
-     * @throws IllegalArgumentException if the ID is null or negative.
+     * @throws IllegalArgumentException  if the ID is null or negative.
      * @throws UserDataNotFoundException if user data is not found.
      */
     public UserDataResponse getUserDataResponse(Long userDataId) {
@@ -56,7 +57,7 @@ public class UserDataService {
      *
      * @param userId the ID of the user.
      * @return the found user data entity.
-     * @throws IllegalArgumentException if the user ID is null or negative.
+     * @throws IllegalArgumentException  if the user ID is null or negative.
      * @throws UserDataNotFoundException if no user data is found for the user.
      */
     public UserDataResponse getUserDataByUserId(Long userId) {
@@ -69,7 +70,7 @@ public class UserDataService {
      * Deletes user data by its ID.
      *
      * @param userDataId the ID of the user data.
-     * @throws IllegalArgumentException if the ID is null or negative.
+     * @throws IllegalArgumentException  if the ID is null or negative.
      * @throws UserDataNotFoundException if the user data is not found.
      */
     public void deleteUserData(Long userDataId) {
@@ -83,7 +84,7 @@ public class UserDataService {
      * Updates existing user data with the provided request details.
      *
      * @param userDataRequest the user data request containing updated details.
-     * @throws IllegalArgumentException if the user data ID is null or invalid.
+     * @throws IllegalArgumentException  if the user data ID is null or invalid.
      * @throws UserDataNotFoundException if the user data is not found.
      */
     @Transactional
@@ -107,12 +108,10 @@ public class UserDataService {
      *
      * @param userDataRequest the request containing user details.
      * @return a new UserData instance.
-     * @throws IllegalArgumentException if the request is null.
+     * @throws IllegalArgumentException  if the request is null.
      * @throws UsernameNotFoundException if the user is not found.
      */
     private UserData buildUserData(UserDataRequest userDataRequest) {
-        throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
-
         User user = userRepository.findById(userDataRequest.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(messageService.getMessage(
                         ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserId())));
@@ -129,8 +128,14 @@ public class UserDataService {
                 .build();
     }
 
-    private void throwIfIdIsInvalid(Long id, String message){
-        if(id == null || id <= 0){
+    private void throwIfRequestIsInvalid(UserDataRequest userDataRequest) {
+        if (userDataRequest == null) {
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_REQUEST));
+        }
+    }
+
+    private void throwIfIdIsInvalid(Long id, String message) {
+        if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
     }
