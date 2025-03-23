@@ -66,7 +66,7 @@ class UserDataServiceTest {
                 .build();
 
         userDataRequest = new UserDataRequest();
-        userDataRequest.setUserId(null);
+        userDataRequest.setUserDataId(null);
         userDataRequest.setCity("Warsaw");
         userDataRequest.setStreet("Pulawska");
         userDataRequest.setStreetNumber(1);
@@ -164,5 +164,17 @@ class UserDataServiceTest {
         service.deleteUserData(1L);
         //then
         verify(repository, times(1)).delete(any(UserData.class));
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateUserData_thenReturnsUserDataResponse() {
+        //given
+        userDataRequest.setUserDataId(1L);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(userData));
+        when(repository.save(any(UserData.class))).thenReturn(userData);
+        //when
+        UserDataResponse userDataResponse = service.updateUserData(userDataRequest);
+        //then
+        assertNotNull(userDataResponse);
     }
 }
