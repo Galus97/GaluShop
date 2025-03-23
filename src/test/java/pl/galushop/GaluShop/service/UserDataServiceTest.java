@@ -11,6 +11,7 @@ import pl.galushop.GaluShop.dto.request.UserDataRequest;
 import pl.galushop.GaluShop.dto.response.UserDataResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
+import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
@@ -120,6 +121,15 @@ class UserDataServiceTest {
         assertEquals(userData.getUserDataId(), response.userDataId());
         assertEquals(userData.getStreet(), response.street());
         assertEquals(userData.getPhoneNumber(), response.phoneNumber());
+        verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenNonExistentUserData_whenGetUserDataResponse_thenThrowsException() {
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //when
+        assertThrows(UserDataNotFoundException.class, () -> service.getUserDataResponse(1L));
         verify(repository, times(1)).findById(anyLong());
     }
 }
