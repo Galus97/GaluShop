@@ -146,4 +146,13 @@ class UserDataServiceTest {
         assertEquals(userData.getPhoneNumber(), response.phoneNumber());
         verify(repository, times(1)).findByUser_UserId(anyLong());
     }
+
+    @Test
+    void givenNonExistentUserId_whenGetUserDataByUserId_thenThrowsException() {
+        //given
+        when(repository.findByUser_UserId(anyLong())).thenReturn(Optional.empty());
+        //when
+        assertThrows(UserDataNotFoundException.class, () -> service.getUserDataByUserId(1L));
+        verify(repository, times(1)).findByUser_UserId(anyLong());
+    }
 }
