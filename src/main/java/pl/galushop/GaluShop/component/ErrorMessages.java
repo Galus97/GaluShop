@@ -39,6 +39,7 @@ public final class ErrorMessages {
     public static final String INVALID_USER_DATA_ID = "error.invalidUserDataId";
     public static final String USER_DATA_NOT_FOUND = "error.userDataNotFound";
 
+    public static final String INVALID_USER_DATA_REQUEST = "error.invalidUserDataRequest";
 
     //WarehouseProduct
     public static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";
