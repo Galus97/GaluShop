@@ -38,6 +38,7 @@ public final class ErrorMessages {
     //UserData
     public static final String INVALID_USER_DATA_ID = "error.invalidUserDataId";
     public static final String USER_DATA_NOT_FOUND = "error.userDataNotFound";
+    public static final String USER_DATA_NOT_FOUND_BY_USER_ID = "error.userDataNotFoundByUserId";
 
     public static final String INVALID_USER_DATA_REQUEST = "error.invalidUserDataRequest";
 
