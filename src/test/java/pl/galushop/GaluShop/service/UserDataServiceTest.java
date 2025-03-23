@@ -132,4 +132,18 @@ class UserDataServiceTest {
         assertThrows(UserDataNotFoundException.class, () -> service.getUserDataResponse(1L));
         verify(repository, times(1)).findById(anyLong());
     }
+
+    @Test
+    void givenExistingUserId_whenGetUserDataByUserId_thenReturnsUserDataResponse() {
+        //given
+        when(repository.findByUser_UserId(anyLong())).thenReturn(Optional.of(userData));
+        //when
+        UserDataResponse response = service.getUserDataByUserId(1L);
+        //then
+        assertNotNull(response);
+        assertEquals(userData.getUserDataId(), response.userDataId());
+        assertEquals(userData.getStreet(), response.street());
+        assertEquals(userData.getPhoneNumber(), response.phoneNumber());
+        verify(repository, times(1)).findByUser_UserId(anyLong());
+    }
 }
