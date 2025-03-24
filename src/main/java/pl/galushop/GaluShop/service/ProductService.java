@@ -12,7 +12,6 @@ import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing product operations.
