@@ -2,14 +2,17 @@ package pl.galushop.GaluShop.component;
 
 public final class ErrorMessages {
     public static final String USER_OR_EMPLOYEE_NOT_FOUND = "error.userOrEmployeeNotFound";
-    public static final String EMAIL_IS_INVALID = "error.invalidEmail";
     public static final String ERROR = "error";
     public static final String INVALID_QUANTITY = "error.invalidQuantity";
     public static final String LIST_IS_INVALID = "error.listIsNullOrEmpty";
+
+    //Email
     public static final String VERIFICATION_CODE = "verificationCodes";
     public static final String EMAIL_TEXT = "email.text";
     public static final String EMAIL_FORM = "email.form";
     public static final String EMAIL_SUBJECT = "email.subject";
+    public static final String EMAIL_IS_INVALID = "error.invalidEmail";
+    public static final String EMAIL_IS_ALREADY_USED = "error.emailAlreadyUsed";
 
     //Employee
     public static final String EMPLOYEE_NOT_FOUND = "error.employeeNotFound";
