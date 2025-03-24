@@ -66,4 +66,11 @@ class ProductServiceTest {
         assertThrows(ProductNotFoundException.class, () -> service.getProductEntity(1L));
         verify(repository, times(1)).findById(1L);
     }
+
+    @Test
+    void givenInvalidProductId_whenGetProductEntity_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getProductEntity(-1L));
+        verify(repository, times(0)).findById(anyLong());
+    }
 }
