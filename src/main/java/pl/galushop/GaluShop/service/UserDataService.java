@@ -62,8 +62,9 @@ public class UserDataService {
      */
     public UserDataResponse getUserDataByUserId(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
-
-        return UserDataResponse.fromEntity(getUserDataOrThrow(userId, ErrorMessages.USER_DATA_NOT_FOUND));
+        return UserDataResponse.fromEntity(userDataRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
+                        ErrorMessages.USER_DATA_NOT_FOUND_BY_USER_ID, userId))));
     }
 
     /**
@@ -88,6 +89,7 @@ public class UserDataService {
      * @throws UserDataNotFoundException if the user data is not found.
      */
     @Transactional
+    //TUTAJ
     public UserDataResponse updateUserData(UserDataRequest userDataRequest) {
         throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
 

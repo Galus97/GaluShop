@@ -11,6 +11,7 @@ import pl.galushop.GaluShop.dto.request.UserDataRequest;
 import pl.galushop.GaluShop.dto.response.UserDataResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.entity.UserData;
+import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
@@ -65,7 +66,7 @@ class UserDataServiceTest {
                 .build();
 
         userDataRequest = new UserDataRequest();
-        userDataRequest.setUserId(null);
+        userDataRequest.setUserDataId(null);
         userDataRequest.setCity("Warsaw");
         userDataRequest.setStreet("Pulawska");
         userDataRequest.setStreetNumber(1);
@@ -121,5 +122,59 @@ class UserDataServiceTest {
         assertEquals(userData.getStreet(), response.street());
         assertEquals(userData.getPhoneNumber(), response.phoneNumber());
         verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenNonExistentUserData_whenGetUserDataResponse_thenThrowsException() {
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(UserDataNotFoundException.class, () -> service.getUserDataResponse(1L));
+        verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenExistingUserId_whenGetUserDataByUserId_thenReturnsUserDataResponse() {
+        //given
+        when(repository.findByUser_UserId(anyLong())).thenReturn(Optional.of(userData));
+        //when
+        UserDataResponse response = service.getUserDataByUserId(1L);
+        //then
+        assertNotNull(response);
+        assertEquals(userData.getUserDataId(), response.userDataId());
+        assertEquals(userData.getStreet(), response.street());
+        assertEquals(userData.getPhoneNumber(), response.phoneNumber());
+        verify(repository, times(1)).findByUser_UserId(anyLong());
+    }
+
+    @Test
+    void givenNonExistentUserId_whenGetUserDataByUserId_thenThrowsException() {
+        //given
+        when(repository.findByUser_UserId(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(UserDataNotFoundException.class, () -> service.getUserDataByUserId(1L));
+        verify(repository, times(1)).findByUser_UserId(anyLong());
+    }
+
+    @Test
+    void givenExistingUserDataId_whenDeleteUserData_thenDeletesUserData() {
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(userData));
+        //when
+        service.deleteUserData(1L);
+        //then
+        verify(repository, times(1)).delete(any(UserData.class));
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateUserData_thenReturnsUserDataResponse() {
+        //given
+        userDataRequest.setUserDataId(1L);
+        when(repository.findById(anyLong())).thenReturn(Optional.of(userData));
+        when(repository.save(any(UserData.class))).thenReturn(userData);
+        //when
+        UserDataResponse userDataResponse = service.updateUserData(userDataRequest);
+        //then
+        assertNotNull(userDataResponse);
     }
 }
