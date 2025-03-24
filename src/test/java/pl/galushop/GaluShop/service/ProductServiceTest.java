@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.Optional;
@@ -55,5 +56,14 @@ class ProductServiceTest {
         assertEquals("Electronic", product.getCategory());
         assertEquals(1, product.getCategoryId());
         verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenNonExistentProductId_whenGetProductEntity_thenThrowsException(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(ProductNotFoundException.class, () -> service.getProductEntity(1L));
+        verify(repository, times(1)).findById(1L);
     }
 }
