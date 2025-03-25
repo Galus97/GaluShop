@@ -113,7 +113,7 @@ class ProductServiceTest {
         //when
         ProductResponse response = service.getProductResponse(1L);
         //then
-        assertNotNull(product);
+        assertNotNull(response);
         assertEquals("Product name", response.productName());
         assertEquals("Description of the product", response.description());
         assertEquals(10d, response.price());
@@ -139,10 +139,75 @@ class ProductServiceTest {
 
     @Test
     void givenNullRequest_whenSaveProductEntity_thenThrowsException(){
-
-        //when
-        assertThrows(IllegalArgumentException.class, () -> service.saveProductEntity(null));
         //then
+        assertThrows(IllegalArgumentException.class, () -> service.saveProductEntity(null));
         verify(repository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveProductResponse_thenReturnsProductResponse(){
+        //given
+        when(repository.save(any(Product.class))).thenReturn(product);
+        //when
+        ProductResponse response = service.saveProductResponse(productRequest);
+        //then
+        assertNotNull(response);
+        assertEquals(product.getProductId(), response.productId());
+        assertEquals(product.getDescription(), response.description());
+        assertEquals(product.getPrice(), response.price());
+        assertEquals(product.getCategory(), response.category());
+        verify(repository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    void givenExistingProductId_whenDeleteProduct_thenDeletesProduct(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(product));
+        //when
+        service.deleteProduct(1L);
+        //then
+        verify(repository, times(1)).delete(product);
+    }
+
+    @Test
+    void givenNonExistentProductId_whenDeleteProduct_thenThrowsException(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(ProductNotFoundException.class, () -> service.deleteProduct(1L));
+        verify(repository, times(0)).delete(product);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateProduct_thenReturnsProductResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(product));
+        when(repository.save(any(Product.class))).thenReturn(product);
+        productRequest.setProductId(1L);
+        //when
+        ProductResponse response = service.updateProduct(productRequest);
+        //then
+        assertEquals("Product name", response.productName());
+        assertEquals("Description of the product", response.description());
+        assertEquals(10d, response.price());
+        assertEquals("Electronic", response.category());
+        assertEquals(1, response.categoryId());
+        verify(repository, times(1)).findById(1L);
+        verify(repository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    void givenNotEmptyListWithIds_whenGetAllProductByIds_thenReturnsProductList(){
+        //given
+        List<Long> productIds = Arrays.asList(product.getProductId());
+        List<Product> productList = Arrays.asList(product);
+        when(repository.findAllById(productIds)).thenReturn(productList);
+        //when
+        List<Product> allProductByIds = service.getAllProductByIds(productIds);
+        //then
+        assertEquals(1, allProductByIds.size());
+        assertEquals(1L, allProductByIds.get(0).getProductId());
+        assertEquals("Product name", allProductByIds.get(0).getProductName());
+        verify(repository, times(1)).findAllById(productIds);
     }
 }
