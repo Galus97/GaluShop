@@ -109,4 +109,20 @@ class ProductImagesServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.getProductImages(null));
         verify(repository, times(0)).findById(anyLong());
     }
+
+    @Test
+    void givenCorrectRequest_whenUpdateProductImages_thenReturnsProductImagesResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(productImages));
+        when(repository.save(any(ProductImages.class))).thenReturn(productImages);
+        //when
+        ProductImagesResponse response = service.updateProductImages(productImageRequest);
+        //then
+        assertNotNull(response);
+        assertEquals(1L, response.imagesId());
+        assertEquals("Image src", response.imgSrc());
+        assertEquals("Image alt", response.altImg());
+        verify(repository, times(1)).findById(anyLong());
+        verify(repository, times(1)).save(productImages);
+    }
 }
