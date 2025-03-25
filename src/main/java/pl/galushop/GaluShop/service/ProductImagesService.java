@@ -57,6 +57,7 @@ public class ProductImagesService {
      */
     @Transactional
     public ProductImagesResponse updateProductImages(ProductImageRequest productImageRequest) {
+        throwIfRequestIsNull(productImageRequest);
         throwIfIdIsInvalid(productImageRequest.getImagesId());
 
         ProductImages exisitngProductImages = getImagesOrThrow(productImageRequest.getImagesId());
@@ -102,13 +103,18 @@ public class ProductImagesService {
      * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
      */
     private ProductImages buildProductImages(ProductImageRequest productImageRequest) {
-        throwIfIdIsInvalid(productImageRequest.getImagesId());
-
+        throwIfRequestIsNull(productImageRequest);
         return ProductImages.builder()
                 .product(productImageRequest.getProduct())
                 .imgSrc(productImageRequest.getImgSrc())
                 .altImg(productImageRequest.getAltImg())
                 .build();
+    }
+
+    private void throwIfRequestIsNull(ProductImageRequest productImageRequest){
+        if(productImageRequest == null){
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_REQUEST_IS_NULL));
+        }
     }
 
     private void throwIfIdIsInvalid(Long id){
