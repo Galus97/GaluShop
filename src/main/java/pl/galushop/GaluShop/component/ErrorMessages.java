@@ -33,6 +33,7 @@ public final class ErrorMessages {
     //ProductImages
     public static final String INVALID_PRODUCT_IMAGES_ID = "error.invalidProductImagesId";
     public static final String PRODUCT_IMAGES_NOT_FOUND = "error.productImagesNotFoundException";
+    public static final String PRODUCT_IMAGES_REQUEST_IS_NULL = "error.productImagesRequestIsNull";
 
     //User
     public static final String INVALID_USER_ID = "error.invalidUserId";
