@@ -13,8 +13,11 @@ import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,5 +69,19 @@ class ProductImagesServiceTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.saveProductImages(null));
         verify(repository, times(0)).save(productImages);
+    }
+
+    @Test
+    void givenExistingId_whenGetProductImages_thenReturnsProductImagesResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(productImages));
+        //when
+        ProductImagesResponse response = service.getProductImages(1L);
+        //then
+        assertNotNull(response);
+        assertEquals(1L, response.imagesId());
+        assertEquals("Image src", response.imgSrc());
+        assertEquals("Image alt", response.altImg());
+        verify(repository, times(1)).findById(anyLong());
     }
 }
