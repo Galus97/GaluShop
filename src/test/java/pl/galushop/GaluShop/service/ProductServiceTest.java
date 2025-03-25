@@ -136,4 +136,13 @@ class ProductServiceTest {
         assertEquals(product.getCategory(), productEntity.getCategory());
         verify(repository, times(1)).save(any(Product.class));
     }
+
+    @Test
+    void givenNullRequest_whenSaveProductEntity_thenThrowsException(){
+
+        //when
+        assertThrows(IllegalArgumentException.class, () -> service.saveProductEntity(null));
+        //then
+        verify(repository, times(0)).save(any(Product.class));
+    }
 }
