@@ -11,6 +11,7 @@ import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.ProductImages;
+import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;
 
 import java.util.Optional;
@@ -83,5 +84,15 @@ class ProductImagesServiceTest {
         assertEquals("Image src", response.imgSrc());
         assertEquals("Image alt", response.altImg());
         verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenNonExistentId_whenGetProductImages_thenThrowsException(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(ProductImagesNotFoundException.class, () -> service.getProductImages(1L));
+        verify(repository, times(1)).findById(anyLong());
+
     }
 }
