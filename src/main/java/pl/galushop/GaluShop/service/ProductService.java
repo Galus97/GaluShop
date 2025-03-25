@@ -80,6 +80,7 @@ public class ProductService {
      */
     @Transactional
     public ProductResponse updateProduct(ProductRequest productRequest) {
+        throwIfRequestIsNull(productRequest);
         throwIfIdIsInvalid(productRequest.getProductId());
 
         Product existingProduct = getProductOrThrow(productRequest.getProductId());

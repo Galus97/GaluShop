@@ -113,7 +113,7 @@ class ProductServiceTest {
         //when
         ProductResponse response = service.getProductResponse(1L);
         //then
-        assertNotNull(product);
+        assertNotNull(response);
         assertEquals("Product name", response.productName());
         assertEquals("Description of the product", response.description());
         assertEquals(10d, response.price());
@@ -176,5 +176,23 @@ class ProductServiceTest {
         //then
         assertThrows(ProductNotFoundException.class, () -> service.deleteProduct(1L));
         verify(repository, times(0)).delete(product);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateProduct_thenReturnsProductResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(product));
+        when(repository.save(any(Product.class))).thenReturn(product);
+        productRequest.setProductId(1L);
+        //when
+        ProductResponse response = service.updateProduct(productRequest);
+        //then
+        assertEquals("Product name", response.productName());
+        assertEquals("Description of the product", response.description());
+        assertEquals(10d, response.price());
+        assertEquals("Electronic", response.category());
+        assertEquals(1, response.categoryId());
+        verify(repository, times(1)).findById(1L);
+        verify(repository, times(1)).save(any(Product.class));
     }
 }
