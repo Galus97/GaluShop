@@ -34,7 +34,7 @@ public class PaymentService {
      * @throws IllegalArgumentException if the payment ID is null or invalid.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
-    public PaymentResponse getPaymentResponseById(Long paymentId){
+    public PaymentResponse getPaymentResponse(Long paymentId){
         throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
 
         return PaymentResponse.fromEntity(getPaymentOrThrow(paymentId, ErrorMessages.PAYMENT_NOT_FOUND));
@@ -109,6 +109,7 @@ public class PaymentService {
      */
     @Transactional
     public PaymentResponse updatePayment(PaymentRequest paymentRequest){
+        throwIfRequestIsNull(paymentRequest);
         throwIfIdIsInvalid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
@@ -129,7 +130,7 @@ public class PaymentService {
      * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
      */
     private Payment buildPayment(PaymentRequest paymentRequest) {
-        throwIfIdIsInvalid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
+        throwIfRequestIsNull(paymentRequest);
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
 
@@ -138,6 +139,12 @@ public class PaymentService {
                 .paymentStatus(paymentRequest.getPaymentStatus())
                 .order(order)
                 .build();
+    }
+
+    private void throwIfRequestIsNull(PaymentRequest paymentRequest){
+        if(paymentRequest == null){
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PAYMENT_REQUEST_IS_NULL));
+        }
     }
 
     private void throwIfIdIsInvalid(Long id, String message){
