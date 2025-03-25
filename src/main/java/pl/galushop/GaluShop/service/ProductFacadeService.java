@@ -8,7 +8,6 @@ import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.entity.Product;
-import pl.galushop.GaluShop.entity.ProductImages;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class ProductFacadeService {
      */
     @Transactional
     public ProductResponse saveProductWithImages(ProductRequest productRequest){
-        Product product = productService.saveProduct(productRequest);
+        Product product = productService.saveProductEntity(productRequest);
 
         for(ProductImageRequest imageRequest : productRequest.getProductImages()){
             imageRequest.setProduct(product);

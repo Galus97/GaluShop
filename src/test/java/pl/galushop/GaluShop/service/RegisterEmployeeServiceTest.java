@@ -7,10 +7,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.component.RegisterValidator;
-import pl.galushop.GaluShop.dto.request.UserRequest;
-import pl.galushop.GaluShop.dto.response.UserResponse;
+import pl.galushop.GaluShop.dto.request.EmployeeRequest;
+import pl.galushop.GaluShop.dto.response.EmployeeResponse;
+import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.entity.User;
-import pl.galushop.GaluShop.repository.UserRepository;
+import pl.galushop.GaluShop.repository.EmployeeRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -19,9 +20,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class RegisterUserServiceTest {
+class RegisterEmployeeServiceTest {
     @Mock
-    UserRepository repository;
+    EmployeeRepository repository;
     @Mock
     PasswordEncoder passwordEncoder;
     @Mock
@@ -29,20 +30,21 @@ class RegisterUserServiceTest {
     @Mock
     EmailService emailService;
     @InjectMocks
-    RegisterUserService service;
+    RegisterEmployeeService service;
 
     @Test
-    void givenCorrectRequest_whenSaveNewUser_thenReturnsUserResponse() throws Exception{
+    void givenCorrectRequest_whenSaveNewEmployee_thenReturnsEmployeeResponse() throws Exception{
         //given
-        UserRequest userRequest = new UserRequest();
-        userRequest.setUserId(null);
-        userRequest.setFirstName("John");
-        userRequest.setLastName("Smith");
-        userRequest.setEmail("john.smith@mail.com");
-        userRequest.setPassword("password");
+        EmployeeRequest employeeRequest = EmployeeRequest.builder()
+                .employeeId(null)
+                .firstName("John")
+                .lastName("Smith")
+                .email("john.smith@mail.com")
+                .password("password")
+                .build();
 
-        User user = User.builder()
-                .userId(1L)
+        Employee employee = Employee.builder()
+                .employeeId(1L)
                 .firstName("John")
                 .lastName("Smith")
                 .email("john.smith@mail.com")
@@ -50,9 +52,9 @@ class RegisterUserServiceTest {
                 .enabled(true)
                 .emailCode("1111")
                 .build();
-        when(repository.save(any(User.class))).thenReturn(user);
+        when(repository.save(any(Employee.class))).thenReturn(employee);
         //when
-        UserResponse response = service.saveNewUser(userRequest);
+        EmployeeResponse response = service.saveNewEmployee(employeeRequest);
         //then
         assertNotNull(response);
         assertEquals("John", response.firstName());
@@ -60,6 +62,7 @@ class RegisterUserServiceTest {
         assertEquals("john.smith@mail.com", response.email());
         assertEquals("1111", response.emailCode());
         assertTrue(response.enabled());
-        verify(repository, times(1)).save(any(User.class));
+        verify(repository, times(1)).save(any(Employee.class));
     }
+
 }

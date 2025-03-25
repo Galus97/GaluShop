@@ -35,14 +35,14 @@ public class RegisterValidator {
         if (object instanceof User user) {
             Optional<User> userExistByEmail = userRepository.findByEmail(user.getEmail());
             if (userExistByEmail.isPresent()) {
-                errors.add(messageService.getMessage("error.emailAlreadyUsed"));
+                errors.add(messageService.getMessage(ErrorMessages.EMAIL_IS_ALREADY_USED));
             }
         }
 
         if (object instanceof Employee employee) {
             Optional<Employee> employeeExistByEmail = employeeRepository.findByEmail(employee.getEmail());
             if (employeeExistByEmail.isPresent()) {
-                errors.add(messageService.getMessage("error.emailAlreadyUsed"));
+                errors.add(messageService.getMessage(ErrorMessages.EMAIL_IS_ALREADY_USED));
             }
         }
         return errors;

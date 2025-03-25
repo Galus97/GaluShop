@@ -12,7 +12,6 @@ import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing product operations.
@@ -49,7 +48,7 @@ public class ProductService {
      * @throws IllegalArgumentException if the product request is null.
      */
     @Transactional
-    public Product saveProduct(ProductRequest productRequest){
+    public Product saveProductEntity(ProductRequest productRequest){
         return productRepository.save(buildProduct(productRequest));
     }
 
@@ -115,7 +114,7 @@ public class ProductService {
      * @throws IllegalArgumentException if the product request is null.
      */
     private Product buildProduct(ProductRequest productRequest) {
-        throwIfIdIsInvalid(productRequest.getProductId());
+        throwIfRequestIsNull(productRequest);
 
         return Product.builder()
                 .productName(productRequest.getProductName())
@@ -124,7 +123,12 @@ public class ProductService {
                 .category(productRequest.getCategory())
                 .categoryId(productRequest.getCategoryId())
                 .build();
+    }
 
+    private void throwIfRequestIsNull(ProductRequest productRequest){
+       if(productRequest == null){
+           throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_REQUEST));
+       }
     }
 
     private void throwIfIdIsInvalid(Long id){

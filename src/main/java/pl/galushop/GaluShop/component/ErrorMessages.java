@@ -2,14 +2,17 @@ package pl.galushop.GaluShop.component;
 
 public final class ErrorMessages {
     public static final String USER_OR_EMPLOYEE_NOT_FOUND = "error.userOrEmployeeNotFound";
-    public static final String EMAIL_IS_INVALID = "error.invalidEmail";
     public static final String ERROR = "error";
     public static final String INVALID_QUANTITY = "error.invalidQuantity";
     public static final String LIST_IS_INVALID = "error.listIsNullOrEmpty";
+
+    //Email
     public static final String VERIFICATION_CODE = "verificationCodes";
     public static final String EMAIL_TEXT = "email.text";
     public static final String EMAIL_FORM = "email.form";
     public static final String EMAIL_SUBJECT = "email.subject";
+    public static final String EMAIL_IS_INVALID = "error.invalidEmail";
+    public static final String EMAIL_IS_ALREADY_USED = "error.emailAlreadyUsed";
 
     //Employee
     public static final String EMPLOYEE_NOT_FOUND = "error.employeeNotFound";
@@ -25,6 +28,7 @@ public final class ErrorMessages {
     //Product
     public static final String PRODUCT_NOT_FOUND = "error.productNotFound";
     public static final String INVALID_PRODUCT_ID = "error.invalidProductId";
+    public static final String INVALID_PRODUCT_REQUEST = "error.productRequestIsNull";
 
     //ProductImages
     public static final String INVALID_PRODUCT_IMAGES_ID = "error.invalidProductImagesId";
@@ -39,7 +43,6 @@ public final class ErrorMessages {
     public static final String INVALID_USER_DATA_ID = "error.invalidUserDataId";
     public static final String USER_DATA_NOT_FOUND = "error.userDataNotFound";
     public static final String USER_DATA_NOT_FOUND_BY_USER_ID = "error.userDataNotFoundByUserId";
-
     public static final String INVALID_USER_DATA_REQUEST = "error.invalidUserDataRequest";
 
     //WarehouseProduct
@@ -52,6 +55,5 @@ public final class ErrorMessages {
     //Payment
     public static final String INVALID_PAYMENT_ID = "error.invalidPaymentId";
     public static final String PAYMENT_NOT_FOUND = "error.paymentNotFound";
-
     public static final String PAYMENT_NOT_FOUND_BY_ORDER = "error.paymentsNotFoundByOrderId";
 }
