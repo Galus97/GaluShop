@@ -158,4 +158,14 @@ class ProductServiceTest {
         assertEquals(product.getCategory(), response.category());
         verify(repository, times(1)).save(any(Product.class));
     }
+
+    @Test
+    void givenExistingProductId_whenDeleteProduct_thenDeletesProduct(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(product));
+        //when
+        service.deleteProduct(1L);
+        //then
+        verify(repository, times(1)).delete(product);
+    }
 }
