@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.request.ProductImageRequest;
+import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
@@ -15,11 +17,13 @@ import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,6 +38,7 @@ class ProductServiceTest {
     @InjectMocks
     ProductService service;
     private Product product;
+    private ProductRequest productRequest;
 
     @BeforeEach
     void setUp(){
@@ -45,7 +50,7 @@ class ProductServiceTest {
                 .build();
         List<OrderProduct> orderProductList = Arrays.asList(orderProduct);
         product = Product.builder()
-                .productId(null)
+                .productId(1L)
                 .productName("Product name")
                 .description("Description of the product")
                 .price(10.0)
@@ -53,6 +58,14 @@ class ProductServiceTest {
                 .categoryId(1)
                 .orderProducts(orderProductList)
                 .build();
+        productRequest = new ProductRequest();
+        productRequest.setProductId(null);
+        productRequest.setProductName("Product name");
+        productRequest.setDescription("Description of the product");
+        productRequest.setPrice(10.0);
+        productRequest.setCategory("Electronic");
+        productRequest.setCategoryId(1);
+        productRequest.setProductImages(new ArrayList<ProductImageRequest>());
     }
 
     @Test
@@ -109,5 +122,18 @@ class ProductServiceTest {
         verify(repository, times(1)).findById(anyLong());
     }
 
-
+    @Test
+    void givenCorrectRequest_whenSaveProductEntity_thenReturnsProductEntity(){
+        //given
+        when(repository.save(any(Product.class))).thenReturn(product);
+        //when
+        Product productEntity = service.saveProductEntity(productRequest);
+        //then
+        assertNotNull(productEntity);
+        assertEquals(product.getProductId(), productEntity.getProductId());
+        assertEquals(product.getDescription(), productEntity.getDescription());
+        assertEquals(product.getPrice(), productEntity.getPrice());
+        assertEquals(product.getCategory(), productEntity.getCategory());
+        verify(repository, times(1)).save(any(Product.class));
+    }
 }
