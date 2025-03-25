@@ -139,10 +139,23 @@ class ProductServiceTest {
 
     @Test
     void givenNullRequest_whenSaveProductEntity_thenThrowsException(){
-
-        //when
-        assertThrows(IllegalArgumentException.class, () -> service.saveProductEntity(null));
         //then
+        assertThrows(IllegalArgumentException.class, () -> service.saveProductEntity(null));
         verify(repository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveProductResponse_thenReturnsProductResponse(){
+        //given
+        when(repository.save(any(Product.class))).thenReturn(product);
+        //when
+        ProductResponse response = service.saveProductResponse(productRequest);
+        //then
+        assertNotNull(response);
+        assertEquals(product.getProductId(), response.productId());
+        assertEquals(product.getDescription(), response.description());
+        assertEquals(product.getPrice(), response.price());
+        assertEquals(product.getCategory(), response.category());
+        verify(repository, times(1)).save(any(Product.class));
     }
 }
