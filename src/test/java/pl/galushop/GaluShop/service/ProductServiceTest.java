@@ -168,4 +168,13 @@ class ProductServiceTest {
         //then
         verify(repository, times(1)).delete(product);
     }
+
+    @Test
+    void givenNonExistentProductId_whenDeleteProduct_thenThrowsException(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(ProductNotFoundException.class, () -> service.deleteProduct(1L));
+        verify(repository, times(0)).delete(product);
+    }
 }
