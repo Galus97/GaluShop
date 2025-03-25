@@ -60,4 +60,11 @@ class ProductImagesServiceTest {
         assertEquals("Image alt", response.altImg());
         verify(repository, times(1)).save(productImages);
     }
+
+    @Test
+    void givenNullRequest_whenSaveProductImages_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.saveProductImages(null));
+        verify(repository, times(0)).save(productImages);
+    }
 }
