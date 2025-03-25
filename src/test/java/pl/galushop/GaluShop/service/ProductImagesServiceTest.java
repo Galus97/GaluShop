@@ -101,6 +101,12 @@ class ProductImagesServiceTest {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.getProductImages(-1L));
         verify(repository, times(0)).findById(anyLong());
+    }
 
+    @Test
+    void givenNullId_whenGetProductImages_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getProductImages(null));
+        verify(repository, times(0)).findById(anyLong());
     }
 }
