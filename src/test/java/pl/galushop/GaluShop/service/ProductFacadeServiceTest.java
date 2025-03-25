@@ -58,4 +58,20 @@ class ProductFacadeServiceTest {
         verify(productImagesService, times(1)).saveProductImages(any(ProductImageRequest.class));
     }
 
+    @Test
+    void givenCorrectId_whenGetAllImagesByProductId_thenReturnsProductImagesResponseList() {
+        //given
+        Long productId = 1L;
+        List<ProductImagesResponse> images = Collections.singletonList(
+                new ProductImagesResponse(1L, "Imgage Src", "Image Alt", 1L));
+
+        when(productImagesService.getAllImagesByProductId(productId)).thenReturn(images);
+        //when
+        List<ProductImagesResponse> result = productFacadeService.getAllImagesByProductId(productId);
+        //then
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(productService, times(1)).getProductEntity(productId);
+        verify(productImagesService, times(1)).getAllImagesByProductId(productId);
+    }
 }
