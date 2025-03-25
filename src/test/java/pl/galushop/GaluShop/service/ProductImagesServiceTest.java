@@ -16,7 +16,9 @@ import pl.galushop.GaluShop.repository.ProductImagesRepository;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -35,7 +37,7 @@ class ProductImagesServiceTest {
     private ProductImageRequest productImageRequest;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         Product product = new Product();
         product.setProductId(1L);
         productImages = ProductImages.builder()
@@ -52,7 +54,7 @@ class ProductImagesServiceTest {
     }
 
     @Test
-    void givenCorrectRequest_whenSaveProductImages_thenReturnsProductImagesResponse(){
+    void givenCorrectRequest_whenSaveProductImages_thenReturnsProductImagesResponse() {
         //given
         when(repository.save(any(ProductImages.class))).thenReturn(productImages);
         //when
@@ -66,14 +68,14 @@ class ProductImagesServiceTest {
     }
 
     @Test
-    void givenNullRequest_whenSaveProductImages_thenThrowsException(){
+    void givenNullRequest_whenSaveProductImages_thenThrowsException() {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.saveProductImages(null));
         verify(repository, times(0)).save(productImages);
     }
 
     @Test
-    void givenExistingId_whenGetProductImages_thenReturnsProductImagesResponse(){
+    void givenExistingId_whenGetProductImages_thenReturnsProductImagesResponse() {
         //given
         when(repository.findById(anyLong())).thenReturn(Optional.of(productImages));
         //when
@@ -87,7 +89,7 @@ class ProductImagesServiceTest {
     }
 
     @Test
-    void givenNonExistentId_whenGetProductImages_thenThrowsException(){
+    void givenNonExistentId_whenGetProductImages_thenThrowsException() {
         //given
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
         //then
@@ -97,21 +99,21 @@ class ProductImagesServiceTest {
     }
 
     @Test
-    void givenInvalidId_whenGetProductImages_thenThrowsException(){
+    void givenInvalidId_whenGetProductImages_thenThrowsException() {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.getProductImages(-1L));
         verify(repository, times(0)).findById(anyLong());
     }
 
     @Test
-    void givenNullId_whenGetProductImages_thenThrowsException(){
+    void givenNullId_whenGetProductImages_thenThrowsException() {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.getProductImages(null));
         verify(repository, times(0)).findById(anyLong());
     }
 
     @Test
-    void givenCorrectRequest_whenUpdateProductImages_thenReturnsProductImagesResponse(){
+    void givenCorrectRequest_whenUpdateProductImages_thenReturnsProductImagesResponse() {
         //given
         when(repository.findById(anyLong())).thenReturn(Optional.of(productImages));
         when(repository.save(any(ProductImages.class))).thenReturn(productImages);
@@ -124,5 +126,15 @@ class ProductImagesServiceTest {
         assertEquals("Image alt", response.altImg());
         verify(repository, times(1)).findById(anyLong());
         verify(repository, times(1)).save(productImages);
+    }
+
+    @Test
+    void givenExistingId_whenDeleteProductImages_thenDeletesProductImagesResponse() {
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(productImages));
+        //when
+        service.deleteProductImages(1L);
+        //then
+        verify(repository, times(1)).delete(productImages);
     }
 }
