@@ -195,4 +195,19 @@ class ProductServiceTest {
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).save(any(Product.class));
     }
+
+    @Test
+    void givenNotEmptyListWithIds_whenGetAllProductByIds_thenReturnsProductList(){
+        //given
+        List<Long> productIds = Arrays.asList(product.getProductId());
+        List<Product> productList = Arrays.asList(product);
+        when(repository.findAllById(productIds)).thenReturn(productList);
+        //when
+        List<Product> allProductByIds = service.getAllProductByIds(productIds);
+        //then
+        assertEquals(1, allProductByIds.size());
+        assertEquals(1L, allProductByIds.get(0).getProductId());
+        assertEquals("Product name", allProductByIds.get(0).getProductName());
+        verify(repository, times(1)).findAllById(productIds);
+    }
 }
