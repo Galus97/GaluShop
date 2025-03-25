@@ -95,4 +95,12 @@ class ProductImagesServiceTest {
         verify(repository, times(1)).findById(anyLong());
 
     }
+
+    @Test
+    void givenInvalidId_whenGetProductImages_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getProductImages(-1L));
+        verify(repository, times(0)).findById(anyLong());
+
+    }
 }
