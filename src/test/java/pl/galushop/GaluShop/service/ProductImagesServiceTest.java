@@ -14,6 +14,9 @@ import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -136,5 +139,21 @@ class ProductImagesServiceTest {
         service.deleteProductImages(1L);
         //then
         verify(repository, times(1)).delete(productImages);
+    }
+
+    @Test
+    void givenExistingId_whenGetAllImagesByProductId_thenReturnsProductImagesResponseList() {
+        //given
+        List<ProductImages> productImagesList = Arrays.asList(productImages);
+        when(repository.findAllByProduct_ProductId(anyLong())).thenReturn(productImagesList);
+        //when
+        List<ProductImagesResponse> response = service.getAllImagesByProductId(1L);
+        //then
+        assertNotNull(response);
+        assertEquals(1, response.size());
+        assertEquals(1L, response.get(0).imagesId());
+        assertEquals("Image src", response.get(0).imgSrc());
+        assertEquals("Image alt", response.get(0).altImg());
+        verify(repository, times(1)).findAllByProduct_ProductId(anyLong());
     }
 }
