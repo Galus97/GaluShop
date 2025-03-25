@@ -7,11 +7,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
+import pl.galushop.GaluShop.dto.response.ProductResponse;
+import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
+import pl.galushop.GaluShop.entity.OrderProductId;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +37,13 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp(){
+        OrderProduct orderProduct = OrderProduct.builder()
+                .id(new OrderProductId())
+                .order(new Order())
+                .product(new Product())
+                .quantity(10)
+                .build();
+        List<OrderProduct> orderProductList = Arrays.asList(orderProduct);
         product = Product.builder()
                 .productId(null)
                 .productName("Product name")
@@ -39,6 +51,7 @@ class ProductServiceTest {
                 .price(10.0)
                 .category("Electronic")
                 .categoryId(1)
+                .orderProducts(orderProductList)
                 .build();
     }
 
@@ -79,4 +92,22 @@ class ProductServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.getProductEntity(null));
         verify(repository, times(0)).findById(anyLong());
     }
+
+    @Test
+    void givenExistingProductId_whenGetProductResponse_thenReturnsProductResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(product));
+        //when
+        ProductResponse response = service.getProductResponse(1L);
+        //then
+        assertNotNull(product);
+        assertEquals("Product name", response.productName());
+        assertEquals("Description of the product", response.description());
+        assertEquals(10d, response.price());
+        assertEquals("Electronic", response.category());
+        assertEquals(1, response.categoryId());
+        verify(repository, times(1)).findById(anyLong());
+    }
+
+
 }
