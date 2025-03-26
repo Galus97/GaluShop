@@ -146,4 +146,17 @@ class PaymentServiceTest {
         assertEquals(PaymentStatus.NEW, response.get(0).paymentStatus());
         verify(repository, times(1)).findAllByUser_UserId(anyLong());
     }
+
+    @Test
+    void givenCorrect_whenSavePayment_thenReturnsPaymentResponse(){
+        //given
+        when(repository.save(any(Payment.class))).thenReturn(payment);
+        //when
+        PaymentResponse response = service.savePayment(request);
+        //then
+        assertEquals(1L, response.paymentId());
+        assertEquals(100d, response.totalAmount());
+        assertEquals(PaymentStatus.NEW, response.paymentStatus());
+        verify(repository, times(1)).save(payment);
+    }
 }
