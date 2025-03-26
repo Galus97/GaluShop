@@ -86,4 +86,11 @@ class PaymentServiceTest {
         assertThrows(PaymentNotFoundException.class, () -> service.getPaymentResponse(1L));
         verify(repository, times(1)).findById(anyLong());
     }
+
+    @Test
+    void givenInvalidId_whenGetPaymentResponse_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getPaymentResponse(-1L));
+        verify(repository, times(0)).findById(anyLong());
+    }
 }
