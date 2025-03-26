@@ -94,4 +94,11 @@ class OrderServiceTest {
         assertThrows(OrderNotFoundException.class, () -> service.getOrderResponse(1L));
         verify(repository, times(1)).findById(anyLong());
     }
+
+    @Test
+    void givenInvalidId_whenGetOrderResponse_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getOrderResponse(-1L));
+        verify(repository, times(0)).findById(anyLong());
+    }
 }
