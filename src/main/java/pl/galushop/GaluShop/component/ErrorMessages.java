@@ -57,4 +57,5 @@ public final class ErrorMessages {
     public static final String INVALID_PAYMENT_ID = "error.invalidPaymentId";
     public static final String PAYMENT_NOT_FOUND = "error.paymentNotFound";
     public static final String PAYMENT_NOT_FOUND_BY_ORDER = "error.paymentsNotFoundByOrderId";
+    public static final String PAYMENT_REQUEST_IS_NULL = "error.paymentsRequestIsNull";
 }
