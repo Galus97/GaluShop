@@ -16,6 +16,8 @@ import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
 import pl.galushop.GaluShop.repository.PaymentRepository;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,12 +41,13 @@ class PaymentServiceTest {
     PaymentService service;
     private Payment payment;
     private PaymentRequest request;
+    private User user;
 
     @BeforeEach
     void setUp(){
         Order order = new Order();
         order.setOrderId(1L);
-        User user = new User();
+        user = new User();
         user.setUserId(1L);
         payment = Payment.builder()
                 .paymentId(1L)
@@ -119,12 +122,28 @@ class PaymentServiceTest {
     }
 
     @Test
-    void givenNonExistentId_whenPaymentResponseByOrderId_thenReturnsPaymentResponse(){
+    void givenNonExistentId_whenPaymentResponseByOrderId_thenThrowsException(){
         //given
         when(repository.findByOrder_OrderId(anyLong())).thenReturn(Optional.empty());
         //when
         assertThrows(PaymentNotFoundException.class, () ->  service.getPaymentResponseByOrderId(1L));
         //then
         verify(repository, times(1)).findByOrder_OrderId(anyLong());
+    }
+
+    @Test
+    void givenExistingId_whenAllPaymentResponseByUserId_thenReturnsPaymentResponseList(){
+        //given
+        List<Payment> paymentList = Arrays.asList(payment);
+        when(repository.findAllByUser_UserId(anyLong())).thenReturn(paymentList);
+        when(userService.getUserEntity(anyLong())).thenReturn(user);
+        //when
+        List<PaymentResponse> response = service.getAllPaymentResponseByUserId(1L);
+        //then
+        assertEquals(1, response.size());
+        assertEquals(1L, response.get(0).paymentId());
+        assertEquals(100d, response.get(0).totalAmount());
+        assertEquals(PaymentStatus.NEW, response.get(0).paymentStatus());
+        verify(repository, times(1)).findAllByUser_UserId(anyLong());
     }
 }
