@@ -184,4 +184,15 @@ class PaymentServiceTest {
         assertThrows(IllegalArgumentException.class, () ->  service.savePayment(request));
         verify(repository, times(0)).save(payment);
     }
+
+    @Test
+    void givenExistingId_whenDeletePayment_thenDeletesPayment(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(payment));
+        //when
+        service.deletePayment(1L);
+        //then
+        verify(repository, times(1)).delete(payment);
+        verify(repository, times(1)).findById(anyLong());
+    }
 }
