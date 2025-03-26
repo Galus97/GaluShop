@@ -117,4 +117,14 @@ class PaymentServiceTest {
 
         verify(repository, times(1)).findByOrder_OrderId(anyLong());
     }
+
+    @Test
+    void givenNonExistentId_whenPaymentResponseByOrderId_thenReturnsPaymentResponse(){
+        //given
+        when(repository.findByOrder_OrderId(anyLong())).thenReturn(Optional.empty());
+        //when
+        assertThrows(PaymentNotFoundException.class, () ->  service.getPaymentResponseByOrderId(1L));
+        //then
+        verify(repository, times(1)).findByOrder_OrderId(anyLong());
+    }
 }
