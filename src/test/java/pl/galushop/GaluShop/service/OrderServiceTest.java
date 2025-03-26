@@ -108,4 +108,18 @@ class OrderServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.getOrderResponse(null));
         verify(repository, times(0)).findById(anyLong());
     }
+
+    @Test
+    void givenExistingId_whenGetOrderEntity_thenReturnsOrderEntity(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(order));
+        //when
+        Order orderEntity = service.getOrderEntity(1L);
+        //then
+        assertNotNull(orderEntity);
+        assertEquals(1L, orderEntity.getOrderId());
+        assertEquals(OrderStatus.PROCESSED, orderEntity.getStatus());
+        assertEquals(1L, orderEntity.getUser().getUserId());
+        verify(repository, times(1)).findById(anyLong());
+    }
 }
