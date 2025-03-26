@@ -61,11 +61,10 @@ public class OrderService {
      * @throws UserNotFoundException    if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
-
     @Transactional
     public OrderResponse saveOrder(OrderRequest orderRequest) {
-        Order order = buildOrder(orderRequest);
-        return OrderResponse.fromEntity(orderRepository.save(order));
+        throwIfRequestIsNull(orderRequest);
+        return OrderResponse.fromEntity(orderRepository.save(buildOrder(orderRequest)));
     }
 
     /**
@@ -113,6 +112,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse updateOrder(OrderRequest orderRequest) {
+        throwIfRequestIsNull(orderRequest);
         throwIfIdIsInvalid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
 
         Order existingOrder = getOrderOrThrowIfNotExist(orderRequest.getOrderId());
@@ -166,6 +166,11 @@ public class OrderService {
         return order;
     }
 
+    private void throwIfRequestIsNull(OrderRequest orderRequest){
+        if(orderRequest == null){
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_REQUEST_IS_NULL));
+        }
+    }
 
     private void throwIfIdIsInvalid(Long id, String message) {
         if (id == null || id <= 0) {
