@@ -9,4 +9,5 @@ public class PaymentRequest {
     private Double totalAmount;
     private PaymentStatus paymentStatus;
     private Long orderId;
+    private Long userId;
 }
