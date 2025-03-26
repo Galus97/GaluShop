@@ -1,6 +1,7 @@
 package pl.galushop.GaluShop.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -8,12 +9,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.component.PaymentStatus;
 import pl.galushop.GaluShop.dto.request.PaymentRequest;
+import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.repository.PaymentRepository;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
@@ -49,5 +58,22 @@ class PaymentServiceTest {
         request.setPaymentStatus(PaymentStatus.NEW);
         request.setOrderId(1L);
         request.setUserId(1L);
+    }
+
+    @Test
+    void givenExistingId_whenGetPaymentResponse_thenReturnsPaymentResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(payment));
+        //when
+        PaymentResponse response = service.getPaymentResponse(1L);
+        //then
+        assertNotNull(response);
+        assertEquals(1L, response.paymentId());
+        assertEquals(100.0, response.totalAmount());
+        assertEquals(PaymentStatus.NEW, response.paymentStatus());
+        assertEquals(1L, response.orderId());
+        assertEquals(1L, response.paymentId());
+
+        verify(repository, times(1)).findById(anyLong());
     }
 }
