@@ -148,7 +148,7 @@ class PaymentServiceTest {
     }
 
     @Test
-    void givenCorrect_whenSavePayment_thenReturnsPaymentResponse(){
+    void givenCorrectRequest_whenSavePayment_thenReturnsPaymentResponse(){
         //given
         when(repository.save(any(Payment.class))).thenReturn(payment);
         //when
@@ -158,5 +158,30 @@ class PaymentServiceTest {
         assertEquals(100d, response.totalAmount());
         assertEquals(PaymentStatus.NEW, response.paymentStatus());
         verify(repository, times(1)).save(payment);
+    }
+
+    @Test
+    void givenNullRequest_whenSavePayment_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () ->  service.savePayment(null));
+        verify(repository, times(0)).save(payment);
+    }
+
+    @Test
+    void givenRequestWithInvalidOrder_whenSavePayment_thenThrowsException(){
+        //given
+        when(orderService.getOrderEntity(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        assertThrows(IllegalArgumentException.class, () ->  service.savePayment(request));
+        verify(repository, times(0)).save(payment);
+    }
+
+    @Test
+    void givenRequestWithInvalidUser_whenSavePayment_thenThrowsException(){
+        //given
+        when(userService.getUserEntity(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        assertThrows(IllegalArgumentException.class, () ->  service.savePayment(request));
+        verify(repository, times(0)).save(payment);
     }
 }
