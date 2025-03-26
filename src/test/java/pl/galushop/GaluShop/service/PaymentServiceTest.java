@@ -13,6 +13,7 @@ import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.exception.PaymentNotFoundException;
 import pl.galushop.GaluShop.repository.PaymentRepository;
 
 import java.util.Optional;
@@ -74,6 +75,15 @@ class PaymentServiceTest {
         assertEquals(1L, response.orderId());
         assertEquals(1L, response.paymentId());
 
+        verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenNonExistentId_whenGetPaymentResponse_thenThrowsException(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(PaymentNotFoundException.class, () -> service.getPaymentResponse(1L));
         verify(repository, times(1)).findById(anyLong());
     }
 }
