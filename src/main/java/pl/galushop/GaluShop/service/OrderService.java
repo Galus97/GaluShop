@@ -32,7 +32,6 @@ public class OrderService {
     private final UserService userService;
     private final MessageService messageService;
     private final ProductService productService;
-    private final OrderProductService orderProductService;
 
     /**
      * Retrieves an order by its ID.
