@@ -42,10 +42,11 @@ class PaymentServiceTest {
     private Payment payment;
     private PaymentRequest request;
     private User user;
+    private Order order;
 
     @BeforeEach
     void setUp(){
-        Order order = new Order();
+        order = new Order();
         order.setOrderId(1L);
         user = new User();
         user.setUserId(1L);
@@ -194,5 +195,22 @@ class PaymentServiceTest {
         //then
         verify(repository, times(1)).delete(payment);
         verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdatePayment_thenReturnsPaymentResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(payment));
+        when(orderService.getOrderEntity(anyLong())).thenReturn(order);
+        when(repository.save(any(Payment.class))).thenReturn(payment);
+        //when
+        PaymentResponse response = service.updatePayment(request);
+        //then
+        assertEquals(1L, response.paymentId());
+        assertEquals(100d, response.totalAmount());
+        assertEquals(PaymentStatus.NEW, response.paymentStatus());
+        verify(repository, times(1)).findById(anyLong());
+        verify(repository, times(1)).save(payment);
+
     }
 }
