@@ -51,8 +51,9 @@ public class PaymentService {
      */
     public PaymentResponse getPaymentResponseByOrderId(Long orderId){
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
-
-        return PaymentResponse.fromEntity(getPaymentOrThrow(orderId, ErrorMessages.PAYMENT_NOT_FOUND_BY_ORDER));
+        return PaymentResponse.fromEntity( paymentRepository.findByOrder_OrderId(orderId)
+                .orElseThrow(() -> new PaymentNotFoundException(
+                        messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND_BY_ORDER, orderId))));
     }
 
     /**
