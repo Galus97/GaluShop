@@ -9,6 +9,7 @@ import pl.galushop.GaluShop.dto.request.PaymentRequest;
 import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Payment;
+import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
 import pl.galushop.GaluShop.repository.PaymentRepository;
 
@@ -133,11 +134,12 @@ public class PaymentService {
         throwIfRequestIsNull(paymentRequest);
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
-
+        User user = userService.getUserEntity(paymentRequest.getUserId());
         return Payment.builder()
                 .totalAmount(paymentRequest.getTotalAmount())
                 .paymentStatus(paymentRequest.getPaymentStatus())
                 .order(order)
+                .user(user)
                 .build();
     }
 
