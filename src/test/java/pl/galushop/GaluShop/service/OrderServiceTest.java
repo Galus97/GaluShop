@@ -15,6 +15,7 @@ import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.repository.OrderRepository;
 
 import java.time.LocalDateTime;
@@ -82,6 +83,15 @@ class OrderServiceTest {
         assertEquals(1L, response.orderId());
         assertEquals(OrderStatus.PROCESSED, response.status());
         assertEquals(1L, response.userId());
+        verify(repository, times(1)).findById(anyLong());
+    }
+
+    @Test
+    void givenNonExistentId_whenGetOrderResponse_thenThrowsException(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        //then
+        assertThrows(OrderNotFoundException.class, () -> service.getOrderResponse(1L));
         verify(repository, times(1)).findById(anyLong());
     }
 }
