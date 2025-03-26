@@ -93,4 +93,11 @@ class PaymentServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.getPaymentResponse(-1L));
         verify(repository, times(0)).findById(anyLong());
     }
+
+    @Test
+    void givenNullId_whenGetPaymentResponse_thenThrowsException(){
+        //then
+        assertThrows(IllegalArgumentException.class, () -> service.getPaymentResponse(null));
+        verify(repository, times(0)).findById(anyLong());
+    }
 }
