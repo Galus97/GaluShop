@@ -100,4 +100,21 @@ class PaymentServiceTest {
         assertThrows(IllegalArgumentException.class, () -> service.getPaymentResponse(null));
         verify(repository, times(0)).findById(anyLong());
     }
+
+    @Test
+    void givenExistingId_whenPaymentResponseByOrderId_thenReturnsPaymentResponse(){
+        //given
+        when(repository.findByOrder_OrderId(anyLong())).thenReturn(Optional.of(payment));
+        //when
+        PaymentResponse response = service.getPaymentResponseByOrderId(1L);
+        //then
+        assertNotNull(response);
+        assertEquals(1L, response.paymentId());
+        assertEquals(100.0, response.totalAmount());
+        assertEquals(PaymentStatus.NEW, response.paymentStatus());
+        assertEquals(1L, response.orderId());
+        assertEquals(1L, response.paymentId());
+
+        verify(repository, times(1)).findByOrder_OrderId(anyLong());
+    }
 }
