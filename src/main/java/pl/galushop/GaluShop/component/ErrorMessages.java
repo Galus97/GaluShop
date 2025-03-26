@@ -21,6 +21,7 @@ public final class ErrorMessages {
     //Order
     public static final String INVALID_ORDER_ID = "error.invalidOrderId";
     public static final String ORDER_NOT_FOUND = "error.orderNotFound";
+    public static final String ORDER_REQUEST_IS_NULL = "error.orderRequestIsNull";
 
     //OrderProduct
     public static final String ORDER_PRODUCT_IS_NULL = "error.orderProductIsNull";
