@@ -35,7 +35,7 @@ class UserAllOrdersControllerTest {
     OrderService orderService;
 
     @Test
-    void whenShowAllUserOrders_then() throws Exception{
+    void givenExistingId_whenShowAllUserOrders_thenReturnsResponseEntityWithOrderResponseResponseList() throws Exception{
         //given
         List<OrderProductResponse> OrderProductResponseList = List.of( new OrderProductResponse(1L, 1L, 10));
         List<OrderResponse> orderResponseList = List.of(new OrderResponse(
