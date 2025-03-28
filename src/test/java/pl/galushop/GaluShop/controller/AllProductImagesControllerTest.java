@@ -39,7 +39,7 @@ class AllProductImagesControllerTest {
     ProductFacadeService productFacadeService;
 
     @Test
-    void givenExisting_whenGetAllImagesFromProduct_thenReturnsResponseEntityWithProductImagesResponseList() throws Exception {
+    void givenExisting_whenGetAllImagesFromProduct_thenReturnsListOfProductImages() throws Exception {
         //given
         List<ProductImagesResponse> responseList = Arrays.asList(
                 new ProductImagesResponse(1L, "Img Src","Alt Img", 1L));
