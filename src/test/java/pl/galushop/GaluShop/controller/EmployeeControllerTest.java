@@ -11,11 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
+import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.service.EmployeeService;
 import pl.galushop.GaluShop.service.RegisterEmployeeService;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -65,5 +65,15 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$.enabled", is(true)))
                 .andExpect(jsonPath("$.emailCode", is("1111")));
         verify(employeeService, times(1)).getEmployeeResponse(eq(1L));
+    }
+
+    @Test
+    void givenNonExistentId_whenShowEmployee_thenReturnsBadRequest() throws Exception{
+        when(employeeService.getEmployeeResponse(anyLong())).thenThrow(EmployeeNotFoundException.class);
+        //then
+        mockMvc.perform(get("/employee/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(employeeService, times(1)).getEmployeeResponse(eq(999L));
     }
 }
