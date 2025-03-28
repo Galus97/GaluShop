@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
@@ -19,8 +20,12 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,6 +53,7 @@ class UserAllOrdersControllerTest {
         //then
         mockMvc.perform(get("/order/user/1"))
                 .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].orderId", is(1)))
                 .andExpect(jsonPath("$[0].localDateTime", is("2025-03-13T12:12:12")))
@@ -56,5 +62,6 @@ class UserAllOrdersControllerTest {
                 .andExpect(jsonPath("$[0].products[0].orderId", is(1)))
                 .andExpect(jsonPath("$[0].products[0].productId", is(1)))
                 .andExpect(jsonPath("$[0].products[0].quantity", is(10)));
+        verify(orderService, times(1)).getAllOrdersByUser(eq(1L));
     }
 }
