@@ -16,12 +16,15 @@ import pl.galushop.GaluShop.service.EmployeeService;
 import pl.galushop.GaluShop.service.RegisterEmployeeService;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,7 +71,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void givenNonExistentId_whenShowEmployee_thenReturnsBadRequest() throws Exception{
+    void givenNonExistentId_whenShowEmployee_thenReturnsNotFound() throws Exception{
         //given
         when(employeeService.getEmployeeResponse(anyLong())).thenThrow(EmployeeNotFoundException.class);
         //then
@@ -86,5 +89,22 @@ class EmployeeControllerTest {
         mockMvc.perform(get("/employee/-1"))
                 .andExpect(status().isBadRequest());
         verify(employeeService, times(1)).getEmployeeResponse(-1L);
+    }
+
+//    @Test
+//    void givenCorrectRequest_whenSaveEmployee_thenReturnsEmployee() throws Exception{
+//        //given
+//        when(registerEmployeeService.saveNewEmployee(any())).thenReturn(employeeResponse);
+//        //then
+//        mockMvc.perform(post("/employee/" + employeeResponse.employeeId()))
+//                .andExpect(status().isCreated());
+//    }
+
+    @Test
+    void givenExistingId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
+        //given
+        mockMvc.perform(delete("/employee/1"))
+                .andExpect(status().isNoContent());
+        verify(employeeService, times(1)).deleteEmployee(1L);
     }
 }
