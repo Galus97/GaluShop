@@ -69,11 +69,22 @@ class EmployeeControllerTest {
 
     @Test
     void givenNonExistentId_whenShowEmployee_thenReturnsBadRequest() throws Exception{
+        //given
         when(employeeService.getEmployeeResponse(anyLong())).thenThrow(EmployeeNotFoundException.class);
         //then
         mockMvc.perform(get("/employee/999"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         verify(employeeService, times(1)).getEmployeeResponse(eq(999L));
+    }
+
+    @Test
+    void givenInvalidId_whenShowEmployee_thenReturnsBadRequest() throws Exception{
+        //given
+        when(employeeService.getEmployeeResponse(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/employee/-1"))
+                .andExpect(status().isBadRequest());
+        verify(employeeService, times(1)).getEmployeeResponse(-1L);
     }
 }
