@@ -42,7 +42,7 @@ public class EmployeeController {
     }
 
     @PutMapping
-    private ResponseEntity<EmployeeResponse> updateEmployee(@RequestBody EmployeeRequest employeeRequest){
+    public ResponseEntity<EmployeeResponse> updateEmployee(@RequestBody EmployeeRequest employeeRequest){
         return ResponseEntity.ok(employeeService.updateEmployee(employeeRequest));
     }
 

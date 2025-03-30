@@ -1,5 +1,6 @@
 package pl.galushop.GaluShop.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,19 +11,30 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
+import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
+import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.EmployeeService;
 import pl.galushop.GaluShop.service.RegisterEmployeeService;
 
+import java.util.Collections;
+
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -32,12 +44,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeControllerTest {
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     MockMvc mockMvc;
     @MockBean
     EmployeeService employeeService;
     @MockBean
     RegisterEmployeeService registerEmployeeService;
     private EmployeeResponse employeeResponse;
+    private EmployeeRequest employeeRequest;
 
     @BeforeEach
     void setUp(){
@@ -48,6 +63,13 @@ class EmployeeControllerTest {
                 "john.doe@mail.com",
                 true,
                 "1111");
+        employeeRequest = EmployeeRequest.builder()
+                .employeeId(null)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@mail.com")
+                .password("password123")
+                .build();
     }
 
     @Test
@@ -68,7 +90,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void givenNonExistentId_whenShowEmployee_thenReturnsBadRequest() throws Exception{
+    void givenNonExistentId_whenShowEmployee_thenReturnsNotFound() throws Exception{
         //given
         when(employeeService.getEmployeeResponse(anyLong())).thenThrow(EmployeeNotFoundException.class);
         //then
@@ -86,5 +108,67 @@ class EmployeeControllerTest {
         mockMvc.perform(get("/employee/-1"))
                 .andExpect(status().isBadRequest());
         verify(employeeService, times(1)).getEmployeeResponse(-1L);
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveEmployee_thenReturnsEmployee() throws Exception{
+        //given
+        when(registerEmployeeService.saveNewEmployee(any(EmployeeRequest.class))).thenReturn(employeeResponse);
+
+        //then
+        mockMvc.perform(post("/employee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/employee/1"))
+                .andExpect(jsonPath("$.employeeId").value(1));
+        verify(registerEmployeeService, times(1)).saveNewEmployee(any(EmployeeRequest.class));
+    }
+
+    @Test
+    void givenIncorrectRequest_whenSaveEmployee_thenReturnsBadRequest() throws Exception{
+        //given
+        when(registerEmployeeService.saveNewEmployee(any(EmployeeRequest.class)))
+                .thenThrow(new ValidationException(Collections.singletonList("Invalid email format")));
+
+        //then
+        mockMvc.perform(post("/employee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0]").value("Invalid email format"));
+        verify(registerEmployeeService, times(1)).saveNewEmployee(any(EmployeeRequest.class));
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateEmployee_thenReturnsEmployee() throws Exception{
+        //given
+        when(employeeService.updateEmployee(any(EmployeeRequest.class))).thenReturn(employeeResponse);
+        //then
+        mockMvc.perform(put("/employee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.employeeId").value(1));
+        verify(employeeService, times(1)).updateEmployee(any(EmployeeRequest.class));
+    }
+
+    @Test
+    void givenExistingId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
+        //given
+        doNothing().when(employeeService).deleteEmployee(anyLong());
+        //then
+        mockMvc.perform(delete("/employee/1"))
+                .andExpect(status().isNoContent());
+        verify(employeeService, times(1)).deleteEmployee(1L);
+    }
+
+    @Test
+    void givenInvalidId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
+        doThrow(IllegalArgumentException.class).when(employeeService).deleteEmployee(anyLong());
+        //then
+        mockMvc.perform(delete("/employee/-1"))
+                .andExpect(status().isBadRequest());
+        verify(employeeService, times(1)).deleteEmployee(-1L);
     }
 }
