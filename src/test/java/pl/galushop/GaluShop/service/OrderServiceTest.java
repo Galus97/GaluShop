@@ -23,7 +23,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,14 +46,16 @@ class OrderServiceTest {
     OrderService service;
     private Order order;
     private OrderRequest orderRequest;
+    private User user;
+    private Product product;
 
     @BeforeEach
-    void setUp(){
-        User user = new User();
+    void setUp() {
+        user = new User();
         user.setUserId(1L);
         order = Order.builder()
                 .orderId(1L)
-                .localDateTime(LocalDateTime.of(2025, 3, 26, 12,12))
+                .localDateTime(LocalDateTime.of(2025, 3, 26, 12, 12))
                 .status(OrderStatus.PROCESSED)
                 .user(user)
                 .build();
@@ -64,16 +69,17 @@ class OrderServiceTest {
         productQuantityRequest.setProductId(1L);
         productQuantityRequest.setQuantity(10);
         List<ProductQuantityRequest> productQuantityRequests = Arrays.asList(productQuantityRequest);
-        orderRequest = new OrderRequest();
-        orderRequest.setOrderId(1L);
-        orderRequest.setUserId(1L);
-        orderRequest.setLocalDateTime(LocalDateTime.of(2025, 3, 26, 12,12));
-        orderRequest.setOrderStatus(OrderStatus.PROCESSED);
-        orderRequest.setProductQuantityRequests(productQuantityRequests);
+        orderRequest = OrderRequest.builder()
+                .orderId(1L)
+                .userId(1L)
+                .localDateTime(LocalDateTime.of(2025, 3, 30, 12, 12))
+                .orderStatus(OrderStatus.PROCESSED)
+                .productQuantityRequests(productQuantityRequests)
+                .build();
     }
 
     @Test
-    void givenExistingId_whenGetOrderResponse_thenReturnsOrderResponse(){
+    void givenExistingId_whenGetOrderResponse_thenReturnsOrderResponse() {
         //given
         when(repository.findById(anyLong())).thenReturn(Optional.of(order));
         //when
@@ -87,7 +93,7 @@ class OrderServiceTest {
     }
 
     @Test
-    void givenNonExistentId_whenGetOrderResponse_thenThrowsException(){
+    void givenNonExistentId_whenGetOrderResponse_thenThrowsException() {
         //given
         when(repository.findById(anyLong())).thenReturn(Optional.empty());
         //then
@@ -96,21 +102,21 @@ class OrderServiceTest {
     }
 
     @Test
-    void givenInvalidId_whenGetOrderResponse_thenThrowsException(){
+    void givenInvalidId_whenGetOrderResponse_thenThrowsException() {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.getOrderResponse(-1L));
         verify(repository, times(0)).findById(anyLong());
     }
 
     @Test
-    void givenNullId_whenGetOrderResponse_thenThrowsException(){
+    void givenNullId_whenGetOrderResponse_thenThrowsException() {
         //then
         assertThrows(IllegalArgumentException.class, () -> service.getOrderResponse(null));
         verify(repository, times(0)).findById(anyLong());
     }
 
     @Test
-    void givenExistingId_whenGetOrderEntity_thenReturnsOrderEntity(){
+    void givenExistingId_whenGetOrderEntity_thenReturnsOrderEntity() {
         //given
         when(repository.findById(anyLong())).thenReturn(Optional.of(order));
         //when
@@ -122,4 +128,15 @@ class OrderServiceTest {
         assertEquals(1L, orderEntity.getUser().getUserId());
         verify(repository, times(1)).findById(anyLong());
     }
+
+//    @Test
+//    void givenCorrectOrder_whenSaveOrder_thenReturnsOrderResponse() {
+//        //given
+//        when(userService.getUserEntity(anyLong())).thenReturn(user);
+//        when(productService.getAllProductByIds(any())).thenReturn(Arrays.asList(product));
+//        //when
+//        OrderResponse response = service.saveOrder(orderRequest);
+//        //then
+//        assertNotNull(response);
+//    }
 }
