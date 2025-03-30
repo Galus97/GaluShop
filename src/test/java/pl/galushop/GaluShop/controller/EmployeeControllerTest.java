@@ -14,8 +14,11 @@ import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
+import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.EmployeeService;
 import pl.galushop.GaluShop.service.RegisterEmployeeService;
+
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -116,6 +119,21 @@ class EmployeeControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/employee/1"))
                 .andExpect(jsonPath("$.employeeId").value(1));
+        verify(registerEmployeeService, times(1)).saveNewEmployee(any(EmployeeRequest.class));
+    }
+
+    @Test
+    void givenIncorrectRequest_whenSaveEmployee_thenReturnsBadRequest() throws Exception{
+        //given
+        when(registerEmployeeService.saveNewEmployee(any(EmployeeRequest.class)))
+                .thenThrow(new ValidationException(Collections.singletonList("Invalid email format")));
+
+        //then
+        mockMvc.perform(post("/employee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0]").value("Invalid email format"));
         verify(registerEmployeeService, times(1)).saveNewEmployee(any(EmployeeRequest.class));
     }
 
