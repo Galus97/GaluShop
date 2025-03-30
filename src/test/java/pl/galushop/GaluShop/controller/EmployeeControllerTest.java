@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -135,6 +136,19 @@ class EmployeeControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value("Invalid email format"));
         verify(registerEmployeeService, times(1)).saveNewEmployee(any(EmployeeRequest.class));
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateEmployee_thenReturnsEmployee() throws Exception{
+        //given
+        when(employeeService.updateEmployee(any(EmployeeRequest.class))).thenReturn(employeeResponse);
+        //then
+        mockMvc.perform(put("/employee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.employeeId").value(1));
+        verify(employeeService, times(1)).updateEmployee(any(EmployeeRequest.class));
     }
 
     @Test
