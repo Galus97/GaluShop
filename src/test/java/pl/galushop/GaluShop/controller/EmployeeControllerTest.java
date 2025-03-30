@@ -1,5 +1,6 @@
 package pl.galushop.GaluShop.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
+import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.service.EmployeeService;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,12 +38,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class EmployeeControllerTest {
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     MockMvc mockMvc;
     @MockBean
     EmployeeService employeeService;
     @MockBean
     RegisterEmployeeService registerEmployeeService;
     private EmployeeResponse employeeResponse;
+    private EmployeeRequest employeeRequest;
 
     @BeforeEach
     void setUp(){
@@ -51,6 +57,13 @@ class EmployeeControllerTest {
                 "john.doe@mail.com",
                 true,
                 "1111");
+        employeeRequest = EmployeeRequest.builder()
+                .employeeId(null)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@mail.com")
+                .password("password123")
+                .build();
     }
 
     @Test
@@ -91,20 +104,34 @@ class EmployeeControllerTest {
         verify(employeeService, times(1)).getEmployeeResponse(-1L);
     }
 
-//    @Test
-//    void givenCorrectRequest_whenSaveEmployee_thenReturnsEmployee() throws Exception{
-//        //given
-//        when(registerEmployeeService.saveNewEmployee(any())).thenReturn(employeeResponse);
-//        //then
-//        mockMvc.perform(post("/employee/" + employeeResponse.employeeId()))
-//                .andExpect(status().isCreated());
-//    }
+    @Test
+    void givenCorrectRequest_whenSaveEmployee_thenReturnsEmployee() throws Exception{
+        //given
+        when(registerEmployeeService.saveNewEmployee(any(EmployeeRequest.class))).thenReturn(employeeResponse);
+
+        //then
+        mockMvc.perform(post("/employee")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(employeeRequest)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/employee/1"))
+                .andExpect(jsonPath("$.employeeId").value(1));
+        verify(registerEmployeeService, times(1)).saveNewEmployee(any(EmployeeRequest.class));
+    }
 
     @Test
     void givenExistingId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
-        //given
+        //then
         mockMvc.perform(delete("/employee/1"))
                 .andExpect(status().isNoContent());
         verify(employeeService, times(1)).deleteEmployee(1L);
     }
+
+//    @Test
+//    void givenInvalidId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
+//        //then
+//        mockMvc.perform(delete("/employee/-1"))
+//                .andExpect(status().isNoContent());
+//        verify(employeeService, times(1)).deleteEmployee(-1L);
+//    }
 }
