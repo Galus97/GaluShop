@@ -24,6 +24,8 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -153,17 +155,20 @@ class EmployeeControllerTest {
 
     @Test
     void givenExistingId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
+        //given
+        doNothing().when(employeeService).deleteEmployee(anyLong());
         //then
         mockMvc.perform(delete("/employee/1"))
                 .andExpect(status().isNoContent());
         verify(employeeService, times(1)).deleteEmployee(1L);
     }
 
-//    @Test
-//    void givenInvalidId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
-//        //then
-//        mockMvc.perform(delete("/employee/-1"))
-//                .andExpect(status().isNoContent());
-//        verify(employeeService, times(1)).deleteEmployee(-1L);
-//    }
+    @Test
+    void givenInvalidId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
+        doThrow(IllegalArgumentException.class).when(employeeService).deleteEmployee(anyLong());
+        //then
+        mockMvc.perform(delete("/employee/-1"))
+                .andExpect(status().isBadRequest());
+        verify(employeeService, times(1)).deleteEmployee(-1L);
+    }
 }
