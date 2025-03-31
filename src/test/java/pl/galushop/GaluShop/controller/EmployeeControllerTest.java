@@ -164,7 +164,7 @@ class EmployeeControllerTest {
     }
 
     @Test
-    void givenInvalidId_whenDeleteEmployee_thenDeletesEmployee() throws Exception{
+    void givenInvalidId_whenDeleteEmployee_thenReturnsBadRequest() throws Exception{
         doThrow(IllegalArgumentException.class).when(employeeService).deleteEmployee(anyLong());
         //then
         mockMvc.perform(delete("/employee/-1"))
