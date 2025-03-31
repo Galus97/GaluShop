@@ -26,11 +26,14 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -126,5 +129,28 @@ class OrderControllerTest {
                 .andExpect(header().string("Location", "/order/1"))
                 .andExpect(jsonPath("$.orderId").value(1));
         verify(service, times(1)).saveOrder(request);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateOrder_thenReturnsOrder() throws Exception{
+        //given
+        when(service.updateOrder(any(OrderRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(put("/order")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderId").value(1));
+        verify(service, times(1)).updateOrder(request);
+    }
+
+    @Test
+    void givenInvalidId_whenDeleteOrder_thenReturnsBadRequest() throws Exception{
+        //given
+        doThrow(IllegalArgumentException.class).when(service).deleteOrder(anyLong());
+        //then
+        mockMvc.perform(delete("/order/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).deleteOrder(-1L);
     }
 }
