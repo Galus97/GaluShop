@@ -57,12 +57,13 @@ class PaymentServiceTest {
                 .order(order)
                 .user(user)
                 .build();
-        request = new PaymentRequest();
-        request.setPaymentId(1L);
-        request.setTotalAmount(100d);
-        request.setPaymentStatus(PaymentStatus.NEW);
-        request.setOrderId(1L);
-        request.setUserId(1L);
+        request = PaymentRequest.builder()
+                .paymentId(1L)
+                .totalAmount(100d)
+                .paymentStatus(PaymentStatus.NEW)
+                .orderId(1L)
+                .userId(1L)
+                .build();
     }
 
     @Test
