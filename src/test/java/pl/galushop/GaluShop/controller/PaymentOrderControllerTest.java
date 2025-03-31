@@ -50,12 +50,22 @@ class PaymentOrderControllerTest {
     }
 
     @Test
-    void givenInvalidId_whenShowOrderPayment_thenReturnsNotFound() throws Exception{
+    void givenNonExistentId_whenShowOrderPayment_thenReturnsNotFound() throws Exception{
         //given
         when(service.getPaymentResponseByOrderId(anyLong())).thenThrow(PaymentNotFoundException.class);
         //then
         mockMvc.perform(get("/payment/order/999"))
                 .andExpect(status().isNotFound());
         verify(service, times(1)).getPaymentResponseByOrderId(999L);
+    }
+
+    @Test
+    void givenInvalidId_whenShowOrderPayment_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getPaymentResponseByOrderId(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/payment/order/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getPaymentResponseByOrderId(-1L);
     }
 }
