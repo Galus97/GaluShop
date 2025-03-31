@@ -90,7 +90,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void givenNonExistentId_whenShowOrder_thenNotFound() throws Exception{
+    void givenNonExistentId_whenShowOrder_thenReturnsNotFound() throws Exception{
         //given
         when(service.getOrderResponse(anyLong())).thenThrow(OrderNotFoundException.class);
         //then
@@ -98,5 +98,16 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
         verify(service, times(1)).getOrderResponse(eq(999L));
+    }
+
+    @Test
+    void givenInvalidId_whenShowOrder_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getOrderResponse(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/order/-1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getOrderResponse(eq(-1L));
     }
 }
