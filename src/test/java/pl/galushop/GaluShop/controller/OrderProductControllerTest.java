@@ -15,7 +15,7 @@ import pl.galushop.GaluShop.service.OrderProductService;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -48,6 +48,15 @@ class OrderProductControllerTest {
                 .andExpect(jsonPath("$[0].productId").value(1L))
                 .andExpect(jsonPath("$[0].quantity").value(15));
         verify(orderProductService, times(1)).getOrderProductsByOrderId(1L);
+    }
 
+    @Test
+    void givenInvalidId_whenShowProductInOrder_thenReturnsBadRequest() throws Exception{
+        //given
+        when(orderProductService.getOrderProductsByOrderId(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/order/products/-99"))
+                .andExpect(status().isBadRequest());
+        verify(orderProductService, times(1)).getOrderProductsByOrderId(anyLong());
     }
 }
