@@ -16,6 +16,7 @@ import pl.galushop.GaluShop.dto.request.OrderRequest;
 import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
+import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.service.OrderService;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -84,6 +86,17 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.products[0].orderId").value(1L))
                 .andExpect(jsonPath("$.products[0].productId").value(1L))
                 .andExpect(jsonPath("$.products[0].quantity").value(10));
-        verify(service, times(1)).getOrderResponse(1L);
+        verify(service, times(1)).getOrderResponse(eq(1L));
+    }
+
+    @Test
+    void givenNonExistentId_whenShowOrder_thenNotFound() throws Exception{
+        //given
+        when(service.getOrderResponse(anyLong())).thenThrow(OrderNotFoundException.class);
+        //then
+        mockMvc.perform(get("/order/999")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+        verify(service, times(1)).getOrderResponse(eq(999L));
     }
 }
