@@ -102,4 +102,16 @@ class PaymentsControllerTest {
                 .andExpect(jsonPath("$.paymentId").value(1L));
         verify(service, times(1)).savePayment(request);
     }
+
+    @Test
+    void givenNullRequest_whenSavePayment_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.savePayment(any(PaymentRequest.class))).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(post("/payments")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).savePayment(request);
+    }
 }
