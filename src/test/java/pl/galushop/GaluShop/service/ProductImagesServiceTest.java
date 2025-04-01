@@ -49,11 +49,12 @@ class ProductImagesServiceTest {
                 .altImg("Image alt")
                 .product(product)
                 .build();
-        productImageRequest = new ProductImageRequest();
-        productImageRequest.setImagesId(1L);
-        productImageRequest.setImgSrc("Image src");
-        productImageRequest.setAltImg("Image alt");
-        productImageRequest.setProduct(product);
+        productImageRequest = ProductImageRequest.builder()
+                .imagesId(1L)
+                .imgSrc("Image src")
+                .altImg("Image alt")
+                .product(product)
+                .build();
     }
 
     @Test
