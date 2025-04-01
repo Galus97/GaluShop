@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
-import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.service.ProductFacadeService;
 import pl.galushop.GaluShop.service.ProductService;
 
