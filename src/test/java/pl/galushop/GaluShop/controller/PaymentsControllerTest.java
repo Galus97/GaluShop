@@ -74,4 +74,14 @@ class PaymentsControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         verify(service, times(1)).getPaymentResponse(999L);
     }
+
+    @Test
+    void givenInvalidId_whenShowPayment_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getPaymentResponse(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/payments/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getPaymentResponse(-1L);
+    }
 }
