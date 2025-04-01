@@ -53,4 +53,14 @@ class UserAllPaymentsControllerTest {
                 .andExpect(jsonPath("$[0].userId").value(1L));
         verify(service, times(1)).getAllPaymentResponseByUserId(1L);
     }
+
+    @Test
+    void givenInvalidId_whenShowAllUserPayments_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getAllPaymentResponseByUserId(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/payments/user/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getAllPaymentResponseByUserId(-1L);
+    }
 }
