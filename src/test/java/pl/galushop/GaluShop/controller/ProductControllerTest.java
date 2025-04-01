@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -149,5 +150,15 @@ class ProductControllerTest {
         mockMvc.perform(delete("/product/1"))
                 .andExpect(status().isNoContent());
         verify(service, times(1)).deleteProduct(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenDeleteProduct_thenDeletesProduct() throws Exception {
+        //given
+        doThrow(IllegalArgumentException.class).when(service).deleteProduct(anyLong());
+        //then
+        mockMvc.perform(delete("/product/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).deleteProduct(-1L);
     }
 }
