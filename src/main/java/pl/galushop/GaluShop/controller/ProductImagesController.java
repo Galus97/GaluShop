@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
-import pl.galushop.GaluShop.entity.ProductImages;
 import pl.galushop.GaluShop.service.ProductImagesService;
 
 import java.net.URI;

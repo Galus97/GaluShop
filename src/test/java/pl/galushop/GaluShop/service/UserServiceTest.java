@@ -108,12 +108,13 @@ class UserServiceTest {
     @Test
     void givenCorrectRequest_whenUpdateUser_thenReturnsUserResponse(){
         //given
-        UserRequest userRequest = new UserRequest();
-        userRequest.setUserId(1L);
-        userRequest.setFirstName("Jane");
-        userRequest.setLastName("Doe");
-        userRequest.setEmail("jane.doe@mail.com");
-        userRequest.setPassword("newPassword");
+        UserRequest userRequest = UserRequest.builder()
+                .userId(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@mail.com")
+                .password("newPassword")
+                .build();
 
         User updatedUser = User.builder()
                 .userId(1L)
