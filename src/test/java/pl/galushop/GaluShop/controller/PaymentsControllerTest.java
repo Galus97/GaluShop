@@ -142,4 +142,14 @@ class PaymentsControllerTest {
                 .andExpect(status().isNoContent());
         verify(service, times(1)).deletePayment(1L);
     }
+
+    @Test
+    void givenExistingId_whenDeletePayment_thenReturnsBadRequest() throws Exception{
+        //given
+        doThrow(IllegalArgumentException.class).when(service).deletePayment(anyLong());
+        //then
+        mockMvc.perform(delete("/payments/-12"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).deletePayment(-12L);
+    }
 }
