@@ -11,20 +11,26 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
+import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
+import pl.galushop.GaluShop.entity.Product;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.service.ProductFacadeService;
 import pl.galushop.GaluShop.service.ProductService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,6 +53,11 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
+        ProductImageRequest productRequest = new ProductImageRequest();
+        productRequest.setImagesId(1L);
+        productRequest.setProduct(new Product());
+        productRequest.setImgSrc("Img Src");
+        productRequest.setAltImg("Alt Img");
         request = ProductRequest.builder()
                 .productId(null)
                 .productName("Product name")
@@ -54,14 +65,14 @@ class ProductControllerTest {
                 .price(10.0)
                 .category("Electronic")
                 .categoryId(1)
-                .productImages(new ArrayList<>())
+                .productImages(Arrays.asList(productRequest))
                 .build();
         response = new ProductResponse(1L, "Product name", "Description of the product",
                 10.0, "Electronic", 1, new ArrayList<>());
     }
 
     @Test
-    void givenExistingId_whenShowProduct_thenReturnsProduct() throws Exception{
+    void givenExistingId_whenShowProduct_thenReturnsProduct() throws Exception {
         //given
         when(service.getProductResponse(anyLong())).thenReturn(response);
         //then
@@ -79,7 +90,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void givenNonExistentId_whenShowProduct_thenReturnsNotFound() throws Exception{
+    void givenNonExistentId_whenShowProduct_thenReturnsNotFound() throws Exception {
         //given
         when(service.getProductResponse(anyLong())).thenThrow(ProductNotFoundException.class);
         //then
@@ -90,12 +101,26 @@ class ProductControllerTest {
     }
 
     @Test
-    void givenNonExistentId_whenShowProduct_thenReturnsBadRequest() throws Exception{
+    void givenNonExistentId_whenShowProduct_thenReturnsBadRequest() throws Exception {
         //given
         when(service.getProductResponse(anyLong())).thenThrow(IllegalArgumentException.class);
         //then
         mockMvc.perform(get("/product/-1"))
                 .andExpect(status().isBadRequest());
         verify(service, times(1)).getProductResponse(-1L);
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveProduct_thenReturnsProduct() throws Exception {
+        //given
+        when(productFacadeService.saveProductWithImages(any(ProductRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(post("/product")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.productId").value(1L))
+                .andExpect(jsonPath("$.productName").value("Product name"));
+        verify(productFacadeService, times(1)).saveProductWithImages(request);
     }
 }
