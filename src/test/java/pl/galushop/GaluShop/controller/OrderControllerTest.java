@@ -26,6 +26,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -118,7 +119,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void givenCorrectRequest_whenShowOrder_thenReturnsOrder() throws Exception{
+    void givenCorrectRequest_whenSaveOrder_thenReturnsOrder() throws Exception{
         //given
         when(service.saveOrder(any(OrderRequest.class))).thenReturn(response);
         //then
@@ -142,6 +143,16 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").value(1));
         verify(service, times(1)).updateOrder(request);
+    }
+
+    @Test
+    void givenExistingId_whenDeleteOrder_thenDeletesOrder() throws Exception{
+        //given
+        doNothing().when(service).deleteOrder(anyLong());
+        //then
+        mockMvc.perform(delete("/order/1"))
+                .andExpect(status().isNoContent());
+        verify(service, times(1)).deleteOrder(1L);
     }
 
     @Test
