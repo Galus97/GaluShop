@@ -42,8 +42,9 @@ class ProductFacadeServiceTest {
         product.setOrderProducts(new ArrayList<>());
 
         productImageRequest = new ProductImageRequest();
-        productRequest = new ProductRequest();
-        productRequest.setProductImages(Collections.singletonList(productImageRequest));
+        productRequest = ProductRequest.builder()
+                .productImages(Collections.singletonList(productImageRequest))
+                .build();
     }
 
     @Test

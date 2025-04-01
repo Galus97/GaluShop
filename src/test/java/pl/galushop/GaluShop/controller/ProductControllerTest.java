@@ -1,0 +1,91 @@
+package pl.galushop.GaluShop.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import pl.galushop.GaluShop.configuration.SpringSecurity;
+import pl.galushop.GaluShop.dto.request.ProductRequest;
+import pl.galushop.GaluShop.dto.response.ProductResponse;
+import pl.galushop.GaluShop.exception.ProductNotFoundException;
+import pl.galushop.GaluShop.service.ProductFacadeService;
+import pl.galushop.GaluShop.service.ProductService;
+
+import java.util.ArrayList;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(ProductController.class)
+@Import(SpringSecurity.class)
+@AutoConfigureMockMvc(addFilters = false)
+class ProductControllerTest {
+
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private ProductService service;
+    @MockBean
+    private ProductFacadeService productFacadeService;
+    private ProductRequest request;
+    private ProductResponse response;
+
+    @BeforeEach
+    void setUp() {
+        request = ProductRequest.builder()
+                .productId(null)
+                .productName("Product name")
+                .description("Description of the product")
+                .price(10.0)
+                .category("Electronic")
+                .categoryId(1)
+                .productImages(new ArrayList<>())
+                .build();
+        response = new ProductResponse(1L, "Product name", "Description of the product",
+                10.0, "Electronic", 1, new ArrayList<>());
+    }
+
+    @Test
+    void givenExistingId_whenShowProduct_thenReturnsProduct() throws Exception{
+        //given
+        when(service.getProductResponse(anyLong())).thenReturn(response);
+        //then
+        mockMvc.perform(get("/product/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.productId").value(1L))
+                .andExpect(jsonPath("$.productName").value("Product name"))
+                .andExpect(jsonPath("$.description").value("Description of the product"))
+                .andExpect(jsonPath("$.price").value(10))
+                .andExpect(jsonPath("$.category").value("Electronic"))
+                .andExpect(jsonPath("$.categoryId").value(1))
+                .andExpect(jsonPath("$.products", hasSize(0)));
+        verify(service, times(1)).getProductResponse(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenShowProduct_thenReturnsNotFound() throws Exception{
+        //given
+        when(service.getProductResponse(anyLong())).thenThrow(ProductNotFoundException.class);
+        //then
+        mockMvc.perform(get("/product/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(service, times(1)).getProductResponse(999L);
+    }
+}
