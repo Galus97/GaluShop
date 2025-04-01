@@ -80,4 +80,14 @@ class ProductImagesControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         verify(service, times(1)).getProductImages(999L);
     }
+
+    @Test
+    void givenInvalidId_whenShowProductImages_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getProductImages(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/images/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getProductImages(-1L);
+    }
 }
