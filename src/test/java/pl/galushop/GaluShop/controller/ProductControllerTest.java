@@ -21,7 +21,6 @@ import pl.galushop.GaluShop.service.ProductService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -57,11 +56,12 @@ class ProductControllerTest {
 
     @BeforeEach
     void setUp() {
-        ProductImageRequest productRequest = new ProductImageRequest();
-        productRequest.setImagesId(1L);
-        productRequest.setProduct(new Product());
-        productRequest.setImgSrc("Img Src");
-        productRequest.setAltImg("Alt Img");
+        ProductImageRequest productRequest = ProductImageRequest.builder()
+                .imagesId(1L)
+                .imgSrc("Img Src")
+                .altImg("Alt Img")
+                .product(new Product())
+                .build();
         request = ProductRequest.builder()
                 .productId(null)
                 .productName("Product name")
