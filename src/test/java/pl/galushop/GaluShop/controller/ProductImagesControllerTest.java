@@ -14,6 +14,7 @@ import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
 import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.service.ProductImagesService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -67,5 +68,16 @@ class ProductImagesControllerTest {
                 .andExpect(jsonPath("$.altImg").value("Image alt"))
                 .andExpect(jsonPath("$.productId").value(1L));
         verify(service, times(1)).getProductImages(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenShowProductImages_thenReturnsNotFound() throws Exception{
+        //given
+        when(service.getProductImages(anyLong())).thenThrow(ProductImagesNotFoundException.class);
+        //then
+        mockMvc.perform(get("/images/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(service, times(1)).getProductImages(999L);
     }
 }
