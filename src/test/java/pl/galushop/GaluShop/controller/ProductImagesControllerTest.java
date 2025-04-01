@@ -19,9 +19,11 @@ import pl.galushop.GaluShop.service.ProductImagesService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -121,5 +123,15 @@ class ProductImagesControllerTest {
                 .andExpect(jsonPath("$.imagesId").value(1L))
                 .andExpect(jsonPath("$.imgSrc").value("Image src"));
         verify(service, times(1)).updateProductImages(request);
+    }
+
+    @Test
+    void givenExistingId_whenDeleteProductImages_thenDeletesProductImages() throws Exception{
+        //given
+        doNothing().when(service).deleteProductImages(anyLong());
+        //then
+        mockMvc.perform(delete("/images/1"))
+                .andExpect(status().isNoContent());
+        verify(service, times(1)).deleteProductImages(1L);
     }
 }
