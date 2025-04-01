@@ -34,13 +34,13 @@ class RegisterUserServiceTest {
     @Test
     void givenCorrectRequest_whenSaveNewUser_thenReturnsUserResponse() throws Exception{
         //given
-        UserRequest userRequest = new UserRequest();
-        userRequest.setUserId(null);
-        userRequest.setFirstName("John");
-        userRequest.setLastName("Smith");
-        userRequest.setEmail("john.smith@mail.com");
-        userRequest.setPassword("password");
-
+        UserRequest userRequest = UserRequest.builder()
+                .userId(null)
+                .firstName("John")
+                .lastName("Smith")
+                .email("john.smith@mail.com")
+                .password("password")
+                .build();
         User user = User.builder()
                 .userId(1L)
                 .firstName("John")
