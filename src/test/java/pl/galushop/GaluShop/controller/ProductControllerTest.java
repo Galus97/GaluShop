@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -122,5 +123,19 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.productName").value("Product name"));
         verify(productFacadeService, times(1)).saveProductWithImages(request);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateProduct_thenReturnsProduct() throws Exception {
+        //given
+        when(service.updateProduct(any(ProductRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(put("/product")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.productId").value(1));
+        verify(service, times(1)).updateProduct(request);
+
     }
 }
