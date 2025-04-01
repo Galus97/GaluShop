@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
+import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.service.ProductFacadeService;
 import pl.galushop.GaluShop.service.ProductService;
 
@@ -75,5 +76,16 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.categoryId").value(1))
                 .andExpect(jsonPath("$.products", hasSize(0)));
         verify(service, times(1)).getProductResponse(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenShowProduct_thenReturnsNotFound() throws Exception{
+        //given
+        when(service.getProductResponse(anyLong())).thenThrow(ProductNotFoundException.class);
+        //then
+        mockMvc.perform(get("/product/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(service, times(1)).getProductResponse(999L);
     }
 }
