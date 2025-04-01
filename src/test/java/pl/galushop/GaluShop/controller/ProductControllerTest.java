@@ -26,9 +26,11 @@ import java.util.Collections;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -137,5 +139,15 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.productId").value(1));
         verify(service, times(1)).updateProduct(request);
 
+    }
+
+    @Test
+    void givenExistingId_whenDeleteProduct_thenDeletesProduct() throws Exception {
+        //given
+        doNothing().when(service).deleteProduct(anyLong());
+        //then
+        mockMvc.perform(delete("/product/1"))
+                .andExpect(status().isNoContent());
+        verify(service, times(1)).deleteProduct(1L);
     }
 }
