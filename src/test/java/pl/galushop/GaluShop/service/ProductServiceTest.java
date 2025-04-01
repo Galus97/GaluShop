@@ -58,14 +58,15 @@ class ProductServiceTest {
                 .categoryId(1)
                 .orderProducts(orderProductList)
                 .build();
-        productRequest = new ProductRequest();
-        productRequest.setProductId(null);
-        productRequest.setProductName("Product name");
-        productRequest.setDescription("Description of the product");
-        productRequest.setPrice(10.0);
-        productRequest.setCategory("Electronic");
-        productRequest.setCategoryId(1);
-        productRequest.setProductImages(new ArrayList<ProductImageRequest>());
+        productRequest = ProductRequest.builder()
+                .productId(null)
+                .productName("Product name")
+                .description("Description of the product")
+                .price(10.0)
+                .category("Electronic")
+                .categoryId(1)
+                .productImages(new ArrayList<ProductImageRequest>())
+                .build();
     }
 
     @Test
