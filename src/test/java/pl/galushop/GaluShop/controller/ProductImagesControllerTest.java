@@ -23,6 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -89,5 +90,20 @@ class ProductImagesControllerTest {
         mockMvc.perform(get("/images/-1"))
                 .andExpect(status().isBadRequest());
         verify(service, times(1)).getProductImages(-1L);
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveProductImages_thenReturnsProductImages() throws Exception{
+        //given
+        when(service.saveProductImages(any(ProductImageRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(post("/images")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.imagesId").value(1L))
+                .andExpect(jsonPath("$.imgSrc").value("Image src"));
+        verify(service, times(1)).saveProductImages(request);
     }
 }
