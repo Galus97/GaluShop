@@ -13,6 +13,7 @@ import pl.galushop.GaluShop.component.PaymentStatus;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.PaymentRequest;
 import pl.galushop.GaluShop.dto.response.PaymentResponse;
+import pl.galushop.GaluShop.exception.PaymentNotFoundException;
 import pl.galushop.GaluShop.service.PaymentService;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -61,5 +62,16 @@ class PaymentsControllerTest {
                 .andExpect(jsonPath("$.orderId").value(1L))
                 .andExpect(jsonPath("$.userId").value(1L));
         verify(service, times(1)).getPaymentResponse(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenShowPayment_thenReturnsNotFound() throws Exception{
+        //given
+        when(service.getPaymentResponse(anyLong())).thenThrow(PaymentNotFoundException.class);
+        //then
+        mockMvc.perform(get("/payments/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(service, times(1)).getPaymentResponse(999L);
     }
 }
