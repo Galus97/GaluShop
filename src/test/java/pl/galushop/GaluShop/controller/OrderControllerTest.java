@@ -118,7 +118,7 @@ class OrderControllerTest {
     }
 
     @Test
-    void givenCorrectRequest_whenShowOrder_thenReturnsOrder() throws Exception{
+    void givenCorrectRequest_whenSaveOrder_thenReturnsOrder() throws Exception{
         //given
         when(service.saveOrder(any(OrderRequest.class))).thenReturn(response);
         //then

@@ -1,5 +1,6 @@
 package pl.galushop.GaluShop.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,13 @@ import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
 import pl.galushop.GaluShop.service.PaymentService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PaymentsControllerTest {
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
     @MockBean
     PaymentService service;
     private PaymentResponse response;
@@ -83,5 +88,18 @@ class PaymentsControllerTest {
         mockMvc.perform(get("/payments/-1"))
                 .andExpect(status().isBadRequest());
         verify(service, times(1)).getPaymentResponse(-1L);
+    }
+
+    @Test
+    void givenCorrectRequest_whenSavePayment_thenCreatePayment() throws Exception{
+        //given
+        when(service.savePayment(any(PaymentRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(post("/payments")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.paymentId").value(1L));
+        verify(service, times(1)).savePayment(request);
     }
 }
