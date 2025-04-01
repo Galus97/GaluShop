@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.entity.Order;
@@ -65,7 +64,7 @@ class ProductServiceTest {
                 .price(10.0)
                 .category("Electronic")
                 .categoryId(1)
-                .productImages(new ArrayList<ProductImageRequest>())
+                .productImages(new ArrayList<>())
                 .build();
     }
 
