@@ -88,4 +88,14 @@ class ProductControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         verify(service, times(1)).getProductResponse(999L);
     }
+
+    @Test
+    void givenNonExistentId_whenShowProduct_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getProductResponse(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/product/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getProductResponse(-1L);
+    }
 }
