@@ -18,12 +18,15 @@ import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.service.RegisterUserService;
 import pl.galushop.GaluShop.service.UserService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -92,4 +95,21 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
         verify(service, times(1)).getUserResponse(-1L);
     }
+
+    @Test
+    void givenCorrectRequest_whenSaveUser_thenReturnsUser() throws Exception{
+        //given
+        when(registerUserService.saveNewUser(any(UserRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/user/1"))
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.firstName").value("Jane"))
+                .andExpect(jsonPath("$.email").value("jane.doe@mail.com"));
+        verify(registerUserService, times(1)).saveNewUser(request);
+    }
+
 }
