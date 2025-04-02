@@ -24,6 +24,7 @@ import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -147,12 +148,22 @@ class UserControllerTest {
     }
 
     @Test
-    void givenExistingId_whenUpdateUser_thenDeletesUser() throws Exception{
+    void givenExistingId_whenDeleteUser_thenDeletesUser() throws Exception{
         //given
         doNothing().when(service).deleteUser(anyLong());
         //then
         mockMvc.perform(delete("/user/1"))
                 .andExpect(status().isNoContent());
         verify(service, times(1)).deleteUser(1L);
+    }
+
+    @Test
+    void givenInvalidId_whenDeleteUser_thenReturnsBadRequest() throws Exception{
+        //given
+        doThrow(IllegalArgumentException.class).when(service).deleteUser(anyLong());
+        //then
+        mockMvc.perform(delete("/user/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).deleteUser(-1L);
     }
 }
