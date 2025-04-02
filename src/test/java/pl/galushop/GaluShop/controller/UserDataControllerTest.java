@@ -16,11 +16,13 @@ import pl.galushop.GaluShop.dto.response.UserDataResponse;
 import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.service.UserDataService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -104,5 +106,20 @@ class UserDataControllerTest {
         mockMvc.perform(get("/userData/-1"))
                 .andExpect(status().isBadRequest());
         verify(service, times(1)).getUserDataResponse(-1L);
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveUserData_thenReturnsUserData() throws Exception{
+        //given
+        when(service.saveUserData(any(UserDataRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(post("/userData")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.userDataId").value(1L))
+                .andExpect(jsonPath("$.city").value("Warsaw"));
+        verify(service, times(1)).saveUserData(request);
     }
 }
