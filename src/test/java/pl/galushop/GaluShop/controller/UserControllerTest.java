@@ -15,8 +15,11 @@ import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
+import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.service.RegisterUserService;
 import pl.galushop.GaluShop.service.UserService;
+
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -112,4 +115,17 @@ class UserControllerTest {
         verify(registerUserService, times(1)).saveNewUser(request);
     }
 
+    @Test
+    void givenInCorrectRequest_whenSaveUser_thenReturnsBadRequest() throws Exception{
+        //given
+        when(registerUserService.saveNewUser(any(UserRequest.class)))
+                .thenThrow(new ValidationException(Collections.singletonList("Invalid email format")));
+        //then
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$[0]").value("Invalid email format"));
+        verify(registerUserService, times(1)).saveNewUser(request);
+    }
 }
