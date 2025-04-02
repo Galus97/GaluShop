@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -121,5 +122,20 @@ class UserDataControllerTest {
                 .andExpect(jsonPath("$.userDataId").value(1L))
                 .andExpect(jsonPath("$.city").value("Warsaw"));
         verify(service, times(1)).saveUserData(request);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateUserData_thenReturnsUserData() throws Exception{
+        //given
+        when(service.updateUserData(any(UserDataRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(put("/userData")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.userDataId").value(1L))
+                .andExpect(jsonPath("$.phoneNumber").value(666777888));
+        verify(service, times(1)).updateUserData(request);
     }
 }
