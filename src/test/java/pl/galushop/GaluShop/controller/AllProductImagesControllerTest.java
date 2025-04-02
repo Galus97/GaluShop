@@ -39,7 +39,7 @@ class AllProductImagesControllerTest {
     ProductFacadeService productFacadeService;
 
     @Test
-    void givenExisting_whenGetAllImagesFromProduct_thenReturnsListOfProductImages() throws Exception {
+    void givenExistingId_whenGetAllImagesFromProduct_thenReturnsListOfProductImages() throws Exception {
         //given
         List<ProductImagesResponse> responseList = Arrays.asList(
                 new ProductImagesResponse(1L, "Img Src","Alt Img", 1L));
@@ -57,7 +57,7 @@ class AllProductImagesControllerTest {
     }
 
     @Test
-    void givenNonExistingProductId_whenGetAllImagesFromProduct_thenReturnsEmptyList() throws Exception {
+    void givenNonExistingId_whenGetAllImagesFromProduct_thenReturnsEmptyList() throws Exception {
         //given
         when(productFacadeService.getAllImagesByProductId(anyLong())).thenReturn(Collections.emptyList());
         //then
