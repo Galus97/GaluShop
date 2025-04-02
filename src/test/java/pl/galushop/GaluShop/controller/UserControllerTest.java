@@ -23,9 +23,11 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -142,5 +144,15 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.userId").value(1))
                 .andExpect(jsonPath("$.email").value("jane.doe@mail.com"));
         verify(service, times(1)).updateUser(request);
+    }
+
+    @Test
+    void givenExistingId_whenUpdateUser_thenDeletesUser() throws Exception{
+        //given
+        doNothing().when(service).deleteUser(anyLong());
+        //then
+        mockMvc.perform(delete("/user/1"))
+                .andExpect(status().isNoContent());
+        verify(service, times(1)).deleteUser(1L);
     }
 }
