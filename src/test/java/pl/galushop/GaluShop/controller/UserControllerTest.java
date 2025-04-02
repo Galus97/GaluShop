@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.service.RegisterUserService;
 import pl.galushop.GaluShop.service.UserService;
 
@@ -69,5 +70,26 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.enabled").value(true))
                 .andExpect(jsonPath("$.emailCode").value("1111"));
         verify(service, times(1)).getUserResponse(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenShowUser_thenReturnsNotFound() throws Exception{
+        //given
+        when(service.getUserResponse(anyLong())).thenThrow(UserNotFoundException.class);
+        //then
+        mockMvc.perform(get("/user/999"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+        verify(service, times(1)).getUserResponse(999L);
+    }
+
+    @Test
+    void givenNonInvalidId_whenShowUser_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getUserResponse(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/user/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getUserResponse(-1L);
     }
 }
