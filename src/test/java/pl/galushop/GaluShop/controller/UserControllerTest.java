@@ -3,17 +3,28 @@ package pl.galushop.GaluShop.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.service.RegisterUserService;
 import pl.galushop.GaluShop.service.UserService;
+
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
 @Import(SpringSecurity.class)
@@ -24,9 +35,9 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private UserService userService;
+    private UserService service;
     @MockBean
-    private RegisterUserService service;
+    private RegisterUserService registerUserService;
     private UserRequest request;
     private UserResponse response;
 
@@ -41,5 +52,22 @@ class UserControllerTest {
                 .build();
         response = new UserResponse(1L, "Jane", "Doe",
                 "jane.doe@mail.com", true, "1111");
+    }
+
+    @Test
+    void givenExistingId_whenShowUser_thenReturnsUser() throws Exception{
+        //given
+        when(service.getUserResponse(anyLong())).thenReturn(response);
+        //then
+        mockMvc.perform(get("/user/1"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.firstName").value("Jane"))
+                .andExpect(jsonPath("$.lastName").value("Doe"))
+                .andExpect(jsonPath("$.email").value("jane.doe@mail.com"))
+                .andExpect(jsonPath("$.enabled").value(true))
+                .andExpect(jsonPath("$.emailCode").value("1111"));
+        verify(service, times(1)).getUserResponse(1L);
     }
 }
