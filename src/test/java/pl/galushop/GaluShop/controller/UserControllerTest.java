@@ -28,6 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -116,7 +117,7 @@ class UserControllerTest {
     }
 
     @Test
-    void givenInCorrectRequest_whenSaveUser_thenReturnsBadRequest() throws Exception{
+    void givenIncorrectRequest_whenSaveUser_thenReturnsBadRequest() throws Exception{
         //given
         when(registerUserService.saveNewUser(any(UserRequest.class)))
                 .thenThrow(new ValidationException(Collections.singletonList("Invalid email format")));
@@ -127,5 +128,19 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[0]").value("Invalid email format"));
         verify(registerUserService, times(1)).saveNewUser(request);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateUser_thenReturnsUser() throws Exception{
+        //given
+        when(service.updateUser(any(UserRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(put("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(1))
+                .andExpect(jsonPath("$.email").value("jane.doe@mail.com"));
+        verify(service, times(1)).updateUser(request);
     }
 }
