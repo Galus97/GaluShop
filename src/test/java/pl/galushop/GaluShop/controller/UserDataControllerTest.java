@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.UserDataRequest;
 import pl.galushop.GaluShop.dto.response.UserDataResponse;
+import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.service.UserDataService;
 
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -82,5 +83,26 @@ class UserDataControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.userDataId").value(1L));
         verify(service, times(1)).getUserDataResponse(1L);
+    }
+
+    @Test
+    void givenNonExistentId_whenShowUserData_thenReturnsNotFound() throws Exception{
+        //given
+        when(service.getUserDataResponse(anyLong())).thenThrow(UserDataNotFoundException.class);
+        //then
+        mockMvc.perform(get("/userData/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        verify(service, times(1)).getUserDataResponse(999L);
+    }
+
+    @Test
+    void givenInvalidId_whenShowUserData_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getUserDataResponse(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/userData/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getUserDataResponse(-1L);
     }
 }
