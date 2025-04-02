@@ -18,13 +18,16 @@ import pl.galushop.GaluShop.service.UserDataService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -118,6 +121,7 @@ class UserDataControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/userData/1"))
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.userDataId").value(1L))
                 .andExpect(jsonPath("$.city").value("Warsaw"));
@@ -137,5 +141,15 @@ class UserDataControllerTest {
                 .andExpect(jsonPath("$.userDataId").value(1L))
                 .andExpect(jsonPath("$.phoneNumber").value(666777888));
         verify(service, times(1)).updateUserData(request);
+    }
+
+    @Test
+    void givenExisting_whenDeletesUserData_thenDeletesUserData() throws Exception{
+        //given
+        doNothing().when(service).deleteUserData(anyLong());
+        //then
+        mockMvc.perform(delete("/userData/1"))
+                .andExpect(status().isNoContent());
+        verify(service, times(1)).deleteUserData(1L);
     }
 }
