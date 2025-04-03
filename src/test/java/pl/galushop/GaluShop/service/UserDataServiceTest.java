@@ -65,15 +65,16 @@ class UserDataServiceTest {
                 .user(user)
                 .build();
 
-        userDataRequest = new UserDataRequest();
-        userDataRequest.setUserDataId(null);
-        userDataRequest.setCity("Warsaw");
-        userDataRequest.setStreet("Pulawska");
-        userDataRequest.setStreetNumber(1);
-        userDataRequest.setApartmentNumber(1);
-        userDataRequest.setZipCode("00-001");
-        userDataRequest.setPhoneNumber(666777888);
-        userDataRequest.setUserId(1L);
+        userDataRequest = UserDataRequest.builder()
+                .userDataId(null)
+                .city("Warsaw")
+                .street("Pulawska")
+                .streetNumber(1)
+                .apartmentNumber(1)
+                .zipCode("00-001")
+                .phoneNumber(666777888)
+                .userId(1L)
+                .build();
     }
 
     @Test
