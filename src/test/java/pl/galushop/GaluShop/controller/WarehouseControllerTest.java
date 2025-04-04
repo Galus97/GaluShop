@@ -18,9 +18,11 @@ import pl.galushop.GaluShop.service.WarehouseProductService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -117,5 +119,15 @@ class WarehouseControllerTest {
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.quantity").value(10));
         verify(service, times(1)).updateWarehouseProduct(request);
+    }
+
+    @Test
+    void givenExistingId_whenDeleteWarehouseProduct_thenDeletesWarehouseProduct() throws Exception{
+        //given
+        doNothing().when(service).deleteWarehouseProduct(anyLong());
+        //then
+        mockMvc.perform(delete("/warehouse/1"))
+                .andExpect(status().isNoContent());
+        verify(service, times(1)).deleteWarehouseProduct(1L);
     }
 }
