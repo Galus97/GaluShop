@@ -48,10 +48,11 @@ class WarehouseProductServiceTest {
                 .quantity(10)
                 .build();
 
-        request = new WarehouseProductRequest();
-        request.setProductId(1L);
-        request.setProductId(1L);
-        request.setQuantity(10);
+        request = WarehouseProductRequest.builder()
+                .warehouseProductId(1L)
+                .productId(1L)
+                .quantity(10)
+                .build();
     }
 
     @Test
@@ -162,11 +163,11 @@ class WarehouseProductServiceTest {
     @Test
     void givenCorrectRequest_whenUpdateWarehouseProduct_thenReturnsWarehouseProductResponse(){
         //given
-        WarehouseProductRequest requestUpdate = new WarehouseProductRequest();
-        requestUpdate.setWarehouseProductId(1L);
-        requestUpdate.setProductId(33L);
-        requestUpdate.setQuantity(25);
-
+        WarehouseProductRequest requestUpdate = WarehouseProductRequest.builder()
+                .warehouseProductId(1L)
+                .productId(33L)
+                .quantity(25)
+                .build();
         Product product = new Product();
         product.setProductId(33L);
 
@@ -209,10 +210,7 @@ class WarehouseProductServiceTest {
     @Test
     void givenNullProductId_whenUpdateWarehouseProduct_thenThrowsException(){
         //given
-        WarehouseProductRequest request = new WarehouseProductRequest();
-        request.setWarehouseProductId(1L);
         request.setProductId(null); //Invalid value
-        request.setQuantity(25);
         //then
         assertThrows(IllegalArgumentException.class, () -> service.updateWarehouseProduct(request));
         verify(repository, times(0)).findById(any());
