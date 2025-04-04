@@ -16,11 +16,13 @@ import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,5 +84,21 @@ class WarehouseControllerTest {
         mockMvc.perform(get("/warehouse/-1"))
                 .andExpect(status().isBadRequest());
         verify(service, times(1)).getWarehouseProductResponse(-1L);
+    }
+
+    @Test
+    void givenCorrectRequest_whenSaveWarehouseProduct_thenReturnsWarehouseProduct() throws Exception{
+        //given
+        when(service.saveWarehouseProduct(any(WarehouseProductRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(post("/warehouse")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.warehouseProductId").value(1L))
+                .andExpect(jsonPath("$.productId").value(1L))
+                .andExpect(jsonPath("$.quantity").value(10));
+        verify(service, times(1)).saveWarehouseProduct(request);
     }
 }
