@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -100,5 +101,21 @@ class WarehouseControllerTest {
                 .andExpect(jsonPath("$.productId").value(1L))
                 .andExpect(jsonPath("$.quantity").value(10));
         verify(service, times(1)).saveWarehouseProduct(request);
+    }
+
+    @Test
+    void givenCorrectRequest_whenUpdateWarehouseProduct_thenReturnsWarehouseProduct() throws Exception{
+        //given
+        when(service.updateWarehouseProduct(any(WarehouseProductRequest.class))).thenReturn(response);
+        //then
+        mockMvc.perform(put("/warehouse")
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.warehouseProductId").value(1L))
+                .andExpect(jsonPath("$.productId").value(1L))
+                .andExpect(jsonPath("$.quantity").value(10));
+        verify(service, times(1)).updateWarehouseProduct(request);
     }
 }
