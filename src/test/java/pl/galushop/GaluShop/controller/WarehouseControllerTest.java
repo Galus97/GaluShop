@@ -73,4 +73,14 @@ class WarehouseControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         verify(service, times(1)).getWarehouseProductResponse(999L);
     }
+
+    @Test
+    void givenInvalidId_whenShowWarehouseProduct_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.getWarehouseProductResponse(anyLong())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(get("/warehouse/-1"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).getWarehouseProductResponse(-1L);
+    }
 }
