@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
-import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
 @RestController
