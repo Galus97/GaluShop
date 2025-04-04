@@ -50,5 +50,13 @@ class WarehouseUpdateQuantityControllerTest {
         verify(service, times(1)).updateQuantityByProductId(10L, 5);
     }
 
-
+    @Test
+    void givenInvalidQuantity_whenUpdateQuantity_thenReturnsBadRequest() throws Exception{
+        //given
+        when(service.updateQuantityByProductId(anyLong(), anyInt())).thenThrow(IllegalArgumentException.class);
+        //then
+        mockMvc.perform(put("/warehouse/10/-5"))
+                .andExpect(status().isBadRequest());
+        verify(service, times(1)).updateQuantityByProductId(10L, -5);
+    }
 }
