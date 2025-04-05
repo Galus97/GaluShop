@@ -139,4 +139,15 @@ class OrderServiceTest {
 //        //then
 //        assertNotNull(response);
 //    }
+
+    @Test
+    void givenExistingId_whenDeleteOrder_thenDeletesOrder() {
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(order));
+        //when
+        service.deleteOrder(1L);
+        //then
+        verify(repository, times(1)).findById(1L);
+        verify(repository, times(1)).delete(order);
+    }
 }
