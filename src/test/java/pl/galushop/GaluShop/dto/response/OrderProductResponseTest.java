@@ -20,8 +20,8 @@ class OrderProductResponseTest {
         //when
         OrderProductResponse response = OrderProductResponse.fromEntity(orderProduct);
         //then
-        assertEquals(1L, orderProduct.getOrder().getOrderId());
-        assertEquals(2L, orderProduct.getProduct().getProductId());
-        assertEquals(15, orderProduct.getQuantity());
+        assertEquals(1L, response.orderId());
+        assertEquals(2L, response.productId());
+        assertEquals(15, response.quantity());
     }
 }
