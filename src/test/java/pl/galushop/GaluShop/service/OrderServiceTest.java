@@ -155,5 +155,19 @@ class OrderServiceTest {
         verify(repository, times(1)).delete(order);
     }
 
-    
+    @Test
+    void givenCorrectRequest_whenUpdateOrder_thenReturnsOrderResponse(){
+        //given
+        when(repository.findById(anyLong())).thenReturn(Optional.of(order));
+        when(userService.getUserEntity(anyLong())).thenReturn(user);
+        when(productService.getAllProductByIds(any())).thenReturn(Arrays.asList(product));
+        when(repository.save(any(Order.class))).thenReturn(order);
+        //when
+        OrderResponse response = service.updateOrder(orderRequest);
+        //then
+        assertNotNull(response);
+        assertEquals(orderRequest.getUserId(), response.userId());
+        assertEquals(orderRequest.getOrderStatus(), response.status());
+        assertEquals(orderRequest.getProductQuantityRequests().size(), response.products().size());
+    }
 }
