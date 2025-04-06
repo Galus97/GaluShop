@@ -60,7 +60,7 @@ class OrderServiceTest {
                 .user(user)
                 .build();
 
-        Product product = new Product();
+        product = new Product();
         product.setProductId(1L);
         List<OrderProduct> orderProducts = Arrays.asList(new OrderProduct(order, product, 10));
         order.setOrderProducts(orderProducts);
@@ -129,16 +129,20 @@ class OrderServiceTest {
         verify(repository, times(1)).findById(anyLong());
     }
 
-//    @Test
-//    void givenCorrectOrder_whenSaveOrder_thenReturnsOrderResponse() {
-//        //given
-//        when(userService.getUserEntity(anyLong())).thenReturn(user);
-//        when(productService.getAllProductByIds(any())).thenReturn(Arrays.asList(product));
-//        //when
-//        OrderResponse response = service.saveOrder(orderRequest);
-//        //then
-//        assertNotNull(response);
-//    }
+    @Test
+    void givenCorrectOrder_whenSaveOrder_thenReturnsOrderResponse() {
+        //given
+        when(userService.getUserEntity(anyLong())).thenReturn(user);
+        when(productService.getAllProductByIds(any())).thenReturn(Arrays.asList(product));
+        when(repository.save(any(Order.class))).thenReturn(order);
+        //when
+        OrderResponse response = service.saveOrder(orderRequest);
+        //then
+        assertNotNull(response);
+        assertEquals(orderRequest.getUserId(), response.userId());
+        assertEquals(orderRequest.getOrderStatus(), response.status());
+        assertEquals(orderRequest.getProductQuantityRequests().size(), response.products().size());
+    }
 
     @Test
     void givenExistingId_whenDeleteOrder_thenDeletesOrder() {
@@ -150,4 +154,6 @@ class OrderServiceTest {
         verify(repository, times(1)).findById(1L);
         verify(repository, times(1)).delete(order);
     }
+
+    
 }
