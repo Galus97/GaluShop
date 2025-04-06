@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductResponseTest {
 
     @Test
-    void givenProduct_whenFromEntity_thenReturnsCorrectRequest(){
+    void givenProduct_whenFromEntity_thenReturnsCorrectResponse(){
         //given
         Order order = new Order();
         order.setOrderId(1L);

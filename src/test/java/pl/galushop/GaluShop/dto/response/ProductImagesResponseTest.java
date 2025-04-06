@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductImagesResponseTest {
 
     @Test
-    void givenProductImages_whenFromEntity_thenReturnsCorrectRequest(){
+    void givenProductImages_whenFromEntity_thenReturnsCorrectResponse(){
         //given
         Product product = new Product();
         product.setProductId(1L);
