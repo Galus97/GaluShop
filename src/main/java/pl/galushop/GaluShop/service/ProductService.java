@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Service class responsible for managing product operations.
+ * It handles creating, reading, updating, and deleting (CRUD) product data
  */
 @Service
 @RequiredArgsConstructor
@@ -24,18 +25,26 @@ public class ProductService {
     private final MessageService messageService;
 
     /**
-     * Retrieves a product by its ID.
+     * Retrieves a product entity by its ID.
      *
      * @param productId The ID of the product to retrieve.
      * @return The retrieved product entity.
-     * @throws IllegalArgumentException if the product ID is null or invalid.
-     * @throws ProductNotFoundException if no product is found with the given ID.
+     * @throws IllegalArgumentException If the product ID is null or invalid.
+     * @throws ProductNotFoundException If no product is found with the given ID.
      */
     public Product getProductEntity(Long productId) {
         throwIfIdIsInvalid(productId);
         return getProductOrThrow(productId);
     }
 
+    /**
+     * Retrieves a product as a response DTO by its ID.
+     *
+     * @param productId The ID of the product to retrieve.
+     * @return A ProductResponse representing the product.
+     * @throws IllegalArgumentException If the product ID is null or invalid.
+     * @throws ProductNotFoundException If the product is not found.
+     */
     public ProductResponse getProductResponse(Long productId){
         throwIfIdIsInvalid(productId);
         return ProductResponse.fromEntity(getProductOrThrow(productId));
@@ -44,27 +53,33 @@ public class ProductService {
     /**
      * Saves a new product to the database.
      *
-     * @param productRequest The request object containing product details and images.
-     * @throws IllegalArgumentException if the product request is null.
+     * @param productRequest The request containing product details.
+     * @return The created product entity.
+     * @throws IllegalArgumentException If the product request is null.
      */
     @Transactional
     public Product saveProductEntity(ProductRequest productRequest){
         return productRepository.save(buildProduct(productRequest));
     }
 
+    /**
+     * Saves a new product and returns it as a response DTO.
+     *
+     * @param productRequest The request containing product details.
+     * @return The created product as a ProductResponse.
+     * @throws IllegalArgumentException If the product request is null.
+     */
     @Transactional
     public ProductResponse saveProductResponse(ProductRequest productRequest) {
         return ProductResponse.fromEntity(productRepository.save(buildProduct(productRequest)));
     }
 
-
-
     /**
      * Deletes a product by its ID.
      *
      * @param productId The ID of the product to delete.
-     * @throws IllegalArgumentException if the product ID is null or invalid.
-     * @throws ProductNotFoundException if no product is found with the given ID.
+     * @throws IllegalArgumentException If the product ID is null or invalid.
+     * @throws ProductNotFoundException If no product is found with the given ID.
      */
     public void deleteProduct(Long productId) {
         throwIfIdIsInvalid(productId);
@@ -72,11 +87,12 @@ public class ProductService {
     }
 
     /**
-     * Updates an existing product's details.
+     * Updates an existing product with new data.
      *
-     * @param productRequest The request object containing updated product details.
-     * @throws IllegalArgumentException if the product request is null or contains an invalid ID.
-     * @throws ProductNotFoundException if no product is found with the given ID.
+     * @param productRequest The request containing updated product data.
+     * @return The updated product as a ProductResponse.
+     * @throws IllegalArgumentException If the product request or ID is invalid.
+     * @throws ProductNotFoundException If the product is not found.
      */
     @Transactional
     public ProductResponse updateProduct(ProductRequest productRequest) {
@@ -96,9 +112,9 @@ public class ProductService {
     /**
      * Retrieves a list of products by their IDs.
      *
-     * @param productIds The list of product IDs to retrieve.
-     * @return A list of retrieved product entities.
-     * @throws IllegalArgumentException if the provided list is null.
+     * @param productIds The list of product IDs.
+     * @return A list of product entities.
+     * @throws IllegalArgumentException If the product ID list is null or empty.
      */
     public List<Product> getAllProductByIds(List<Long> productIds){
         if(productIds == null || productIds.isEmpty()){
@@ -108,11 +124,11 @@ public class ProductService {
     }
 
     /**
-     * Builds Product entity from the given request
+     * Builds a Product entity from the given request.
      *
-     * @param productRequest The request object containing product details and images.
-     * @return A new Product instance
-     * @throws IllegalArgumentException if the product request is null.
+     * @param productRequest The request containing product details.
+     * @return A Product entity.
+     * @throws IllegalArgumentException If the product request is null.
      */
     private Product buildProduct(ProductRequest productRequest) {
         throwIfRequestIsNull(productRequest);
@@ -126,18 +142,37 @@ public class ProductService {
                 .build();
     }
 
+    /**
+     * Validates whether the request is null.
+     *
+     * @param productRequest The product request.
+     * @throws IllegalArgumentException If the request is null.
+     */
     private void throwIfRequestIsNull(ProductRequest productRequest){
        if(productRequest == null){
            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_REQUEST));
        }
     }
 
+    /**
+     * Validates whether the provided ID is non-null and positive.
+     *
+     * @param id The product ID to validate.
+     * @throws IllegalArgumentException If the ID is null or invalid.
+     */
     private void throwIfIdIsInvalid(Long id){
         if(id == null || id <= 0){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_ID, id));
         }
     }
 
+    /**
+     * Retrieves a product entity by ID or throws an exception.
+     *
+     * @param productId The ID of the product.
+     * @return The found Product entity.
+     * @throws ProductNotFoundException If no product is found with the given ID.
+     */
     private Product getProductOrThrow(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, productId)));
