@@ -30,12 +30,13 @@ public class RegisterUserService {
     private final MessageService messageService;
 
     /**
-     * Registers a new user by validating input data, encoding the password,
-     * saving the user to the database, and sending a verification email.
+     * Registers a new user by validating the provided data, encoding the password,
+     * saving the user entity to the database, and sending a verification email.
      *
-     * @param userRequest The request object containing user registration details.
-     * @return The created User
-     * @throws ValidationException if the validation fails.
+     * @param userRequest The DTO containing registration details (name, email, password, etc.)
+     * @return A response DTO with saved user data.
+     * @throws ValidationException If any validation error occurs during registration.
+     * @throws IllegalArgumentException If the request object is null.
      */
     public UserResponse saveNewUser(UserRequest userRequest) throws ValidationException {
         throwIfUserRequestIsInvalid(userRequest);
@@ -50,12 +51,25 @@ public class RegisterUserService {
         }
     }
 
+    /**
+     * Validates if the user request is not null.
+     *
+     * @param userRequest The user registration request.
+     * @throws IllegalArgumentException If the request is null.
+     */
     private void throwIfUserRequestIsInvalid(UserRequest userRequest){
         if(userRequest == null){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
         }
     }
 
+    /**
+     * Builds a User entity from the provided request data.
+     * The password is encoded and a unique email verification code is generated.
+     *
+     * @param userRequest The request containing registration data.
+     * @return A new User entity ready to be persisted.
+     */
     private User buildUserFromRequest(UserRequest userRequest) {
         return User.builder()
                 .firstName(userRequest.getFirstName())
