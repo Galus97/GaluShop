@@ -17,6 +17,7 @@ public final class ErrorMessages {
     //Employee
     public static final String EMPLOYEE_NOT_FOUND = "error.employeeNotFound";
     public static final String INVALID_EMPLOYEE_ID = "error.invalidEmployeeId";
+    public static final String INVALID_EMPLOYEE_REQUEST = "invalidEmployeeRequest";
 
     //Order
     public static final String INVALID_ORDER_ID = "error.invalidOrderId";
