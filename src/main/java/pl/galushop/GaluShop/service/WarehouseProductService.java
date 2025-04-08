@@ -17,7 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service class responsible for managing warehouse products operations.
+ * Service class responsible for managing warehouse product operations.
+ * It handles creating, reading, updating, and deleting (CRUD) warehouse product data,
+ * as well as managing product quantities.
  */
 @Service
 @RequiredArgsConstructor
@@ -27,18 +29,26 @@ public class WarehouseProductService {
     private final MessageService messageService;
 
     /**
-     * Retrieves a warehouse product by its product ID.
+     * Retrieves a warehouse product entity by its product ID.
      *
      * @param productId The ID of the product in the warehouse.
-     * @return The corresponding warehouse product.
-     * @throws IllegalArgumentException If the provided ID is null or negative.
-     * @throws WarehouseProductNotFoundException If no warehouse product is found.
+     * @return The corresponding WarehouseProduct entity.
+     * @throws IllegalArgumentException If the product ID is null or invalid.
+     * @throws WarehouseProductNotFoundException If no warehouse product is found for the given ID.
      */
     public WarehouseProduct getWarehouseProductEntity(Long productId) {
         throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return getWarehouseProductOrThrow(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID);
     }
 
+    /**
+     * Retrieves a warehouse product as a response DTO by its product ID.
+     *
+     * @param productId The ID of the product in the warehouse.
+     * @return A response DTO representing the warehouse product.
+     * @throws IllegalArgumentException If the product ID is null or invalid.
+     * @throws WarehouseProductNotFoundException If the warehouse product is not found.
+     */
     public WarehouseProductResponse getWarehouseProductResponse(Long productId){
         throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return WarehouseProductResponse.fromEntity
@@ -50,9 +60,9 @@ public class WarehouseProductService {
      * Adds a new product to the warehouse.
      *
      * @param warehouseProductRequest The request containing product ID and quantity.
-     * @return The created WarehouseProduct
-     * @throws IllegalArgumentException If the request is null or contains invalid fields.
-     * @throws ProductNotFoundException If the specified product is not found.
+     * @return The created warehouse product as a response DTO.
+     * @throws IllegalArgumentException If the request is null or contains invalid data.
+     * @throws ProductNotFoundException If the specified product does not exist.
      */
     @Transactional
     public WarehouseProductResponse saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
@@ -62,9 +72,9 @@ public class WarehouseProductService {
     }
 
     /**
-     * Retrieves all products currently in the warehouse.
+     * Retrieves all warehouse products from the database.
      *
-     * @return A list of all warehouse products.
+     * @return A list of response DTOs for all warehouse products.
      */
     public List<WarehouseProductResponse> getAllProductInWarehouse() {
         return warehouseRepository.findAll()
@@ -76,9 +86,9 @@ public class WarehouseProductService {
     /**
      * Deletes a warehouse product by its ID.
      *
-     * @param warehouseId The ID of the warehouse product.
-     * @throws IllegalArgumentException If the ID is null or negative.
-     * @throws WarehouseProductNotFoundException If the warehouse product is not found.
+     * @param warehouseId The ID of the warehouse product to delete.
+     * @throws IllegalArgumentException If the ID is null or invalid.
+     * @throws WarehouseProductNotFoundException If the warehouse product does not exist.
      */
     public void deleteWarehouseProduct(Long warehouseId) {
         throwIfIdIsInvalid(warehouseId, ErrorMessages.WAREHOUSE_ID_IS_INVALID);
@@ -86,10 +96,12 @@ public class WarehouseProductService {
     }
 
     /**
-     * Updates an existing warehouse product based on the provided request.
+     * Updates an existing warehouse product with new data from the request.
      *
-     * @param warehouseProductRequest The request containing updated product details.
-     * @throws WarehouseProductNotFoundException If the warehouse product is not found.
+     * @param warehouseProductRequest The request containing updated product ID and quantity.
+     * @return The updated warehouse product as a response DTO.
+     * @throws IllegalArgumentException If the request is null or contains invalid data.
+     * @throws WarehouseProductNotFoundException If the warehouse product does not exist.
      */
     @Transactional
     public WarehouseProductResponse updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest){
@@ -105,12 +117,13 @@ public class WarehouseProductService {
     }
 
     /**
-     * Updates the quantity of a product in the warehouse based on the product ID.
+     * Updates only the quantity of a warehouse product based on the product ID.
      *
-     * @param productId The ID of the product.
-     * @param quantity The new quantity of the product.
+     * @param productId The ID of the product in the warehouse.
+     * @param quantity The new quantity value.
+     * @return The updated warehouse product as a response DTO.
      * @throws IllegalArgumentException If the product ID or quantity is invalid.
-     * @throws WarehouseProductNotFoundException If the warehouse product is not found.
+     * @throws WarehouseProductNotFoundException If the product is not found in the warehouse.
      */
     @Transactional
     public WarehouseProductResponse updateQuantityByProductId(Long productId, Integer quantity) {
@@ -129,9 +142,9 @@ public class WarehouseProductService {
      * Builds a WarehouseProduct entity from the given request.
      *
      * @param warehouseProductRequest The request containing product ID and quantity.
-     * @return A new WarehouseProduct instance.
-     * @throws IllegalArgumentException If the request is invalid.
-     * @throws ProductNotFoundException If the product is not found.
+     * @return A WarehouseProduct entity instance.
+     * @throws IllegalArgumentException If the request is null or contains invalid data.
+     * @throws ProductNotFoundException If the specified product does not exist.
      */
     private WarehouseProduct buildWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
         throwIfRequestIsInvalid(warehouseProductRequest);
@@ -144,12 +157,25 @@ public class WarehouseProductService {
                 .build();
     }
 
+    /**
+     * Validates whether the provided ID is non-null and positive.
+     *
+     * @param id The ID to validate.
+     * @param message The message key to use in the exception.
+     * @throws IllegalArgumentException If the ID is null or invalid.
+     */
     private void throwIfIdIsInvalid(Long id, String message){
         if(id == null || id <= 0){
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
     }
 
+    /**
+     * Validates the provided WarehouseProductRequest object.
+     *
+     * @param warehouseProductRequest The request to validate.
+     * @throws IllegalArgumentException If the request is null or contains invalid fields.
+     */
     private void throwIfRequestIsInvalid(WarehouseProductRequest warehouseProductRequest){
         if (warehouseProductRequest == null) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.WAREHOUSE_IS_NULL));
@@ -160,6 +186,14 @@ public class WarehouseProductService {
         }
     }
 
+    /**
+     * Retrieves a WarehouseProduct entity by ID or throws an exception.
+     *
+     * @param id The warehouse product ID.
+     * @param message The message key to use in the exception.
+     * @return The corresponding WarehouseProduct entity.
+     * @throws WarehouseProductNotFoundException If the product is not found.
+     */
     private WarehouseProduct getWarehouseProductOrThrow(Long id, String message) {
         return warehouseRepository.findById(id)
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(message, id)));
