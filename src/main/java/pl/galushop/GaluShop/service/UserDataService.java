@@ -1,7 +1,6 @@
 package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
@@ -16,7 +15,8 @@ import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
 /**
- * Service class responsible for managing user data operations.
+ * Service class responsible for managing user data operations,
+ * including saving, retrieving, updating and deleting user data.
  */
 @Service
 @RequiredArgsConstructor
@@ -28,10 +28,10 @@ public class UserDataService {
     /**
      * Saves new user data based on the provided request.
      *
-     * @param userDataRequest the user data request containing user details
-     * @return The created UserData
-     * @throws IllegalArgumentException  if the request is null
-     * @throws UsernameNotFoundException if the user does not exist
+     * @param userDataRequest The request containing user data details.
+     * @return A response DTO with the saved user data.
+     * @throws IllegalArgumentException If the request is null.
+     * @throws UserNotFoundException If the user associated with the data is not found.
      */
     @Transactional
     public UserDataResponse saveUserData(UserDataRequest userDataRequest) {
@@ -40,12 +40,12 @@ public class UserDataService {
     }
 
     /**
-     * Retrieves user data by its ID.
+     * Retrieves user data by its unique ID.
      *
-     * @param userDataId the ID of the user data.
-     * @return the found user data entity.
-     * @throws IllegalArgumentException  if the ID is null or negative.
-     * @throws UserDataNotFoundException if user data is not found.
+     * @param userDataId The ID of the user data.
+     * @return A response DTO with the user data.
+     * @throws IllegalArgumentException If the ID is null or invalid.
+     * @throws UserDataNotFoundException If no user data is found with the given ID.
      */
     public UserDataResponse getUserDataResponse(Long userDataId) {
         throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
@@ -53,12 +53,12 @@ public class UserDataService {
     }
 
     /**
-     * Retrieves user data by the associated user ID.
+     * Retrieves user data using the user’s ID.
      *
-     * @param userId the ID of the user.
-     * @return the found user data entity.
-     * @throws IllegalArgumentException  if the user ID is null or negative.
-     * @throws UserDataNotFoundException if no user data is found for the user.
+     * @param userId The ID of the user whose data is being retrieved.
+     * @return A response DTO with the user data.
+     * @throws IllegalArgumentException If the user ID is null or invalid.
+     * @throws UserDataNotFoundException If no data is found for the given user.
      */
     public UserDataResponse getUserDataByUserId(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
@@ -70,9 +70,9 @@ public class UserDataService {
     /**
      * Deletes user data by its ID.
      *
-     * @param userDataId the ID of the user data.
-     * @throws IllegalArgumentException  if the ID is null or negative.
-     * @throws UserDataNotFoundException if the user data is not found.
+     * @param userDataId The ID of the user data to delete.
+     * @throws IllegalArgumentException If the ID is null or invalid.
+     * @throws UserDataNotFoundException If no user data is found with the given ID.
      */
     public void deleteUserData(Long userDataId) {
         throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
@@ -82,14 +82,14 @@ public class UserDataService {
     }
 
     /**
-     * Updates existing user data with the provided request details.
+     * Updates existing user data with new values provided in the request.
      *
-     * @param userDataRequest the user data request containing updated details.
-     * @throws IllegalArgumentException  if the user data ID is null or invalid.
-     * @throws UserDataNotFoundException if the user data is not found.
+     * @param userDataRequest The request containing updated user data details.
+     * @return A response DTO with the updated user data.
+     * @throws IllegalArgumentException If the user ID is invalid.
+     * @throws UserDataNotFoundException If the user data is not found.
      */
     @Transactional
-    //TUTAJ
     public UserDataResponse updateUserData(UserDataRequest userDataRequest) {
         throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
 
@@ -106,12 +106,11 @@ public class UserDataService {
     }
 
     /**
-     * Builds a UserData entity from the given request.
+     * Constructs a UserData entity from a request DTO.
      *
-     * @param userDataRequest the request containing user details.
-     * @return a new UserData instance.
-     * @throws IllegalArgumentException  if the request is null.
-     * @throws UsernameNotFoundException if the user is not found.
+     * @param userDataRequest The request containing data to build the entity.
+     * @return A new UserData entity ready for persistence.
+     * @throws UserNotFoundException If the user is not found.
      */
     private UserData buildUserData(UserDataRequest userDataRequest) {
         User user = userRepository.findById(userDataRequest.getUserId())
@@ -130,18 +129,39 @@ public class UserDataService {
                 .build();
     }
 
+    /**
+     * Validates whether the request is not null.
+     *
+     * @param userDataRequest The request to validate.
+     * @throws IllegalArgumentException If the request is null.
+     */
     private void throwIfRequestIsInvalid(UserDataRequest userDataRequest) {
         if (userDataRequest == null) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_REQUEST));
         }
     }
 
+    /**
+     * Validates whether the given ID is not null and greater than zero.
+     *
+     * @param id The ID to validate.
+     * @param message The error message key to use in case of invalid ID.
+     * @throws IllegalArgumentException If the ID is invalid.
+     */
     private void throwIfIdIsInvalid(Long id, String message) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
     }
 
+    /**
+     * Retrieves user data or throws an exception if not found.
+     *
+     * @param userDataId The ID of the user data.
+     * @param message The error message key for the exception.
+     * @return The found UserData entity.
+     * @throws UserDataNotFoundException If no user data is found with the given ID.
+     */
     private UserData getUserDataOrThrow(Long userDataId, String message) {
         return userDataRepository.findById(userDataId)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(message, userDataId)));
