@@ -15,7 +15,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service class responsible for managing product images operations.
+ * Service class responsible for managing product image operations.
+ * It handles creating, reading, updating, and deleting (CRUD) product image data
+ * and retrieving images associated with specific products.
  */
 @Service
 @RequiredArgsConstructor
@@ -27,8 +29,8 @@ public class ProductImagesService {
      * Saves a new product image to the database.
      *
      * @param productImageRequest The request object containing product image details.
-     * @return The created ProductImages
-     * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
+     * @return The created product image as a response DTO.
+     * @throws IllegalArgumentException If the request object is null or contains invalid data.
      */
     @Transactional
     public ProductImagesResponse saveProductImages(ProductImageRequest productImageRequest) {
@@ -39,9 +41,9 @@ public class ProductImagesService {
      * Retrieves a product image by its ID.
      *
      * @param imagesId The ID of the product image to retrieve.
-     * @return The retrieved product image entity.
-     * @throws IllegalArgumentException if the image ID is null or invalid.
-     * @throws ProductImagesNotFoundException if no image is found with the given ID.
+     * @return A response DTO representing the product image.
+     * @throws IllegalArgumentException If the image ID is null or invalid.
+     * @throws ProductImagesNotFoundException If no image is found with the given ID.
      */
     public ProductImagesResponse getProductImages(Long imagesId) {
         throwIfIdIsInvalid(imagesId);
@@ -52,8 +54,9 @@ public class ProductImagesService {
      * Updates an existing product image's details.
      *
      * @param productImageRequest The request object containing updated product image details.
-     * @throws IllegalArgumentException if the request object contains an invalid image ID.
-     * @throws ProductImagesNotFoundException if no image is found with the given ID.
+     * @return A response DTO representing the updated product image.
+     * @throws IllegalArgumentException If the request object is null or contains an invalid image ID.
+     * @throws ProductImagesNotFoundException If no image is found with the given ID.
      */
     @Transactional
     public ProductImagesResponse updateProductImages(ProductImageRequest productImageRequest) {
@@ -72,8 +75,8 @@ public class ProductImagesService {
      * Deletes a product image by its ID.
      *
      * @param imagesId The ID of the product image to delete.
-     * @throws IllegalArgumentException if the image ID is null or invalid.
-     * @throws ProductImagesNotFoundException if no image is found with the given ID.
+     * @throws IllegalArgumentException If the image ID is null or invalid.
+     * @throws ProductImagesNotFoundException If no image is found with the given ID.
      */
     public void deleteProductImages(Long imagesId) {
         throwIfIdIsInvalid(imagesId);
@@ -84,8 +87,8 @@ public class ProductImagesService {
      * Retrieves all images associated with a specific product ID.
      *
      * @param productId The ID of the product.
-     * @return A list of product images associated with the product.
-     * @throws IllegalArgumentException if the product ID is null or invalid.
+     * @return A list of response DTOs representing product images.
+     * @throws IllegalArgumentException If the product ID is null or invalid.
      */
     public List<ProductImagesResponse> getAllImagesByProductId(Long productId) {
         throwIfIdIsInvalid(productId);
@@ -96,11 +99,11 @@ public class ProductImagesService {
     }
 
     /**
-     * Builds a ProductImages entity from the given request
+     * Builds a ProductImages entity from the given request.
      *
      * @param productImageRequest The request object containing product image details.
-     * @return A new ProductImages instance
-     * @throws IllegalArgumentException if the request object is null or contains an invalid image ID.
+     * @return A ProductImages entity instance.
+     * @throws IllegalArgumentException If the request object is null or contains invalid data.
      */
     private ProductImages buildProductImages(ProductImageRequest productImageRequest) {
         throwIfRequestIsNull(productImageRequest);
@@ -111,18 +114,37 @@ public class ProductImagesService {
                 .build();
     }
 
+    /**
+     * Validates the provided ProductImageRequest object.
+     *
+     * @param productImageRequest The request to validate.
+     * @throws IllegalArgumentException If the request is null.
+     */
     private void throwIfRequestIsNull(ProductImageRequest productImageRequest){
         if(productImageRequest == null){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_REQUEST_IS_NULL));
         }
     }
 
+    /**
+     * Validates whether the provided ID is non-null and positive.
+     *
+     * @param id The ID to validate.
+     * @throws IllegalArgumentException If the ID is null or invalid.
+     */
     private void throwIfIdIsInvalid(Long id){
         if(id == null || id <= 0){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, id));
         }
     }
 
+    /**
+     * Retrieves a ProductImages entity by ID or throws an exception.
+     *
+     * @param imagesId The product image ID.
+     * @return The corresponding ProductImages entity.
+     * @throws ProductImagesNotFoundException If the product image is not found.
+     */
     private ProductImages getImagesOrThrow(Long imagesId) {
         return productImagesRepository.findById(imagesId)
                 .orElseThrow(() -> new ProductImagesNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_NOT_FOUND, imagesId)));
