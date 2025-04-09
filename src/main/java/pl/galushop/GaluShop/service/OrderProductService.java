@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service class responsible for managing operations related to order products.
+ * Service class responsible for managing order product operations.
+ * It handles creating and retrieving order-product relationships.
  */
 @Service
 @RequiredArgsConstructor
@@ -21,10 +22,11 @@ public class OrderProductService {
     private final MessageService messageService;
 
     /**
-     * Saves an order product entity to the database.
+     * Saves an {@link OrderProduct} entity to the database.
      *
-     * @param orderProduct The order product entity to save.
-     * @throws IllegalArgumentException if the provided orderProduct is null.
+     * @param orderProduct The {@link OrderProduct} entity to be saved.
+     * @return A response DTO representing the saved order product.
+     * @throws IllegalArgumentException If the orderProduct is {@code null}.
      */
     public OrderProductResponse saveOrderProduct(OrderProduct orderProduct){
         throwIfObjectIsNull(orderProduct);
@@ -33,11 +35,11 @@ public class OrderProductService {
     }
 
     /**
-     * Retrieves all products associated with a specific order.
+     * Retrieves all order products associated with a specific order ID.
      *
      * @param orderId The ID of the order.
-     * @return A list of DTO order product entities associated with the order.
-     * @throws IllegalArgumentException if the order ID is null or invalid.
+     * @return A list of response DTOs representing the products in the order.
+     * @throws IllegalArgumentException If the order ID is {@code null} or invalid.
      */
     public List<OrderProductResponse> getOrderProductsByOrderId(Long orderId){
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
@@ -48,11 +50,11 @@ public class OrderProductService {
     }
 
     /**
-     * Retrieves all orders associated with a specific product.
+     * Retrieves all order products associated with a specific product ID.
      *
      * @param productId The ID of the product.
-     * @return A list of DTO order product entities associated with the order.
-     * @throws IllegalArgumentException if the order ID is null or invalid.
+     * @return A list of response DTOs representing the orders containing the product.
+     * @throws IllegalArgumentException If the product ID is {@code null} or invalid.
      */
     public List<OrderProductResponse> getOrderProductsByProductId(Long productId){
         throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
@@ -62,12 +64,25 @@ public class OrderProductService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Validates that the provided ID is not {@code null} and greater than zero.
+     *
+     * @param id The ID to validate.
+     * @param message The message key to use if validation fails.
+     * @throws IllegalArgumentException If the ID is {@code null} or less than or equal to zero.
+     */
     private void throwIfIdIsInvalid(Long id, String message){
         if(id == null || id <= 0){
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
     }
 
+    /**
+     * Validates that the provided {@link OrderProduct} object is not {@code null}.
+     *
+     * @param orderProduct The order product to validate.
+     * @throws IllegalArgumentException If the order product is {@code null}.
+     */
     private void throwIfObjectIsNull(OrderProduct orderProduct){
         if(orderProduct == null){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_PRODUCT_IS_NULL));
