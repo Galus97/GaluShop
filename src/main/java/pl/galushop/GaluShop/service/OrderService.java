@@ -22,7 +22,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Service class responsible for managing order operations.
+ * Service class responsible for managing order operations such as
+ * creating, updating, retrieving, and deleting orders.
  */
 @Service
 @RequiredArgsConstructor
@@ -34,18 +35,26 @@ public class OrderService {
     private final ProductService productService;
 
     /**
-     * Retrieves an order by its ID.
+     * Retrieves an order response by its ID.
      *
      * @param orderId The ID of the order to retrieve.
-     * @return The retrieved order entity.
+     * @return The retrieved order as a response DTO.
      * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException   if no order is found with the given ID.
+     * @throws OrderNotFoundException if no order is found with the given ID.
      */
     public OrderResponse getOrderResponse(Long orderId) {
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return OrderResponse.fromEntity(getOrderOrThrowIfNotExist(orderId));
     }
 
+    /**
+     * Retrieves an order entity by its ID.
+     *
+     * @param orderId The ID of the order to retrieve.
+     * @return The retrieved order entity.
+     * @throws IllegalArgumentException if the order ID is null or invalid.
+     * @throws OrderNotFoundException if no order is found with the given ID.
+     */
     public Order getOrderEntity(Long orderId) {
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return getOrderOrThrowIfNotExist(orderId);
@@ -54,11 +63,10 @@ public class OrderService {
 
     /**
      * Saves a new order to the database.
-     * Saves a new orderProduct to the database.
      *
      * @param orderRequest The request object containing order details.
-     * @return The created Order
-     * @throws UserNotFoundException    if the user associated with the order is not found.
+     * @return The created order as a response DTO.
+     * @throws UserNotFoundException if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
@@ -73,8 +81,7 @@ public class OrderService {
      * @param userId The ID of the user.
      * @return A list of orders associated with the user.
      * @throws IllegalArgumentException if the user ID is null or invalid.
-     * @throws UserNotFoundException    if the user is not found.
-     * @throws OrderNotFoundException   if no orders are found for the user.
+     * @throws UserNotFoundException if the user is not found.
      */
     public List<OrderResponse> getAllOrdersByUser(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
@@ -93,7 +100,7 @@ public class OrderService {
      *
      * @param orderId The ID of the order to delete.
      * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException   if no order is found with the given ID.
+     * @throws OrderNotFoundException if no order is found with the given ID.
      */
     public void deleteOrder(Long orderId) {
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
@@ -105,9 +112,10 @@ public class OrderService {
      * Updates an existing order's details.
      *
      * @param orderRequest The request object containing updated order details.
-     * @throws IllegalArgumentException if the request object contains an invalid order ID.
-     * @throws OrderNotFoundException   if no order is found with the given ID.
-     * @throws UserNotFoundException    if the user associated with the order is not found.
+     * @return The updated order as a response DTO.
+     * @throws IllegalArgumentException if the request contains an invalid order ID.
+     * @throws OrderNotFoundException if no order is found with the given ID.
+     * @throws UserNotFoundException if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
@@ -123,12 +131,11 @@ public class OrderService {
     }
 
     /**
-     * Builds an Order entity from the given OrderRequest.
-     * Saves a new orderProduct to the database.
+     * Builds an Order entity from the given request.
      *
      * @param orderRequest The request object containing order details.
      * @return The constructed Order entity.
-     * @throws UserNotFoundException    if the user associated with the order is not found.
+     * @throws UserNotFoundException if the user is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     private Order buildOrder(OrderRequest orderRequest) {
@@ -166,18 +173,38 @@ public class OrderService {
         return order;
     }
 
+    /**
+     * Validates that the given OrderRequest is not null.
+     *
+     * @param orderRequest The request to validate.
+     * @throws IllegalArgumentException if the request is null.
+     */
     private void throwIfRequestIsNull(OrderRequest orderRequest){
         if(orderRequest == null){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_REQUEST_IS_NULL));
         }
     }
 
+    /**
+     * Validates that the given ID is not null or less than or equal to zero.
+     *
+     * @param id      The ID to validate.
+     * @param message The error message key to use if validation fails.
+     * @throws IllegalArgumentException if the ID is null or invalid.
+     */
     private void throwIfIdIsInvalid(Long id, String message) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
     }
 
+    /**
+     * Retrieves an Order entity by ID or throws an exception if not found.
+     *
+     * @param orderId The ID of the order.
+     * @return The found Order entity.
+     * @throws OrderNotFoundException if no order is found with the given ID.
+     */
     private Order getOrderOrThrowIfNotExist(Long orderId) {
         return orderRepository.findById(orderId).orElseThrow(
                 () -> new OrderNotFoundException(messageService.getMessage(ErrorMessages.ORDER_NOT_FOUND, orderId)));
