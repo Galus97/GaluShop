@@ -12,7 +12,9 @@ import pl.galushop.GaluShop.entity.Product;
 import java.util.List;
 
 /**
- * Facade service that manages interactions between ProductService and ProductImagesService.
+ * Facade service responsible for managing product operations along with their associated images.
+ * This class coordinates actions between ProductService and ProductImagesService to handle
+ * compound operations involving both product and image entities.
  */
 @Service
 @RequiredArgsConstructor
@@ -21,10 +23,12 @@ public class ProductFacadeService {
     private final ProductImagesService productImagesService;
 
     /**
-     * Saves a new product along with its associated images.
+     * Saves a new product along with its associated product images.
      *
-     * @param productRequest The request object containing product details and images.
-     * @return Thr created Product
+     * @param productRequest The request object containing product details and a list of images.
+     * @return A response DTO representing the saved product.
+     * @throws IllegalArgumentException if the request is null or contains invalid data.
+     * @throws pl.galushop.GaluShop.exception.ProductNotFoundException if the product or any related entity is not found.
      */
     @Transactional
     public ProductResponse saveProductWithImages(ProductRequest productRequest){
@@ -38,10 +42,12 @@ public class ProductFacadeService {
     }
 
     /**
-     * Retrieves all images for a given product ID.
+     * Retrieves all images associated with the specified product ID.
      *
      * @param productId The ID of the product.
-     * @return List of product images.
+     * @return A list of response DTOs representing the product images.
+     * @throws IllegalArgumentException if the product ID is null or invalid.
+     * @throws pl.galushop.GaluShop.exception.ProductNotFoundException if the product does not exist.
      */
     public List<ProductImagesResponse> getAllImagesByProductId(Long productId) {
         productService.getProductEntity(productId);

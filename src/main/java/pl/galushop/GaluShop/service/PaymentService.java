@@ -10,14 +10,18 @@ import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.Payment;
 import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.exception.PaymentNotFoundException;
+import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.PaymentRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service class responsible for managing payment operations.
+ * Service class responsible for managing payment operations such as creating,
+ * retrieving, updating, and deleting payments. Coordinates with OrderService and UserService
+ * to ensure valid associations.
  */
 @Service
 @RequiredArgsConstructor
@@ -31,7 +35,7 @@ public class PaymentService {
      * Retrieves a payment by its ID.
      *
      * @param paymentId The ID of the payment to retrieve.
-     * @return The retrieved payment entity.
+     * @return A response DTO representing the retrieved payment.
      * @throws IllegalArgumentException if the payment ID is null or invalid.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
@@ -42,10 +46,10 @@ public class PaymentService {
     }
 
     /**
-     * Retrieves a payment by the associated order ID.
+     * Retrieves a payment associated with a specific order ID.
      *
      * @param orderId The ID of the order.
-     * @return The payment associated with the given order.
+     * @return A response DTO representing the payment associated with the given order.
      * @throws IllegalArgumentException if the order ID is null or invalid.
      * @throws PaymentNotFoundException if no payment is found for the given order ID.
      */
@@ -57,10 +61,10 @@ public class PaymentService {
     }
 
     /**
-     * Retrieves all payments made by a specific user.
+     * Retrieves all payments associated with a specific user ID.
      *
      * @param userId The ID of the user.
-     * @return A list of payments associated with the user.
+     * @return A list of response DTOs representing the user's payments.
      * @throws IllegalArgumentException if the user ID is null or invalid.
      */
     public List<PaymentResponse> getAllPaymentResponseByUserId(Long userId){
@@ -76,12 +80,13 @@ public class PaymentService {
     }
 
     /**
-     * Saves a new payment associated with an order.
+     * Saves a new payment associated with an order and a user.
      *
      * @param paymentRequest The request object containing payment details.
-     * @return The created Payment
+     * @return A response DTO representing the saved payment.
      * @throws IllegalArgumentException if the request object is null.
-     * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
+     * @throws OrderNotFoundException if no order is found with the given ID.
+     * @throws UserNotFoundException if no user is found with the given ID.
      */
     @Transactional
     public PaymentResponse savePayment(PaymentRequest paymentRequest){
@@ -103,10 +108,11 @@ public class PaymentService {
     }
 
     /**
-     * Updates an existing payment's details.
+     * Updates an existing payment with new details.
      *
      * @param paymentRequest The request object containing updated payment details.
-     * @throws IllegalArgumentException if the request object is null or contains an invalid ID.
+     * @return A response DTO representing the updated payment.
+     * @throws IllegalArgumentException if the request is null or contains an invalid ID.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
     @Transactional
@@ -125,11 +131,13 @@ public class PaymentService {
     }
 
     /**
-     * Builds a Payment entity from the given request
+     * Builds a Payment entity from a PaymentRequest.
      *
      * @param paymentRequest The request object containing payment details.
+     * @return A new Payment entity.
      * @throws IllegalArgumentException if the request object is null.
-     * @throws pl.galushop.GaluShop.exception.OrderNotFoundException if no order is found with the given ID
+     * @throws OrderNotFoundException if the order is not found.
+     * @throws UserNotFoundException if the user is not found.
      */
     private Payment buildPayment(PaymentRequest paymentRequest) {
         throwIfRequestIsNull(paymentRequest);
@@ -144,18 +152,39 @@ public class PaymentService {
                 .build();
     }
 
+    /**
+     * Validates that the given PaymentRequest is not null.
+     *
+     * @param paymentRequest The request to validate.
+     * @throws IllegalArgumentException if the request is null.
+     */
     private void throwIfRequestIsNull(PaymentRequest paymentRequest){
         if(paymentRequest == null){
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PAYMENT_REQUEST_IS_NULL));
         }
     }
 
+    /**
+     * Validates that the given ID is not null or less than or equal to zero.
+     *
+     * @param id      The ID to validate.
+     * @param message The message key used if the validation fails.
+     * @throws IllegalArgumentException if the ID is null or invalid.
+     */
     private void throwIfIdIsInvalid(Long id, String message){
         if(id == null || id <= 0){
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
     }
 
+    /**
+     * Retrieves a Payment entity by ID or throws an exception if not found.
+     *
+     * @param id      The ID of the payment to retrieve.
+     * @param message The message key used if the payment is not found.
+     * @return The retrieved Payment entity.
+     * @throws PaymentNotFoundException if no payment is found with the given ID.
+     */
     private Payment getPaymentOrThrow(Long id, String message) {
         return paymentRepository.findById(id)
                 .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(message, id)));
