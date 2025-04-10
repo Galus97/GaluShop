@@ -31,7 +31,7 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @param email the email of the user or employee
      * @return {@link UserDetails} representing the authenticated user or employee
      * @throws UsernameNotFoundException if no user or employee is found with the given email
-     * @throws IllegalArgumentException if email is null or blank
+     * @throws IllegalArgumentException  if email is null or blank
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -58,8 +58,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_OR_EMPLOYEE_NOT_FOUND, email));
     }
 
-    private void throwIfEmailIsInvalid(String email){
-        if(email == null || email.isBlank()){
+    /**
+     * Validates that the provided email address is not {@code null} or blank.
+     *
+     * @param email The email to validate.
+     * @throws IllegalArgumentException If the email is {@code null} or blank.
+     */
+    private void throwIfEmailIsInvalid(String email) {
+        if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.EMAIL_IS_INVALID, email));
         }
     }

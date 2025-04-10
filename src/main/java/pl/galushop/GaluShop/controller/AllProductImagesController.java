@@ -18,7 +18,7 @@ public class AllProductImagesController {
     private final ProductFacadeService productFacadeService;
 
     @GetMapping("/product/{id}")
-    public ResponseEntity<List<ProductImagesResponse>> getAllImagesFromProduct(@PathVariable Long id){
+    public ResponseEntity<List<ProductImagesResponse>> getAllImagesFromProduct(@PathVariable Long id) {
         return ResponseEntity.ok(productFacadeService.getAllImagesByProductId(id));
     }
 }

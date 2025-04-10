@@ -31,7 +31,7 @@ public class UserDataService {
      * @param userDataRequest The request containing user data details.
      * @return A response DTO with the saved user data.
      * @throws IllegalArgumentException If the request is null.
-     * @throws UserNotFoundException If the user associated with the data is not found.
+     * @throws UserNotFoundException    If the user associated with the data is not found.
      */
     @Transactional
     public UserDataResponse saveUserData(UserDataRequest userDataRequest) {
@@ -44,7 +44,7 @@ public class UserDataService {
      *
      * @param userDataId The ID of the user data.
      * @return A response DTO with the user data.
-     * @throws IllegalArgumentException If the ID is null or invalid.
+     * @throws IllegalArgumentException  If the ID is null or invalid.
      * @throws UserDataNotFoundException If no user data is found with the given ID.
      */
     public UserDataResponse getUserDataResponse(Long userDataId) {
@@ -57,7 +57,7 @@ public class UserDataService {
      *
      * @param userId The ID of the user whose data is being retrieved.
      * @return A response DTO with the user data.
-     * @throws IllegalArgumentException If the user ID is null or invalid.
+     * @throws IllegalArgumentException  If the user ID is null or invalid.
      * @throws UserDataNotFoundException If no data is found for the given user.
      */
     public UserDataResponse getUserDataByUserId(Long userId) {
@@ -71,7 +71,7 @@ public class UserDataService {
      * Deletes user data by its ID.
      *
      * @param userDataId The ID of the user data to delete.
-     * @throws IllegalArgumentException If the ID is null or invalid.
+     * @throws IllegalArgumentException  If the ID is null or invalid.
      * @throws UserDataNotFoundException If no user data is found with the given ID.
      */
     public void deleteUserData(Long userDataId) {
@@ -86,7 +86,7 @@ public class UserDataService {
      *
      * @param userDataRequest The request containing updated user data details.
      * @return A response DTO with the updated user data.
-     * @throws IllegalArgumentException If the user ID is invalid.
+     * @throws IllegalArgumentException  If the user ID is invalid.
      * @throws UserDataNotFoundException If the user data is not found.
      */
     @Transactional
@@ -144,7 +144,7 @@ public class UserDataService {
     /**
      * Validates whether the given ID is not null and greater than zero.
      *
-     * @param id The ID to validate.
+     * @param id      The ID to validate.
      * @param message The error message key to use in case of invalid ID.
      * @throws IllegalArgumentException If the ID is invalid.
      */
@@ -158,7 +158,7 @@ public class UserDataService {
      * Retrieves user data or throws an exception if not found.
      *
      * @param userDataId The ID of the user data.
-     * @param message The error message key for the exception.
+     * @param message    The error message key for the exception.
      * @return The found UserData entity.
      * @throws UserDataNotFoundException If no user data is found with the given ID.
      */

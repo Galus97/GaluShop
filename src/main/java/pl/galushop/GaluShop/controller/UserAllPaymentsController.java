@@ -18,7 +18,7 @@ public class UserAllPaymentsController {
     private final PaymentService paymentService;
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<PaymentResponse>> showAllUserPayments(@PathVariable Long id){
+    public ResponseEntity<List<PaymentResponse>> showAllUserPayments(@PathVariable Long id) {
         return ResponseEntity.ok(paymentService.getAllPaymentResponseByUserId(id));
     }
 }

@@ -17,7 +17,7 @@ public class WarehouseAllProductController {
     private final WarehouseProductService warehouseProductService;
 
     @GetMapping("/allProduct")
-    public ResponseEntity<List<WarehouseProductResponse>> showAllProductInWarehouse(){
+    public ResponseEntity<List<WarehouseProductResponse>> showAllProductInWarehouse() {
         return ResponseEntity.ok(warehouseProductService.getAllProductInWarehouse());
     }
 }

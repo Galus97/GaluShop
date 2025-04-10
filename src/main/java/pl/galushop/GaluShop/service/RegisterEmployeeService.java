@@ -8,7 +8,6 @@ import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.component.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
-import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.ValidationException;
@@ -38,12 +37,12 @@ public class RegisterEmployeeService {
      * @return A response DTO with saved employee data.
      * @throws ValidationException If any validation error occurs during registration.
      */
-    public EmployeeResponse saveNewEmployee(EmployeeRequest employeeRequest) throws ValidationException{
+    public EmployeeResponse saveNewEmployee(EmployeeRequest employeeRequest) throws ValidationException {
         throwIfUserRequestIsInvalid(employeeRequest);
         Employee employee = buildEmployeeFromRequest(employeeRequest);
 
         List<String> validationFailures = registerValidator.validateErrors(employee);
-        if(validationFailures.isEmpty()){
+        if (validationFailures.isEmpty()) {
             emailService.sendEmail(employeeRequest.getEmail());
             return EmployeeResponse.fromEntity(employeeRepository.save(employee));
         } else {
@@ -57,8 +56,8 @@ public class RegisterEmployeeService {
      * @param employeeRequest The Employee registration request.
      * @throws IllegalArgumentException If the request is null.
      */
-    private void throwIfUserRequestIsInvalid(EmployeeRequest employeeRequest){
-        if(employeeRequest == null){
+    private void throwIfUserRequestIsInvalid(EmployeeRequest employeeRequest) {
+        if (employeeRequest == null) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_EMPLOYEE_REQUEST));
         }
     }

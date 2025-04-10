@@ -22,7 +22,7 @@ public class MessageService {
      * @param params Optional parameters to format the message.
      * @return The localized message as a string.
      */
-    public String getMessage(String key, Object... params){
+    public String getMessage(String key, Object... params) {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(key, params, locale);
     }

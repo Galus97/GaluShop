@@ -16,7 +16,7 @@ public class PaymentOrderController {
     private final PaymentService paymentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentResponse> showOrderPayment(@PathVariable Long id){
+    public ResponseEntity<PaymentResponse> showOrderPayment(@PathVariable Long id) {
         return ResponseEntity.ok(paymentService.getPaymentResponseByOrderId(id));
     }
 }

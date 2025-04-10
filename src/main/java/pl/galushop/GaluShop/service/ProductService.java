@@ -45,7 +45,7 @@ public class ProductService {
      * @throws IllegalArgumentException If the product ID is null or invalid.
      * @throws ProductNotFoundException If the product is not found.
      */
-    public ProductResponse getProductResponse(Long productId){
+    public ProductResponse getProductResponse(Long productId) {
         throwIfIdIsInvalid(productId);
         return ProductResponse.fromEntity(getProductOrThrow(productId));
     }
@@ -58,7 +58,7 @@ public class ProductService {
      * @throws IllegalArgumentException If the product request is null.
      */
     @Transactional
-    public Product saveProductEntity(ProductRequest productRequest){
+    public Product saveProductEntity(ProductRequest productRequest) {
         return productRepository.save(buildProduct(productRequest));
     }
 
@@ -116,8 +116,8 @@ public class ProductService {
      * @return A list of product entities.
      * @throws IllegalArgumentException If the product ID list is null or empty.
      */
-    public List<Product> getAllProductByIds(List<Long> productIds){
-        if(productIds == null || productIds.isEmpty()){
+    public List<Product> getAllProductByIds(List<Long> productIds) {
+        if (productIds == null || productIds.isEmpty()) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.LIST_IS_INVALID));
         }
         return productRepository.findAllById(productIds);
@@ -148,10 +148,10 @@ public class ProductService {
      * @param productRequest The product request.
      * @throws IllegalArgumentException If the request is null.
      */
-    private void throwIfRequestIsNull(ProductRequest productRequest){
-       if(productRequest == null){
-           throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_REQUEST));
-       }
+    private void throwIfRequestIsNull(ProductRequest productRequest) {
+        if (productRequest == null) {
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_REQUEST));
+        }
     }
 
     /**
@@ -160,8 +160,8 @@ public class ProductService {
      * @param id The product ID to validate.
      * @throws IllegalArgumentException If the ID is null or invalid.
      */
-    private void throwIfIdIsInvalid(Long id){
-        if(id == null || id <= 0){
+    private void throwIfIdIsInvalid(Long id) {
+        if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_ID, id));
         }
     }

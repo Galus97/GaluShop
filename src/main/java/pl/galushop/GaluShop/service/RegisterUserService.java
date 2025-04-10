@@ -35,7 +35,7 @@ public class RegisterUserService {
      *
      * @param userRequest The DTO containing registration details (name, email, password, etc.)
      * @return A response DTO with saved user data.
-     * @throws ValidationException If any validation error occurs during registration.
+     * @throws ValidationException      If any validation error occurs during registration.
      * @throws IllegalArgumentException If the request object is null.
      */
     public UserResponse saveNewUser(UserRequest userRequest) throws ValidationException {
@@ -57,8 +57,8 @@ public class RegisterUserService {
      * @param userRequest The user registration request.
      * @throws IllegalArgumentException If the request is null.
      */
-    private void throwIfUserRequestIsInvalid(UserRequest userRequest){
-        if(userRequest == null){
+    private void throwIfUserRequestIsInvalid(UserRequest userRequest) {
+        if (userRequest == null) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
         }
     }

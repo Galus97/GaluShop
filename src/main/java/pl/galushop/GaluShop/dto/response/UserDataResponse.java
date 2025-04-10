@@ -5,7 +5,7 @@ import pl.galushop.GaluShop.entity.UserData;
 public record UserDataResponse(Long userDataId, String city, String street, Integer streetNumber,
                                Integer apartmentNumber, String zipCode, Integer phoneNumber, Long userId) {
 
-    public static UserDataResponse fromEntity(UserData userData){
+    public static UserDataResponse fromEntity(UserData userData) {
         return new UserDataResponse(
                 userData.getUserDataId(),
                 userData.getCity(),

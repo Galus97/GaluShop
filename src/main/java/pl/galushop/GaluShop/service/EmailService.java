@@ -56,7 +56,7 @@ public class EmailService {
      * @return the stored verification code, or null if not found
      */
     @Cacheable(value = ErrorMessages.VERIFICATION_CODE, key = "#email")
-    public String getVerificationCode(String email){
+    public String getVerificationCode(String email) {
         throwIfEmailIsInvalid(email);
         return cacheManager.getCache(ErrorMessages.VERIFICATION_CODE).get(email, String.class);
     }
@@ -71,6 +71,12 @@ public class EmailService {
         return String.valueOf(random.nextInt(1000, 9999));
     }
 
+    /**
+     * Validates that the given email is not {@code null} or blank.
+     *
+     * @param email The email address to validate.
+     * @throws IllegalArgumentException If the email is {@code null} or blank.
+     */
     private void throwIfEmailIsInvalid(String email) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.EMAIL_IS_INVALID, email));

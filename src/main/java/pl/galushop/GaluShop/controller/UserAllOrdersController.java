@@ -18,7 +18,7 @@ public class UserAllOrdersController {
     private final OrderService orderService;
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<OrderResponse>> showAllUserOrders(@PathVariable Long id){
+    public ResponseEntity<List<OrderResponse>> showAllUserOrders(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.getAllOrdersByUser(id));
     }
 }
