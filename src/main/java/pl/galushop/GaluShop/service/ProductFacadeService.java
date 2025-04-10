@@ -27,14 +27,14 @@ public class ProductFacadeService {
      *
      * @param productRequest The request object containing product details and a list of images.
      * @return A response DTO representing the saved product.
-     * @throws IllegalArgumentException if the request is null or contains invalid data.
+     * @throws IllegalArgumentException                                if the request is null or contains invalid data.
      * @throws pl.galushop.GaluShop.exception.ProductNotFoundException if the product or any related entity is not found.
      */
     @Transactional
-    public ProductResponse saveProductWithImages(ProductRequest productRequest){
+    public ProductResponse saveProductWithImages(ProductRequest productRequest) {
         Product product = productService.saveProductEntity(productRequest);
 
-        for(ProductImageRequest imageRequest : productRequest.getProductImages()){
+        for (ProductImageRequest imageRequest : productRequest.getProductImages()) {
             imageRequest.setProduct(product);
             productImagesService.saveProductImages(imageRequest);
         }
@@ -46,7 +46,7 @@ public class ProductFacadeService {
      *
      * @param productId The ID of the product.
      * @return A list of response DTOs representing the product images.
-     * @throws IllegalArgumentException if the product ID is null or invalid.
+     * @throws IllegalArgumentException                                if the product ID is null or invalid.
      * @throws pl.galushop.GaluShop.exception.ProductNotFoundException if the product does not exist.
      */
     public List<ProductImagesResponse> getAllImagesByProductId(Long productId) {

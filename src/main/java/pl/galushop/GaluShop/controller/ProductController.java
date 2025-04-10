@@ -25,7 +25,7 @@ public class ProductController {
     private final ProductFacadeService productFacadeService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponse> showProduct(@PathVariable Long id){
+    public ResponseEntity<ProductResponse> showProduct(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductResponse(id));
     }
 
@@ -37,12 +37,12 @@ public class ProductController {
     }
 
     @PutMapping
-    public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductRequest productRequest){
+    public ResponseEntity<ProductResponse> updateProduct(@RequestBody ProductRequest productRequest) {
         return ResponseEntity.ok(productService.updateProduct(productRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }

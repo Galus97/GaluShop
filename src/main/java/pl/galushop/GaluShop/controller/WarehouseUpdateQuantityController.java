@@ -16,7 +16,7 @@ public class WarehouseUpdateQuantityController {
     private final WarehouseProductService warehouseProductService;
 
     @PutMapping("/{id}/{quantity}")
-    public ResponseEntity<WarehouseProductResponse> updateQuantity(@PathVariable Long id, @PathVariable Integer quantity){
+    public ResponseEntity<WarehouseProductResponse> updateQuantity(@PathVariable Long id, @PathVariable Integer quantity) {
         return ResponseEntity.ok(warehouseProductService.updateQuantityByProductId(id, quantity));
     }
 }

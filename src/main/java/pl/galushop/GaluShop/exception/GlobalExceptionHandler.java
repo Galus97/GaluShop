@@ -13,42 +13,42 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmployeeNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleEmployeeNotFoundException(EmployeeNotFoundException e){
+    public ResponseEntity<Map<String, String>> handleEmployeeNotFoundException(EmployeeNotFoundException e) {
         return getMapResponseEntity(e);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException e){
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException e) {
         return getMapResponseEntity(e);
     }
 
     @ExceptionHandler(OrderNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleOrderNotFoundException(OrderNotFoundException e){
+    public ResponseEntity<Map<String, String>> handleOrderNotFoundException(OrderNotFoundException e) {
         return getMapResponseEntity(e);
     }
 
     @ExceptionHandler(PaymentNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handlerPaymentsNotFoundException(PaymentNotFoundException e){
+    public ResponseEntity<Map<String, String>> handlerPaymentsNotFoundException(PaymentNotFoundException e) {
         return getMapResponseEntity(e);
     }
 
     @ExceptionHandler(ProductImagesNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleProductImagesNotFoundException(ProductImagesNotFoundException e){
+    public ResponseEntity<Map<String, String>> handleProductImagesNotFoundException(ProductImagesNotFoundException e) {
         return getMapResponseEntity(e);
     }
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleProductNotFoundException(ProductNotFoundException e){
+    public ResponseEntity<Map<String, String>> handleProductNotFoundException(ProductNotFoundException e) {
         return getMapResponseEntity(e);
     }
 
     @ExceptionHandler(UserDataNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserDataNotFoundException(UserDataNotFoundException e){
+    public ResponseEntity<Map<String, String>> handleUserDataNotFoundException(UserDataNotFoundException e) {
         return getMapResponseEntity(e);
     }
 
     @ExceptionHandler(WarehouseProductNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleWarehouseProductNotFoundException(WarehouseProductNotFoundException e){
+    public ResponseEntity<Map<String, String>> handleWarehouseProductNotFoundException(WarehouseProductNotFoundException e) {
         return getMapResponseEntity(e);
     }
 

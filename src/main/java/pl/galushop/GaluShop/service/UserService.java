@@ -29,9 +29,9 @@ public class UserService {
      * @param userId The ID of the user to retrieve.
      * @return The User entity.
      * @throws IllegalArgumentException If the ID is null or invalid.
-     * @throws UserNotFoundException If the user is not found.
+     * @throws UserNotFoundException    If the user is not found.
      */
-    public User getUserEntity(Long userId){
+    public User getUserEntity(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
         return getUserOrThrow(userId);
     }
@@ -42,9 +42,9 @@ public class UserService {
      * @param userId The ID of the user to retrieve.
      * @return A UserResponse DTO containing user details.
      * @throws IllegalArgumentException If the ID is null or invalid.
-     * @throws UserNotFoundException If the user is not found.
+     * @throws UserNotFoundException    If the user is not found.
      */
-    public UserResponse getUserResponse(Long userId){
+    public UserResponse getUserResponse(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
         return UserResponse.fromEntity(getUserOrThrow(userId));
     }
@@ -54,9 +54,9 @@ public class UserService {
      *
      * @param userId The ID of the user to delete.
      * @throws IllegalArgumentException If the ID is null or invalid.
-     * @throws UserNotFoundException If the user is not found.
+     * @throws UserNotFoundException    If the user is not found.
      */
-    public void deleteUser(Long userId){
+    public void deleteUser(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
 
         userRepository.delete(getUserOrThrow(userId));
@@ -70,12 +70,12 @@ public class UserService {
      * @param userRequest The request containing updated user data.
      * @return A UserResponse with the updated user information.
      * @throws IllegalArgumentException If the user ID is invalid.
-     * @throws UserNotFoundException If the user is not found.
+     * @throws UserNotFoundException    If the user is not found.
      */
     @Transactional
-    public UserResponse updateUser(UserRequest userRequest){
+    public UserResponse updateUser(UserRequest userRequest) {
         throwIfIdIsInvalid(userRequest.getUserId(), ErrorMessages.INVALID_USER_ID);
-        
+
         User existingUser = getUserOrThrow(userRequest.getUserId());
 
         existingUser.setFirstName(userRequest.getFirstName());
@@ -96,8 +96,8 @@ public class UserService {
      * @param userId The ID of the user to check.
      * @throws UserNotFoundException If the user does not exist.
      */
-    public void throwIfUserDoesntExist(Long userId){
-        if(!userRepository.existsById(userId)){
+    public void throwIfUserDoesntExist(Long userId) {
+        if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
         }
     }
@@ -117,7 +117,7 @@ public class UserService {
     /**
      * Validates whether a user ID is valid (non-null and greater than zero).
      *
-     * @param userId The ID to validate.
+     * @param userId  The ID to validate.
      * @param message The error message to use if validation fails.
      * @throws IllegalArgumentException If the ID is invalid.
      */

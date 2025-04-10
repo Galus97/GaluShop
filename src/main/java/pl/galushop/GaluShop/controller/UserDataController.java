@@ -23,29 +23,29 @@ public class UserDataController {
     private final UserDataService userDataService;
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserDataResponse> showUserDataByUserId(@PathVariable Long id){
+    public ResponseEntity<UserDataResponse> showUserDataByUserId(@PathVariable Long id) {
         return ResponseEntity.ok(userDataService.getUserDataByUserId(id));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDataResponse> showUserData(@PathVariable Long id){
+    public ResponseEntity<UserDataResponse> showUserData(@PathVariable Long id) {
         return ResponseEntity.ok(userDataService.getUserDataResponse(id));
     }
 
     @PostMapping
-    public ResponseEntity<UserDataResponse> saveUserData(@RequestBody UserDataRequest userDataRequest){
+    public ResponseEntity<UserDataResponse> saveUserData(@RequestBody UserDataRequest userDataRequest) {
         UserDataResponse savedUserData = userDataService.saveUserData(userDataRequest);
         return ResponseEntity.created(URI.create("/userData/" + savedUserData.userDataId()))
                 .body(savedUserData);
     }
 
     @PutMapping
-    public ResponseEntity<UserDataResponse> updateUserData(@RequestBody UserDataRequest userDataRequest){
+    public ResponseEntity<UserDataResponse> updateUserData(@RequestBody UserDataRequest userDataRequest) {
         return ResponseEntity.ok(userDataService.updateUserData(userDataRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUserData(@PathVariable Long id){
+    public ResponseEntity<Void> deleteUserData(@PathVariable Long id) {
         userDataService.deleteUserData(id);
         return ResponseEntity.noContent().build();
     }

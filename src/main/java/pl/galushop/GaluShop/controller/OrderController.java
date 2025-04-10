@@ -23,7 +23,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> showOrder(@PathVariable Long id){
+    public ResponseEntity<OrderResponse> showOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderService.getOrderResponse(id));
     }
 
@@ -40,7 +40,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id){
+    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }

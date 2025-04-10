@@ -28,10 +28,10 @@ public class EmployeeService {
      *
      * @param employeeId The ID of the employee to retrieve.
      * @return The corresponding {@link Employee} entity.
-     * @throws IllegalArgumentException If the ID is {@code null} or invalid.
+     * @throws IllegalArgumentException  If the ID is {@code null} or invalid.
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
-    public Employee getEmployeeEntity(Long employeeId){
+    public Employee getEmployeeEntity(Long employeeId) {
         throwIfIdIsInvalid(employeeId);
         return getEmployeeOrThrowIfNotFound(employeeId);
     }
@@ -41,10 +41,10 @@ public class EmployeeService {
      *
      * @param employeeId The ID of the employee.
      * @return A response DTO representing the employee.
-     * @throws IllegalArgumentException If the ID is {@code null} or invalid.
+     * @throws IllegalArgumentException  If the ID is {@code null} or invalid.
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
-    public EmployeeResponse getEmployeeResponse(Long employeeId){
+    public EmployeeResponse getEmployeeResponse(Long employeeId) {
         throwIfIdIsInvalid(employeeId);
         return EmployeeResponse.fromEntity(getEmployeeOrThrowIfNotFound(employeeId));
     }
@@ -53,10 +53,10 @@ public class EmployeeService {
      * Deletes an employee by their ID.
      *
      * @param employeeId The ID of the employee to delete.
-     * @throws IllegalArgumentException If the ID is {@code null} or invalid.
+     * @throws IllegalArgumentException  If the ID is {@code null} or invalid.
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
-    public void deleteEmployee(Long employeeId){
+    public void deleteEmployee(Long employeeId) {
         throwIfIdIsInvalid(employeeId);
 
         employeeRepository.delete(getEmployeeOrThrowIfNotFound(employeeId));
@@ -68,18 +68,18 @@ public class EmployeeService {
      *
      * @param employeeRequest The request containing updated employee data.
      * @return A response DTO representing the updated employee.
-     * @throws IllegalArgumentException If the employee ID is {@code null} or invalid.
+     * @throws IllegalArgumentException  If the employee ID is {@code null} or invalid.
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     @Transactional
-    public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest){
+    public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest) {
         throwIfIdIsInvalid(employeeRequest.getEmployeeId());
         Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
         existingEmployee.setFirstName(employeeRequest.getFirstName());
         existingEmployee.setLastName(employeeRequest.getLastName());
         existingEmployee.setEmail(employeeRequest.getEmail());
-        if(employeeRequest.getPassword() != null && !employeeRequest.getPassword().isBlank()){
+        if (employeeRequest.getPassword() != null && !employeeRequest.getPassword().isBlank()) {
             existingEmployee.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
         }
         return EmployeeResponse.fromEntity(employeeRepository.save(existingEmployee));
@@ -92,7 +92,7 @@ public class EmployeeService {
      * @return The corresponding employee entity.
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
-    private Employee getEmployeeOrThrowIfNotFound(Long id){
+    private Employee getEmployeeOrThrowIfNotFound(Long id) {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, id)));
     }
@@ -103,8 +103,8 @@ public class EmployeeService {
      * @param id The ID to validate.
      * @throws IllegalArgumentException If the ID is {@code null} or less than or equal to zero.
      */
-    private void throwIfIdIsInvalid(Long id){
-        if(id == null || id <= 0){
+    private void throwIfIdIsInvalid(Long id) {
+        if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_EMPLOYEE_ID, id));
         }
     }

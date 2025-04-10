@@ -26,12 +26,12 @@ public class UserController {
     private final RegisterUserService registerUserService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> showUser(@PathVariable Long id){
+    public ResponseEntity<UserResponse> showUser(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserResponse(id));
     }
 
     @PostMapping
-    public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest){
+    public ResponseEntity<?> saveUser(@RequestBody UserRequest userRequest) {
         try {
             UserResponse savedUser = registerUserService.saveNewUser(userRequest);
             return ResponseEntity.created(URI.create("/user/" + savedUser.userId()))
@@ -42,12 +42,12 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest userRequest){
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(userService.updateUser(userRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id){
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

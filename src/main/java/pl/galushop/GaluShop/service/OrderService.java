@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.OrderRequest;
-import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
+import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.entity.Order;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.entity.Product;
@@ -40,7 +40,7 @@ public class OrderService {
      * @param orderId The ID of the order to retrieve.
      * @return The retrieved order as a response DTO.
      * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException if no order is found with the given ID.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public OrderResponse getOrderResponse(Long orderId) {
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
@@ -53,7 +53,7 @@ public class OrderService {
      * @param orderId The ID of the order to retrieve.
      * @return The retrieved order entity.
      * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException if no order is found with the given ID.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public Order getOrderEntity(Long orderId) {
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
@@ -66,7 +66,7 @@ public class OrderService {
      *
      * @param orderRequest The request object containing order details.
      * @return The created order as a response DTO.
-     * @throws UserNotFoundException if the user associated with the order is not found.
+     * @throws UserNotFoundException    if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
@@ -81,7 +81,7 @@ public class OrderService {
      * @param userId The ID of the user.
      * @return A list of orders associated with the user.
      * @throws IllegalArgumentException if the user ID is null or invalid.
-     * @throws UserNotFoundException if the user is not found.
+     * @throws UserNotFoundException    if the user is not found.
      */
     public List<OrderResponse> getAllOrdersByUser(Long userId) {
         throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
@@ -100,7 +100,7 @@ public class OrderService {
      *
      * @param orderId The ID of the order to delete.
      * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException if no order is found with the given ID.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public void deleteOrder(Long orderId) {
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
@@ -114,8 +114,8 @@ public class OrderService {
      * @param orderRequest The request object containing updated order details.
      * @return The updated order as a response DTO.
      * @throws IllegalArgumentException if the request contains an invalid order ID.
-     * @throws OrderNotFoundException if no order is found with the given ID.
-     * @throws UserNotFoundException if the user associated with the order is not found.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
+     * @throws UserNotFoundException    if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
@@ -135,7 +135,7 @@ public class OrderService {
      *
      * @param orderRequest The request object containing order details.
      * @return The constructed Order entity.
-     * @throws UserNotFoundException if the user is not found.
+     * @throws UserNotFoundException    if the user is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     private Order buildOrder(OrderRequest orderRequest) {
@@ -179,8 +179,8 @@ public class OrderService {
      * @param orderRequest The request to validate.
      * @throws IllegalArgumentException if the request is null.
      */
-    private void throwIfRequestIsNull(OrderRequest orderRequest){
-        if(orderRequest == null){
+    private void throwIfRequestIsNull(OrderRequest orderRequest) {
+        if (orderRequest == null) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_REQUEST_IS_NULL));
         }
     }

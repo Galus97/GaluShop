@@ -18,7 +18,7 @@ public class OrderProductController {
     private final OrderProductService orderProductService;
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<List<OrderProductResponse>> showProductInOrder(@PathVariable Long id){
+    public ResponseEntity<List<OrderProductResponse>> showProductInOrder(@PathVariable Long id) {
         return ResponseEntity.ok(orderProductService.getOrderProductsByOrderId(id));
     }
 }

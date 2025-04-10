@@ -23,24 +23,24 @@ public class PaymentsController {
     private final PaymentService paymentService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<PaymentResponse> showPayment(@PathVariable Long id){
+    public ResponseEntity<PaymentResponse> showPayment(@PathVariable Long id) {
         return ResponseEntity.ok(paymentService.getPaymentResponse(id));
     }
 
     @PostMapping
-    public ResponseEntity<PaymentResponse> savePayment(@RequestBody PaymentRequest paymentRequest){
+    public ResponseEntity<PaymentResponse> savePayment(@RequestBody PaymentRequest paymentRequest) {
         PaymentResponse savedPayment = paymentService.savePayment(paymentRequest);
         return ResponseEntity.created(URI.create("/payments/" + savedPayment.paymentId()))
                 .body(savedPayment);
     }
 
     @PutMapping
-    public ResponseEntity<PaymentResponse> updatePayment(@RequestBody PaymentRequest paymentRequest){
+    public ResponseEntity<PaymentResponse> updatePayment(@RequestBody PaymentRequest paymentRequest) {
         return ResponseEntity.ok(paymentService.updatePayment(paymentRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable Long id){
+    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
     }

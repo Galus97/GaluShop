@@ -28,7 +28,7 @@ public class OrderProductService {
      * @return A response DTO representing the saved order product.
      * @throws IllegalArgumentException If the orderProduct is {@code null}.
      */
-    public OrderProductResponse saveOrderProduct(OrderProduct orderProduct){
+    public OrderProductResponse saveOrderProduct(OrderProduct orderProduct) {
         throwIfObjectIsNull(orderProduct);
 
         return OrderProductResponse.fromEntity(orderProductRepository.save(orderProduct));
@@ -41,7 +41,7 @@ public class OrderProductService {
      * @return A list of response DTOs representing the products in the order.
      * @throws IllegalArgumentException If the order ID is {@code null} or invalid.
      */
-    public List<OrderProductResponse> getOrderProductsByOrderId(Long orderId){
+    public List<OrderProductResponse> getOrderProductsByOrderId(Long orderId) {
         throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return orderProductRepository.findByOrder_OrderId(orderId)
                 .stream()
@@ -56,7 +56,7 @@ public class OrderProductService {
      * @return A list of response DTOs representing the orders containing the product.
      * @throws IllegalArgumentException If the product ID is {@code null} or invalid.
      */
-    public List<OrderProductResponse> getOrderProductsByProductId(Long productId){
+    public List<OrderProductResponse> getOrderProductsByProductId(Long productId) {
         throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return orderProductRepository.findByProduct_ProductId(productId)
                 .stream()
@@ -67,12 +67,12 @@ public class OrderProductService {
     /**
      * Validates that the provided ID is not {@code null} and greater than zero.
      *
-     * @param id The ID to validate.
+     * @param id      The ID to validate.
      * @param message The message key to use if validation fails.
      * @throws IllegalArgumentException If the ID is {@code null} or less than or equal to zero.
      */
-    private void throwIfIdIsInvalid(Long id, String message){
-        if(id == null || id <= 0){
+    private void throwIfIdIsInvalid(Long id, String message) {
+        if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(message, id));
         }
     }
@@ -83,8 +83,8 @@ public class OrderProductService {
      * @param orderProduct The order product to validate.
      * @throws IllegalArgumentException If the order product is {@code null}.
      */
-    private void throwIfObjectIsNull(OrderProduct orderProduct){
-        if(orderProduct == null){
+    private void throwIfObjectIsNull(OrderProduct orderProduct) {
+        if (orderProduct == null) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_PRODUCT_IS_NULL));
         }
     }

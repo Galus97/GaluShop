@@ -23,7 +23,7 @@ public class WarehouseController {
     private final WarehouseProductService warehouseProductService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<WarehouseProductResponse> showWarehouseProduct(@PathVariable Long id){
+    public ResponseEntity<WarehouseProductResponse> showWarehouseProduct(@PathVariable Long id) {
         return ResponseEntity.ok(warehouseProductService.getWarehouseProductResponse(id));
     }
 
@@ -35,12 +35,12 @@ public class WarehouseController {
     }
 
     @PutMapping
-    public ResponseEntity<WarehouseProductResponse> updateWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest){
+    public ResponseEntity<WarehouseProductResponse> updateWarehouseProduct(@RequestBody WarehouseProductRequest warehouseProductRequest) {
         return ResponseEntity.ok(warehouseProductService.updateWarehouseProduct(warehouseProductRequest));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWarehouseProduct(@PathVariable Long id){
+    public ResponseEntity<Void> deleteWarehouseProduct(@PathVariable Long id) {
         warehouseProductService.deleteWarehouseProduct(id);
         return ResponseEntity.noContent().build();
     }
