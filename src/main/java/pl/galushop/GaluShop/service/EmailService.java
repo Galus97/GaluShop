@@ -71,6 +71,12 @@ public class EmailService {
         return String.valueOf(random.nextInt(1000, 9999));
     }
 
+    /**
+     * Validates that the given email is not {@code null} or blank.
+     *
+     * @param email The email address to validate.
+     * @throws IllegalArgumentException If the email is {@code null} or blank.
+     */
     private void throwIfEmailIsInvalid(String email) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.EMAIL_IS_INVALID, email));
