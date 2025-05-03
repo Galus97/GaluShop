@@ -73,6 +73,7 @@ function RegisterForm() {
             </div>
             <button type="submit">Zarejestruj się</button>
         </form>
+
     );
 }
 
