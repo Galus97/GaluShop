@@ -45,6 +45,7 @@ function LoginForm() {
             </div>
             <button type="submit">Zaloguj się</button>
         </form>
+
     );
 }
 
