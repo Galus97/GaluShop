@@ -14,4 +14,10 @@ public class ServiceValidator {
             throw new IllegalArgumentException(messageService.getMessage(errorMessageKey));
         }
     }
+
+    public void throwIfIdIsNotValid(Long id, String errorMessageKey) {
+        if (id == null || id < 1) {
+            throw new IllegalArgumentException(messageService.getMessage(errorMessageKey));
+        }
+    }
 }
