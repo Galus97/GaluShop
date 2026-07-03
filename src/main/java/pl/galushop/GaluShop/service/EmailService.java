@@ -8,6 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 
@@ -23,6 +24,7 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final MessageService messageService;
     private final CacheManager cacheManager;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Sends an email containing a randomly generated verification code.
@@ -57,7 +59,7 @@ public class EmailService {
      */
     @Cacheable(value = ErrorMessages.VERIFICATION_CODE, key = "#email")
     public String getVerificationCode(String email) {
-        throwIfEmailIsInvalid(email);
+        serviceValidator.throwIfEmailIsInvalid(email, ErrorMessages.EMAIL_IS_INVALID);
         return cacheManager.getCache(ErrorMessages.VERIFICATION_CODE).get(email, String.class);
     }
 

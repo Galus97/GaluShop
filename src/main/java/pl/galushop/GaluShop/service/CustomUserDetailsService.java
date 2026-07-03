@@ -26,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
     private final MessageService messageService;
     private final ServiceValidator serviceValidator;
+
     /**
      * Loads a user or an employee by their email address.
      *
