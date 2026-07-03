@@ -36,7 +36,6 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        throwIfEmailIsInvalid(email);
         serviceValidator.throwIfEmailIsInvalid(email, ErrorMessages.EMAIL_IS_INVALID);
         // Try to find the user in the database
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -58,17 +57,5 @@ public class CustomUserDetailsService implements UserDetailsService {
                     Collections.singletonList(new SimpleGrantedAuthority("ROLE_EMPLOYEE")), employee);
         }
         throw new UsernameNotFoundException(messageService.getMessage(ErrorMessages.USER_OR_EMPLOYEE_NOT_FOUND, email));
-    }
-
-    /**
-     * Validates that the provided email address is not {@code null} or blank.
-     *
-     * @param email The email to validate.
-     * @throws IllegalArgumentException If the email is {@code null} or blank.
-     */
-    private void throwIfEmailIsInvalid(String email) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.EMAIL_IS_INVALID, email));
-        }
     }
 }
