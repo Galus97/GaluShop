@@ -8,6 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 
@@ -23,6 +24,7 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final MessageService messageService;
     private final CacheManager cacheManager;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Sends an email containing a randomly generated verification code.
@@ -33,7 +35,6 @@ public class EmailService {
      */
     @Async
     public void sendEmail(String email) {
-        throwIfEmailIsInvalid(email);
         String emailActiveCode = generateActiveCode();
         cacheManager.getCache(ErrorMessages.VERIFICATION_CODE).put(email, emailActiveCode);
 
@@ -57,7 +58,7 @@ public class EmailService {
      */
     @Cacheable(value = ErrorMessages.VERIFICATION_CODE, key = "#email")
     public String getVerificationCode(String email) {
-        throwIfEmailIsInvalid(email);
+        serviceValidator.throwIfEmailIsInvalid(email, ErrorMessages.EMAIL_IS_INVALID);
         return cacheManager.getCache(ErrorMessages.VERIFICATION_CODE).get(email, String.class);
     }
 
@@ -69,17 +70,5 @@ public class EmailService {
     private String generateActiveCode() {
         Random random = new Random();
         return String.valueOf(random.nextInt(1000, 9999));
-    }
-
-    /**
-     * Validates that the given email is not {@code null} or blank.
-     *
-     * @param email The email address to validate.
-     * @throws IllegalArgumentException If the email is {@code null} or blank.
-     */
-    private void throwIfEmailIsInvalid(String email) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.EMAIL_IS_INVALID, email));
-        }
     }
 }
