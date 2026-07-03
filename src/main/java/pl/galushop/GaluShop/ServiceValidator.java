@@ -20,4 +20,10 @@ public class ServiceValidator {
             throw new IllegalArgumentException(messageService.getMessage(errorMessageKey));
         }
     }
+
+    private void throwIfEmailIsInvalid(String email, String errorMessageKey) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException(messageService.getMessage(errorMessageKey, email));
+        }
+    }
 }
