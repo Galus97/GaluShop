@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.CurrentEmployee;
 import pl.galushop.GaluShop.component.CurrentUser;
 import pl.galushop.GaluShop.component.ErrorMessages;
@@ -24,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     private final EmployeeRepository employeeRepository;
     private final MessageService messageService;
-
+    private final ServiceValidator serviceValidator;
     /**
      * Loads a user or an employee by their email address.
      *
@@ -36,6 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         throwIfEmailIsInvalid(email);
+        serviceValidator.throwIfEmailIsInvalid(email, ErrorMessages.EMAIL_IS_INVALID);
         // Try to find the user in the database
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {

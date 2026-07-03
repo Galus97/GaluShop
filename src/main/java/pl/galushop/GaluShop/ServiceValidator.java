@@ -21,7 +21,7 @@ public class ServiceValidator {
         }
     }
 
-    private void throwIfEmailIsInvalid(String email, String errorMessageKey) {
+    public void throwIfEmailIsInvalid(String email, String errorMessageKey) {
         if (email == null || email.isBlank()) {
             throw new IllegalArgumentException(messageService.getMessage(errorMessageKey, email));
         }
