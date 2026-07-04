@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.PaymentRequest;
@@ -30,6 +31,7 @@ public class PaymentService {
     private final MessageService messageService;
     private final OrderService orderService;
     private final UserService userService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Retrieves a payment by its ID.
@@ -40,8 +42,7 @@ public class PaymentService {
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
     public PaymentResponse getPaymentResponse(Long paymentId) {
-        throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
-
+        serviceValidator.throwIfIdIsNotValid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
         return PaymentResponse.fromEntity(getPaymentOrThrow(paymentId, ErrorMessages.PAYMENT_NOT_FOUND));
     }
 
@@ -54,7 +55,7 @@ public class PaymentService {
      * @throws PaymentNotFoundException if no payment is found for the given order ID.
      */
     public PaymentResponse getPaymentResponseByOrderId(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return PaymentResponse.fromEntity(paymentRepository.findByOrder_OrderId(orderId)
                 .orElseThrow(() -> new PaymentNotFoundException(
                         messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND_BY_ORDER, orderId))));
@@ -68,8 +69,7 @@ public class PaymentService {
      * @throws IllegalArgumentException if the user ID is null or invalid.
      */
     public List<PaymentResponse> getAllPaymentResponseByUserId(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
-
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
         //Throws exception if user doesn't exist in database
         userService.getUserEntity(userId);
 
@@ -102,8 +102,7 @@ public class PaymentService {
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
     public void deletePayment(Long paymentId) {
-        throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
-
+        serviceValidator.throwIfIdIsNotValid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
         paymentRepository.delete(getPaymentOrThrow(paymentId, ErrorMessages.INVALID_PAYMENT_ID));
     }
 
@@ -117,8 +116,8 @@ public class PaymentService {
      */
     @Transactional
     public PaymentResponse updatePayment(PaymentRequest paymentRequest) {
-        throwIfRequestIsNull(paymentRequest);
-        throwIfIdIsInvalid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
+        serviceValidator.throwIfRequestIsNull(paymentRequest, ErrorMessages.PAYMENT_REQUEST_IS_NULL);
+        serviceValidator.throwIfIdIsNotValid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
 
@@ -140,8 +139,7 @@ public class PaymentService {
      * @throws UserNotFoundException    if the user is not found.
      */
     private Payment buildPayment(PaymentRequest paymentRequest) {
-        throwIfRequestIsNull(paymentRequest);
-
+        serviceValidator.throwIfRequestIsNull(paymentRequest, ErrorMessages.PAYMENT_REQUEST_IS_NULL);
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
         User user = userService.getUserEntity(paymentRequest.getUserId());
         return Payment.builder()
@@ -151,31 +149,31 @@ public class PaymentService {
                 .user(user)
                 .build();
     }
-
-    /**
-     * Validates that the given PaymentRequest is not null.
-     *
-     * @param paymentRequest The request to validate.
-     * @throws IllegalArgumentException if the request is null.
-     */
-    private void throwIfRequestIsNull(PaymentRequest paymentRequest) {
-        if (paymentRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PAYMENT_REQUEST_IS_NULL));
-        }
-    }
-
-    /**
-     * Validates that the given ID is not null or less than or equal to zero.
-     *
-     * @param id      The ID to validate.
-     * @param message The message key used if the validation fails.
-     * @throws IllegalArgumentException if the ID is null or invalid.
-     */
-    private void throwIfIdIsInvalid(Long id, String message) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
-    }
+//
+//    /**
+//     * Validates that the given PaymentRequest is not null.
+//     *
+//     * @param paymentRequest The request to validate.
+//     * @throws IllegalArgumentException if the request is null.
+//     */
+//    private void throwIfRequestIsNull(PaymentRequest paymentRequest) {
+//        if (paymentRequest == null) {
+//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PAYMENT_REQUEST_IS_NULL));
+//        }
+//    }
+//
+//    /**
+//     * Validates that the given ID is not null or less than or equal to zero.
+//     *
+//     * @param id      The ID to validate.
+//     * @param message The message key used if the validation fails.
+//     * @throws IllegalArgumentException if the ID is null or invalid.
+//     */
+//    private void throwIfIdIsInvalid(Long id, String message) {
+//        if (id == null || id <= 0) {
+//            throw new IllegalArgumentException(messageService.getMessage(message, id));
+//        }
+//    }
 
     /**
      * Retrieves a Payment entity by ID or throws an exception if not found.

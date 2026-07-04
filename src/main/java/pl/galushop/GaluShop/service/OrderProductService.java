@@ -2,8 +2,8 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
-import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderProductService {
     private final OrderProductRepository orderProductRepository;
-    private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Saves an {@link OrderProduct} entity to the database.
@@ -29,8 +29,7 @@ public class OrderProductService {
      * @throws IllegalArgumentException If the orderProduct is {@code null}.
      */
     public OrderProductResponse saveOrderProduct(OrderProduct orderProduct) {
-        throwIfObjectIsNull(orderProduct);
-
+        serviceValidator.throwIfRequestIsNull(orderProduct, ErrorMessages.ORDER_PRODUCT_IS_NULL);
         return OrderProductResponse.fromEntity(orderProductRepository.save(orderProduct));
     }
 
@@ -42,7 +41,7 @@ public class OrderProductService {
      * @throws IllegalArgumentException If the order ID is {@code null} or invalid.
      */
     public List<OrderProductResponse> getOrderProductsByOrderId(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return orderProductRepository.findByOrder_OrderId(orderId)
                 .stream()
                 .map(OrderProductResponse::fromEntity)
@@ -57,35 +56,10 @@ public class OrderProductService {
      * @throws IllegalArgumentException If the product ID is {@code null} or invalid.
      */
     public List<OrderProductResponse> getOrderProductsByProductId(Long productId) {
-        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_ORDER_ID);
         return orderProductRepository.findByProduct_ProductId(productId)
                 .stream()
                 .map(OrderProductResponse::fromEntity)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Validates that the provided ID is not {@code null} and greater than zero.
-     *
-     * @param id      The ID to validate.
-     * @param message The message key to use if validation fails.
-     * @throws IllegalArgumentException If the ID is {@code null} or less than or equal to zero.
-     */
-    private void throwIfIdIsInvalid(Long id, String message) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
-    }
-
-    /**
-     * Validates that the provided {@link OrderProduct} object is not {@code null}.
-     *
-     * @param orderProduct The order product to validate.
-     * @throws IllegalArgumentException If the order product is {@code null}.
-     */
-    private void throwIfObjectIsNull(OrderProduct orderProduct) {
-        if (orderProduct == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_PRODUCT_IS_NULL));
-        }
     }
 }

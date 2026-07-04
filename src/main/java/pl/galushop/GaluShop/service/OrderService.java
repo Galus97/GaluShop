@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.OrderRequest;
@@ -28,11 +29,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final MessageService messageService;
     private final ProductService productService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Retrieves an order response by its ID.
@@ -43,7 +44,7 @@ public class OrderService {
      * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public OrderResponse getOrderResponse(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return OrderResponse.fromEntity(getOrderOrThrowIfNotExist(orderId));
     }
 
@@ -56,7 +57,7 @@ public class OrderService {
      * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public Order getOrderEntity(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return getOrderOrThrowIfNotExist(orderId);
     }
 
@@ -71,7 +72,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse saveOrder(OrderRequest orderRequest) {
-        throwIfRequestIsNull(orderRequest);
+        serviceValidator.throwIfRequestIsNull(orderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
         return OrderResponse.fromEntity(orderRepository.save(buildOrder(orderRequest)));
     }
 
@@ -84,7 +85,7 @@ public class OrderService {
      * @throws UserNotFoundException    if the user is not found.
      */
     public List<OrderResponse> getAllOrdersByUser(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_ORDER_ID);
 
         //Throws exception if user doesn't exist in database
         userService.throwIfUserDoesntExist(userId);
@@ -103,8 +104,7 @@ public class OrderService {
      * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public void deleteOrder(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
-
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         orderRepository.delete(getOrderOrThrowIfNotExist(orderId));
     }
 
@@ -120,8 +120,8 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse updateOrder(OrderRequest orderRequest) {
-        throwIfRequestIsNull(orderRequest);
-        throwIfIdIsInvalid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfRequestIsNull(orderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
+        serviceValidator.throwIfIdIsNotValid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
 
         Order existingOrder = getOrderOrThrowIfNotExist(orderRequest.getOrderId());
         Order updatedOrder = buildOrder(orderRequest);
@@ -171,31 +171,6 @@ public class OrderService {
         orderProducts.forEach(op -> op.setOrder(order));
 
         return order;
-    }
-
-    /**
-     * Validates that the given OrderRequest is not null.
-     *
-     * @param orderRequest The request to validate.
-     * @throws IllegalArgumentException if the request is null.
-     */
-    private void throwIfRequestIsNull(OrderRequest orderRequest) {
-        if (orderRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_REQUEST_IS_NULL));
-        }
-    }
-
-    /**
-     * Validates that the given ID is not null or less than or equal to zero.
-     *
-     * @param id      The ID to validate.
-     * @param message The error message key to use if validation fails.
-     * @throws IllegalArgumentException if the ID is null or invalid.
-     */
-    private void throwIfIdIsInvalid(Long id, String message) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
     }
 
     /**

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
@@ -22,6 +23,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Retrieves an employee entity by their ID.
@@ -32,7 +34,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     public Employee getEmployeeEntity(Long employeeId) {
-        throwIfIdIsInvalid(employeeId);
+        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
         return getEmployeeOrThrowIfNotFound(employeeId);
     }
 
@@ -45,7 +47,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     public EmployeeResponse getEmployeeResponse(Long employeeId) {
-        throwIfIdIsInvalid(employeeId);
+        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
         return EmployeeResponse.fromEntity(getEmployeeOrThrowIfNotFound(employeeId));
     }
 
@@ -57,8 +59,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     public void deleteEmployee(Long employeeId) {
-        throwIfIdIsInvalid(employeeId);
-
+        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
         employeeRepository.delete(getEmployeeOrThrowIfNotFound(employeeId));
     }
 
@@ -73,7 +74,9 @@ public class EmployeeService {
      */
     @Transactional
     public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest) {
-        throwIfIdIsInvalid(employeeRequest.getEmployeeId());
+        serviceValidator.throwIfIdIsNotValid(employeeRequest.getEmployeeId(), ErrorMessages.INVALID_EMPLOYEE_ID);
+        serviceValidator.throwIfRequestIsNull(employeeRequest, ErrorMessages.EMPLOYEE_REQUEST_IS_NULL);
+
         Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
         existingEmployee.setFirstName(employeeRequest.getFirstName());
@@ -95,17 +98,5 @@ public class EmployeeService {
     private Employee getEmployeeOrThrowIfNotFound(Long id) {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, id)));
-    }
-
-    /**
-     * Validates whether the provided ID is non-null and positive.
-     *
-     * @param id The ID to validate.
-     * @throws IllegalArgumentException If the ID is {@code null} or less than or equal to zero.
-     */
-    private void throwIfIdIsInvalid(Long id) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_EMPLOYEE_ID, id));
-        }
     }
 }
