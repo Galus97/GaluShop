@@ -55,7 +55,7 @@ public class PaymentService {
      * @throws PaymentNotFoundException if no payment is found for the given order ID.
      */
     public PaymentResponse getPaymentResponseByOrderId(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return PaymentResponse.fromEntity(paymentRepository.findByOrder_OrderId(orderId)
                 .orElseThrow(() -> new PaymentNotFoundException(
                         messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND_BY_ORDER, orderId))));
