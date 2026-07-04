@@ -57,7 +57,7 @@ public class OrderService {
      * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public Order getOrderEntity(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return getOrderOrThrowIfNotExist(orderId);
     }
 
@@ -85,7 +85,7 @@ public class OrderService {
      * @throws UserNotFoundException    if the user is not found.
      */
     public List<OrderResponse> getAllOrdersByUser(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_ORDER_ID);
 
         //Throws exception if user doesn't exist in database
         userService.throwIfUserDoesntExist(userId);
