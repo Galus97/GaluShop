@@ -31,8 +31,7 @@ public class OrderProductService {
      * @throws IllegalArgumentException If the orderProduct is {@code null}.
      */
     public OrderProductResponse saveOrderProduct(OrderProduct orderProduct) {
-        throwIfObjectIsNull(orderProduct);
-        //ErrorMessages.ORDER_PRODUCT_IS_NULL
+        serviceValidator.throwIfRequestIsNull(orderProduct, ErrorMessages.ORDER_PRODUCT_IS_NULL);
         return OrderProductResponse.fromEntity(orderProductRepository.save(orderProduct));
     }
 
@@ -64,18 +63,5 @@ public class OrderProductService {
                 .stream()
                 .map(OrderProductResponse::fromEntity)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Validates that the provided ID is not {@code null} and greater than zero.
-     *
-     * @param id      The ID to validate.
-     * @param message The message key to use if validation fails.
-     * @throws IllegalArgumentException If the ID is {@code null} or less than or equal to zero.
-     */
-    private void throwIfIdIsInvalid(Long id, String message) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
     }
 }
