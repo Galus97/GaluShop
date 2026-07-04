@@ -72,7 +72,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse saveOrder(OrderRequest orderRequest) {
-        throwIfRequestIsNull(orderRequest);
+        serviceValidator.throwIfRequestIsNull(orderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
         return OrderResponse.fromEntity(orderRepository.save(buildOrder(orderRequest)));
     }
 
@@ -122,7 +122,6 @@ public class OrderService {
     public OrderResponse updateOrder(OrderRequest orderRequest) {
         serviceValidator.throwIfRequestIsNull(orderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
         serviceValidator.throwIfIdIsNotValid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
-
 
         Order existingOrder = getOrderOrThrowIfNotExist(orderRequest.getOrderId());
         Order updatedOrder = buildOrder(orderRequest);
