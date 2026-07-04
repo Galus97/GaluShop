@@ -116,7 +116,7 @@ public class PaymentService {
      */
     @Transactional
     public PaymentResponse updatePayment(PaymentRequest paymentRequest) {
-        throwIfRequestIsNull(paymentRequest);
+        serviceValidator.throwIfRequestIsNull(paymentRequest, ErrorMessages.PAYMENT_REQUEST_IS_NULL);
         serviceValidator.throwIfIdIsNotValid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
@@ -139,8 +139,7 @@ public class PaymentService {
      * @throws UserNotFoundException    if the user is not found.
      */
     private Payment buildPayment(PaymentRequest paymentRequest) {
-        throwIfRequestIsNull(paymentRequest);
-
+        serviceValidator.throwIfRequestIsNull(paymentRequest, ErrorMessages.PAYMENT_REQUEST_IS_NULL);
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
         User user = userService.getUserEntity(paymentRequest.getUserId());
         return Payment.builder()
