@@ -104,8 +104,7 @@ public class OrderService {
      * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public void deleteOrder(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
-
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         orderRepository.delete(getOrderOrThrowIfNotExist(orderId));
     }
 
