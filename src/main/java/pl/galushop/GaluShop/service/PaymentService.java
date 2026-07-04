@@ -102,8 +102,7 @@ public class PaymentService {
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
     public void deletePayment(Long paymentId) {
-        throwIfIdIsInvalid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
-
+        serviceValidator.throwIfIdIsNotValid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
         paymentRepository.delete(getPaymentOrThrow(paymentId, ErrorMessages.INVALID_PAYMENT_ID));
     }
 
