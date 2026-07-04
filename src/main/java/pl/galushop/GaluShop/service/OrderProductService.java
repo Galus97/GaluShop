@@ -2,6 +2,7 @@ package pl.galushop.GaluShop.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class OrderProductService {
     private final OrderProductRepository orderProductRepository;
     private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Saves an {@link OrderProduct} entity to the database.
@@ -30,7 +32,7 @@ public class OrderProductService {
      */
     public OrderProductResponse saveOrderProduct(OrderProduct orderProduct) {
         throwIfObjectIsNull(orderProduct);
-
+        //ErrorMessages.ORDER_PRODUCT_IS_NULL
         return OrderProductResponse.fromEntity(orderProductRepository.save(orderProduct));
     }
 
@@ -74,18 +76,6 @@ public class OrderProductService {
     private void throwIfIdIsInvalid(Long id, String message) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
-    }
-
-    /**
-     * Validates that the provided {@link OrderProduct} object is not {@code null}.
-     *
-     * @param orderProduct The order product to validate.
-     * @throws IllegalArgumentException If the order product is {@code null}.
-     */
-    private void throwIfObjectIsNull(OrderProduct orderProduct) {
-        if (orderProduct == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_PRODUCT_IS_NULL));
         }
     }
 }
