@@ -69,8 +69,7 @@ public class PaymentService {
      * @throws IllegalArgumentException if the user ID is null or invalid.
      */
     public List<PaymentResponse> getAllPaymentResponseByUserId(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
-
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
         //Throws exception if user doesn't exist in database
         userService.getUserEntity(userId);
 
