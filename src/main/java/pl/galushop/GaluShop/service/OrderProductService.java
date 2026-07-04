@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
-import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.entity.OrderProduct;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderProductService {
     private final OrderProductRepository orderProductRepository;
-    private final MessageService messageService;
     private final ServiceValidator serviceValidator;
 
     /**

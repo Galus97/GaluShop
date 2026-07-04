@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.OrderRequest;
@@ -28,11 +29,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final MessageService messageService;
     private final ProductService productService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Retrieves an order response by its ID.
@@ -43,7 +44,7 @@ public class OrderService {
      * @throws OrderNotFoundException   if no order is found with the given ID.
      */
     public OrderResponse getOrderResponse(Long orderId) {
-        throwIfIdIsInvalid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return OrderResponse.fromEntity(getOrderOrThrowIfNotExist(orderId));
     }
 
@@ -173,30 +174,30 @@ public class OrderService {
         return order;
     }
 
-    /**
-     * Validates that the given OrderRequest is not null.
-     *
-     * @param orderRequest The request to validate.
-     * @throws IllegalArgumentException if the request is null.
-     */
-    private void throwIfRequestIsNull(OrderRequest orderRequest) {
-        if (orderRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_REQUEST_IS_NULL));
-        }
-    }
-
-    /**
-     * Validates that the given ID is not null or less than or equal to zero.
-     *
-     * @param id      The ID to validate.
-     * @param message The error message key to use if validation fails.
-     * @throws IllegalArgumentException if the ID is null or invalid.
-     */
-    private void throwIfIdIsInvalid(Long id, String message) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
-    }
+//    /**
+//     * Validates that the given OrderRequest is not null.
+//     *
+//     * @param orderRequest The request to validate.
+//     * @throws IllegalArgumentException if the request is null.
+//     */
+//    private void throwIfRequestIsNull(OrderRequest orderRequest) {
+//        if (orderRequest == null) {
+//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_REQUEST_IS_NULL));
+//        }
+//    }
+//
+//    /**
+//     * Validates that the given ID is not null or less than or equal to zero.
+//     *
+//     * @param id      The ID to validate.
+//     * @param message The error message key to use if validation fails.
+//     * @throws IllegalArgumentException if the ID is null or invalid.
+//     */
+//    private void throwIfIdIsInvalid(Long id, String message) {
+//        if (id == null || id <= 0) {
+//            throw new IllegalArgumentException(messageService.getMessage(message, id));
+//        }
+//    }
 
     /**
      * Retrieves an Order entity by ID or throws an exception if not found.
