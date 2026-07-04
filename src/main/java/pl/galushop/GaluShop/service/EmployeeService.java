@@ -47,7 +47,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     public EmployeeResponse getEmployeeResponse(Long employeeId) {
-        throwIfIdIsInvalid(employeeId);
+        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
         return EmployeeResponse.fromEntity(getEmployeeOrThrowIfNotFound(employeeId));
     }
 
@@ -59,8 +59,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     public void deleteEmployee(Long employeeId) {
-        throwIfIdIsInvalid(employeeId);
-
+        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
         employeeRepository.delete(getEmployeeOrThrowIfNotFound(employeeId));
     }
 
