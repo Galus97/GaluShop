@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
@@ -22,6 +23,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Retrieves an employee entity by their ID.
@@ -32,7 +34,7 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     public Employee getEmployeeEntity(Long employeeId) {
-        throwIfIdIsInvalid(employeeId);
+        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
         return getEmployeeOrThrowIfNotFound(employeeId);
     }
 
