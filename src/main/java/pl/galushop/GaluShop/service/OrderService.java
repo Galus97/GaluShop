@@ -120,7 +120,7 @@ public class OrderService {
      */
     @Transactional
     public OrderResponse updateOrder(OrderRequest orderRequest) {
-        throwIfRequestIsNull(orderRequest);
+        serviceValidator.throwIfRequestIsNull(orderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
         serviceValidator.throwIfIdIsNotValid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
 
 
