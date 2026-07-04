@@ -173,31 +173,6 @@ public class OrderService {
         return order;
     }
 
-//    /**
-//     * Validates that the given OrderRequest is not null.
-//     *
-//     * @param orderRequest The request to validate.
-//     * @throws IllegalArgumentException if the request is null.
-//     */
-//    private void throwIfRequestIsNull(OrderRequest orderRequest) {
-//        if (orderRequest == null) {
-//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ORDER_REQUEST_IS_NULL));
-//        }
-//    }
-//
-//    /**
-//     * Validates that the given ID is not null or less than or equal to zero.
-//     *
-//     * @param id      The ID to validate.
-//     * @param message The error message key to use if validation fails.
-//     * @throws IllegalArgumentException if the ID is null or invalid.
-//     */
-//    private void throwIfIdIsInvalid(Long id, String message) {
-//        if (id == null || id <= 0) {
-//            throw new IllegalArgumentException(messageService.getMessage(message, id));
-//        }
-//    }
-
     /**
      * Retrieves an Order entity by ID or throws an exception if not found.
      *
