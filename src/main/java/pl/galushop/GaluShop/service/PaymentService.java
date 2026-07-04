@@ -117,7 +117,7 @@ public class PaymentService {
     @Transactional
     public PaymentResponse updatePayment(PaymentRequest paymentRequest) {
         throwIfRequestIsNull(paymentRequest);
-        throwIfIdIsInvalid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
+        serviceValidator.throwIfIdIsNotValid(paymentRequest.getPaymentId(), ErrorMessages.INVALID_PAYMENT_ID);
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
 
