@@ -75,6 +75,7 @@ public class EmployeeService {
     @Transactional
     public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest) {
         serviceValidator.throwIfIdIsNotValid(employeeRequest.getEmployeeId(), ErrorMessages.INVALID_EMPLOYEE_ID);
+        serviceValidator.throwIfRequestIsNull(employeeRequest, ErrorMessages.EMPLOYEE_REQUEST_IS_NULL);
 
         Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
