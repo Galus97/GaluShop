@@ -121,7 +121,8 @@ public class OrderService {
     @Transactional
     public OrderResponse updateOrder(OrderRequest orderRequest) {
         throwIfRequestIsNull(orderRequest);
-        throwIfIdIsInvalid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
+        serviceValidator.throwIfIdIsNotValid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
+
 
         Order existingOrder = getOrderOrThrowIfNotExist(orderRequest.getOrderId());
         Order updatedOrder = buildOrder(orderRequest);
