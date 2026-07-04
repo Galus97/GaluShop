@@ -99,16 +99,4 @@ public class EmployeeService {
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, id)));
     }
-
-    /**
-     * Validates whether the provided ID is non-null and positive.
-     *
-     * @param id The ID to validate.
-     * @throws IllegalArgumentException If the ID is {@code null} or less than or equal to zero.
-     */
-    private void throwIfIdIsInvalid(Long id) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_EMPLOYEE_ID, id));
-        }
-    }
 }
