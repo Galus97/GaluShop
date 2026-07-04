@@ -58,7 +58,7 @@ public class OrderProductService {
      * @throws IllegalArgumentException If the product ID is {@code null} or invalid.
      */
     public List<OrderProductResponse> getOrderProductsByProductId(Long productId) {
-        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_ORDER_ID);
         return orderProductRepository.findByProduct_ProductId(productId)
                 .stream()
                 .map(OrderProductResponse::fromEntity)
