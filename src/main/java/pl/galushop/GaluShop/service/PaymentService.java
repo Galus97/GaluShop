@@ -149,31 +149,6 @@ public class PaymentService {
                 .user(user)
                 .build();
     }
-//
-//    /**
-//     * Validates that the given PaymentRequest is not null.
-//     *
-//     * @param paymentRequest The request to validate.
-//     * @throws IllegalArgumentException if the request is null.
-//     */
-//    private void throwIfRequestIsNull(PaymentRequest paymentRequest) {
-//        if (paymentRequest == null) {
-//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PAYMENT_REQUEST_IS_NULL));
-//        }
-//    }
-//
-//    /**
-//     * Validates that the given ID is not null or less than or equal to zero.
-//     *
-//     * @param id      The ID to validate.
-//     * @param message The message key used if the validation fails.
-//     * @throws IllegalArgumentException if the ID is null or invalid.
-//     */
-//    private void throwIfIdIsInvalid(Long id, String message) {
-//        if (id == null || id <= 0) {
-//            throw new IllegalArgumentException(messageService.getMessage(message, id));
-//        }
-//    }
 
     /**
      * Retrieves a Payment entity by ID or throws an exception if not found.
