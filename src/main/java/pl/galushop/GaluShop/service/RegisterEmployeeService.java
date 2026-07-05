@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.component.RegisterValidator;
+import pl.galushop.GaluShop.util.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.entity.Employee;
@@ -58,7 +58,7 @@ public class RegisterEmployeeService {
      */
     private void throwIfUserRequestIsInvalid(EmployeeRequest employeeRequest) {
         if (employeeRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_EMPLOYEE_REQUEST));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.EMPLOYEE_REQUEST_IS_NULL));
         }
     }
 
