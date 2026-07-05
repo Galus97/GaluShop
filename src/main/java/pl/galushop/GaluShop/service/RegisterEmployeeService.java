@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.component.RegisterValidator;
+import pl.galushop.GaluShop.util.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.entity.Employee;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
+import pl.galushop.GaluShop.util.ServiceValidator;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class RegisterEmployeeService {
     private final PasswordEncoder passwordEncoder;
     private final RegisterValidator registerValidator;
     private final EmailService emailService;
-    private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Registers a new employee by validating the provided data, encoding the password,
@@ -38,7 +39,7 @@ public class RegisterEmployeeService {
      * @throws ValidationException If any validation error occurs during registration.
      */
     public EmployeeResponse saveNewEmployee(EmployeeRequest employeeRequest) throws ValidationException {
-        throwIfUserRequestIsInvalid(employeeRequest);
+        serviceValidator.throwIfRequestIsNull(employeeRequest, ErrorMessages.EMPLOYEE_REQUEST_IS_NULL);
         Employee employee = buildEmployeeFromRequest(employeeRequest);
 
         List<String> validationFailures = registerValidator.validateErrors(employee);
@@ -47,18 +48,6 @@ public class RegisterEmployeeService {
             return EmployeeResponse.fromEntity(employeeRepository.save(employee));
         } else {
             throw new ValidationException(validationFailures);
-        }
-    }
-
-    /**
-     * Validates if the employee request is not null.
-     *
-     * @param employeeRequest The Employee registration request.
-     * @throws IllegalArgumentException If the request is null.
-     */
-    private void throwIfUserRequestIsInvalid(EmployeeRequest employeeRequest) {
-        if (employeeRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_EMPLOYEE_REQUEST));
         }
     }
 

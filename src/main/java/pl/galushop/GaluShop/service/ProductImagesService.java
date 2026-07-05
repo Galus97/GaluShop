@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.util.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class ProductImagesService {
     private final ProductImagesRepository productImagesRepository;
     private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Saves a new product image to the database.
@@ -46,7 +48,7 @@ public class ProductImagesService {
      * @throws ProductImagesNotFoundException If no image is found with the given ID.
      */
     public ProductImagesResponse getProductImages(Long imagesId) {
-        throwIfIdIsInvalid(imagesId);
+        serviceValidator.throwIfIdIsNotValid(imagesId, ErrorMessages.INVALID_PRODUCT_IMAGES_ID);
         return ProductImagesResponse.fromEntity(getImagesOrThrow(imagesId));
     }
 
@@ -60,8 +62,8 @@ public class ProductImagesService {
      */
     @Transactional
     public ProductImagesResponse updateProductImages(ProductImageRequest productImageRequest) {
-        throwIfRequestIsNull(productImageRequest);
-        throwIfIdIsInvalid(productImageRequest.getImagesId());
+        serviceValidator.throwIfRequestIsNull(productImageRequest, ErrorMessages.PRODUCT_IMAGES_REQUEST_IS_NULL);
+        serviceValidator.throwIfIdIsNotValid(productImageRequest.getImagesId(), ErrorMessages.INVALID_PRODUCT_IMAGES_ID);
 
         ProductImages exisitngProductImages = getImagesOrThrow(productImageRequest.getImagesId());
         exisitngProductImages.setProduct(productImageRequest.getProduct());
@@ -79,7 +81,7 @@ public class ProductImagesService {
      * @throws ProductImagesNotFoundException If no image is found with the given ID.
      */
     public void deleteProductImages(Long imagesId) {
-        throwIfIdIsInvalid(imagesId);
+        serviceValidator.throwIfIdIsNotValid(imagesId, ErrorMessages.INVALID_PRODUCT_IMAGES_ID);
         productImagesRepository.delete(getImagesOrThrow(imagesId));
     }
 
@@ -91,7 +93,7 @@ public class ProductImagesService {
      * @throws IllegalArgumentException If the product ID is null or invalid.
      */
     public List<ProductImagesResponse> getAllImagesByProductId(Long productId) {
-        throwIfIdIsInvalid(productId);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return productImagesRepository.findAllByProduct_ProductId(productId)
                 .stream()
                 .map(ProductImagesResponse::fromEntity)
@@ -106,36 +108,12 @@ public class ProductImagesService {
      * @throws IllegalArgumentException If the request object is null or contains invalid data.
      */
     private ProductImages buildProductImages(ProductImageRequest productImageRequest) {
-        throwIfRequestIsNull(productImageRequest);
+        serviceValidator.throwIfRequestIsNull(productImageRequest, ErrorMessages.PRODUCT_IMAGES_REQUEST_IS_NULL);
         return ProductImages.builder()
                 .product(productImageRequest.getProduct())
                 .imgSrc(productImageRequest.getImgSrc())
                 .altImg(productImageRequest.getAltImg())
                 .build();
-    }
-
-    /**
-     * Validates the provided ProductImageRequest object.
-     *
-     * @param productImageRequest The request to validate.
-     * @throws IllegalArgumentException If the request is null.
-     */
-    private void throwIfRequestIsNull(ProductImageRequest productImageRequest) {
-        if (productImageRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.PRODUCT_IMAGES_REQUEST_IS_NULL));
-        }
-    }
-
-    /**
-     * Validates whether the provided ID is non-null and positive.
-     *
-     * @param id The ID to validate.
-     * @throws IllegalArgumentException If the ID is null or invalid.
-     */
-    private void throwIfIdIsInvalid(Long id) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_IMAGES_ID, id));
-        }
     }
 
     /**

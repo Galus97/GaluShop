@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop;
+package pl.galushop.GaluShop.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -5,13 +5,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.ErrorMessages;
-import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.component.RegisterValidator;
+import pl.galushop.GaluShop.util.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.repository.UserRepository;
+import pl.galushop.GaluShop.util.ServiceValidator;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class RegisterUserService {
     private final PasswordEncoder passwordEncoder;
     private final RegisterValidator registerValidator;
     private final EmailService emailService;
-    private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Registers a new user by validating the provided data, encoding the password,
@@ -39,7 +39,7 @@ public class RegisterUserService {
      * @throws IllegalArgumentException If the request object is null.
      */
     public UserResponse saveNewUser(UserRequest userRequest) throws ValidationException {
-        throwIfUserRequestIsInvalid(userRequest);
+        serviceValidator.throwIfRequestIsNull(userRequest, ErrorMessages.INVALID_USER_REQUEST);
         User user = buildUserFromRequest(userRequest);
 
         List<String> validationFailures = registerValidator.validateErrors(user);
@@ -48,18 +48,6 @@ public class RegisterUserService {
             return UserResponse.fromEntity(userRepository.save(user));
         } else {
             throw new ValidationException(validationFailures);
-        }
-    }
-
-    /**
-     * Validates if the user request is not null.
-     *
-     * @param userRequest The user registration request.
-     * @throws IllegalArgumentException If the request is null.
-     */
-    private void throwIfUserRequestIsInvalid(UserRequest userRequest) {
-        if (userRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
         }
     }
 

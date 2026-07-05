@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.galushop.GaluShop.component.RegisterValidator;
+import pl.galushop.GaluShop.util.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
