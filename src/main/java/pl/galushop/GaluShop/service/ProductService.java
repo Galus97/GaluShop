@@ -3,6 +3,7 @@ package pl.galushop.GaluShop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.galushop.GaluShop.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
@@ -20,9 +21,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-
     private final ProductRepository productRepository;
     private final MessageService messageService;
+    private final ServiceValidator serviceValidator;
 
     /**
      * Retrieves a product entity by its ID.
@@ -33,7 +34,7 @@ public class ProductService {
      * @throws ProductNotFoundException If no product is found with the given ID.
      */
     public Product getProductEntity(Long productId) {
-        throwIfIdIsInvalid(productId);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return getProductOrThrow(productId);
     }
 
@@ -46,7 +47,7 @@ public class ProductService {
      * @throws ProductNotFoundException If the product is not found.
      */
     public ProductResponse getProductResponse(Long productId) {
-        throwIfIdIsInvalid(productId);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return ProductResponse.fromEntity(getProductOrThrow(productId));
     }
 
@@ -59,6 +60,7 @@ public class ProductService {
      */
     @Transactional
     public Product saveProductEntity(ProductRequest productRequest) {
+        serviceValidator.throwIfRequestIsNull(productRequest, ErrorMessages.INVALID_PRODUCT_REQUEST);
         return productRepository.save(buildProduct(productRequest));
     }
 
@@ -71,6 +73,7 @@ public class ProductService {
      */
     @Transactional
     public ProductResponse saveProductResponse(ProductRequest productRequest) {
+        serviceValidator.throwIfRequestIsNull(productRequest, ErrorMessages.INVALID_PRODUCT_REQUEST);
         return ProductResponse.fromEntity(productRepository.save(buildProduct(productRequest)));
     }
 
@@ -82,7 +85,7 @@ public class ProductService {
      * @throws ProductNotFoundException If no product is found with the given ID.
      */
     public void deleteProduct(Long productId) {
-        throwIfIdIsInvalid(productId);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         productRepository.delete(getProductOrThrow(productId));
     }
 
@@ -96,8 +99,8 @@ public class ProductService {
      */
     @Transactional
     public ProductResponse updateProduct(ProductRequest productRequest) {
-        throwIfRequestIsNull(productRequest);
-        throwIfIdIsInvalid(productRequest.getProductId());
+        serviceValidator.throwIfRequestIsNull(productRequest, ErrorMessages.INVALID_PRODUCT_REQUEST);
+        serviceValidator.throwIfIdIsNotValid(productRequest.getProductId(), ErrorMessages.INVALID_PRODUCT_ID);
 
         Product existingProduct = getProductOrThrow(productRequest.getProductId());
         existingProduct.setProductName(productRequest.getProductName());
@@ -131,8 +134,7 @@ public class ProductService {
      * @throws IllegalArgumentException If the product request is null.
      */
     private Product buildProduct(ProductRequest productRequest) {
-        throwIfRequestIsNull(productRequest);
-
+        serviceValidator.throwIfRequestIsNull(productRequest, ErrorMessages.INVALID_PRODUCT_REQUEST);
         return Product.builder()
                 .productName(productRequest.getProductName())
                 .description(productRequest.getDescription())
@@ -141,30 +143,30 @@ public class ProductService {
                 .categoryId(productRequest.getCategoryId())
                 .build();
     }
-
-    /**
-     * Validates whether the request is null.
-     *
-     * @param productRequest The product request.
-     * @throws IllegalArgumentException If the request is null.
-     */
-    private void throwIfRequestIsNull(ProductRequest productRequest) {
-        if (productRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_REQUEST));
-        }
-    }
-
-    /**
-     * Validates whether the provided ID is non-null and positive.
-     *
-     * @param id The product ID to validate.
-     * @throws IllegalArgumentException If the ID is null or invalid.
-     */
-    private void throwIfIdIsInvalid(Long id) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_ID, id));
-        }
-    }
+//
+//    /**
+//     * Validates whether the request is null.
+//     *
+//     * @param productRequest The product request.
+//     * @throws IllegalArgumentException If the request is null.
+//     */
+//    private void throwIfRequestIsNull(ProductRequest productRequest) {
+//        if (productRequest == null) {
+//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_REQUEST));
+//        }
+//    }
+//
+//    /**
+//     * Validates whether the provided ID is non-null and positive.
+//     *
+//     * @param id The product ID to validate.
+//     * @throws IllegalArgumentException If the ID is null or invalid.
+//     */
+//    private void throwIfIdIsInvalid(Long id) {
+//        if (id == null || id <= 0) {
+//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_ID, id));
+//        }
+//    }
 
     /**
      * Retrieves a product entity by ID or throws an exception.
