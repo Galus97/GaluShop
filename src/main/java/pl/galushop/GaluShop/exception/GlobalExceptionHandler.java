@@ -17,11 +17,6 @@ public class GlobalExceptionHandler {
         return getMapResponseEntity(e);
     }
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException e) {
-        return getMapResponseEntity(e);
-    }
-
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleOrderNotFoundException(OrderNotFoundException e) {
         return getMapResponseEntity(e);
@@ -44,6 +39,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserDataNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleUserDataNotFoundException(UserDataNotFoundException e) {
+        return getMapResponseEntity(e);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException e) {
+        return getMapResponseEntity(e);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Map<String, String>> handleValidationException(ValidationException e) {
         return getMapResponseEntity(e);
     }
 
