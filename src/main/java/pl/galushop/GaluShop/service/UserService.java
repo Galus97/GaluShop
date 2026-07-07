@@ -11,6 +11,7 @@ import pl.galushop.GaluShop.dto.response.UserResponse;
 import pl.galushop.GaluShop.entity.User;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserRepository;
+import pl.galushop.GaluShop.util.ServiceValidator;
 
 /**
  * Service class responsible for managing user-related operations,
@@ -22,7 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
-
+    private final ServiceValidator serviceValidator;
     /**
      * Retrieves a user entity by its ID.
      *
@@ -32,8 +33,8 @@ public class UserService {
      * @throws UserNotFoundException    If the user is not found.
      */
     public User getUserEntity(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
-        return getUserOrThrow(userId);
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
+        return getUserOrThrowIfNotExist(userId);
     }
 
     /**
@@ -45,8 +46,8 @@ public class UserService {
      * @throws UserNotFoundException    If the user is not found.
      */
     public UserResponse getUserResponse(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
-        return UserResponse.fromEntity(getUserOrThrow(userId));
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
+        return UserResponse.fromEntity(getUserOrThrowIfNotExist(userId));
     }
 
     /**
@@ -57,9 +58,8 @@ public class UserService {
      * @throws UserNotFoundException    If the user is not found.
      */
     public void deleteUser(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
-
-        userRepository.delete(getUserOrThrow(userId));
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
+        userRepository.delete(getUserOrThrowIfNotExist(userId));
     }
 
     /**
@@ -74,9 +74,10 @@ public class UserService {
      */
     @Transactional
     public UserResponse updateUser(UserRequest userRequest) {
-        throwIfIdIsInvalid(userRequest.getUserId(), ErrorMessages.INVALID_USER_ID);
+        serviceValidator.throwIfRequestIsNull(userRequest, ErrorMessages.INVALID_USER_REQUEST);
+        serviceValidator.throwIfIdIsNotValid(userRequest.getUserId(), ErrorMessages.INVALID_USER_ID);
 
-        User existingUser = getUserOrThrow(userRequest.getUserId());
+        User existingUser = getUserOrThrowIfNotExist(userRequest.getUserId());
 
         existingUser.setFirstName(userRequest.getFirstName());
         existingUser.setLastName(userRequest.getLastName());
@@ -90,40 +91,14 @@ public class UserService {
     }
 
     /**
-     * Validates whether a user with the given ID exists.
-     * Used e.g. in OrderService to ensure the user exists before performing user-related operations.
-     *
-     * @param userId The ID of the user to check.
-     * @throws UserNotFoundException If the user does not exist.
-     */
-    public void throwIfUserDoesntExist(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId));
-        }
-    }
-
-    /**
      * Retrieves a user by ID or throws an exception if not found.
      *
      * @param userId The ID of the user.
      * @return The User entity.
      * @throws UserNotFoundException If the user is not found.
      */
-    private User getUserOrThrow(Long userId) {
+    private User getUserOrThrowIfNotExist(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
-    }
-
-    /**
-     * Validates whether a user ID is valid (non-null and greater than zero).
-     *
-     * @param userId  The ID to validate.
-     * @param message The error message to use if validation fails.
-     * @throws IllegalArgumentException If the ID is invalid.
-     */
-    private void throwIfIdIsInvalid(Long userId, String message) {
-        if (userId == null || userId <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, userId));
-        }
     }
 }
