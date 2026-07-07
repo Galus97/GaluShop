@@ -12,6 +12,7 @@ import pl.galushop.GaluShop.entity.WarehouseProduct;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.exception.WarehouseProductNotFoundException;
 import pl.galushop.GaluShop.repository.WarehouseProductRepository;
+import pl.galushop.GaluShop.util.ServiceValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +28,7 @@ public class WarehouseProductService {
     private final WarehouseProductRepository warehouseRepository;
     private final ProductService productService;
     private final MessageService messageService;
-
+    private final ServiceValidator serviceValidator;
     /**
      * Retrieves a warehouse product entity by its product ID.
      *
@@ -36,9 +37,9 @@ public class WarehouseProductService {
      * @throws IllegalArgumentException          If the product ID is null or invalid.
      * @throws WarehouseProductNotFoundException If no warehouse product is found for the given ID.
      */
-    public WarehouseProduct getWarehouseProductEntity(Long productId) {
-        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
-        return getWarehouseProductOrThrow(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID);
+    public WarehouseProduct getWarehouseProductEntityByProductId(Long productId) {
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+        return getWarehouseProductByProductIdOrThrowIfNotExist(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID);
     }
 
     /**
@@ -50,9 +51,9 @@ public class WarehouseProductService {
      * @throws WarehouseProductNotFoundException If the warehouse product is not found.
      */
     public WarehouseProductResponse getWarehouseProductResponse(Long productId) {
-        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
         return WarehouseProductResponse.fromEntity
-                (getWarehouseProductOrThrow(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID));
+                (getWarehouseProductByProductIdOrThrowIfNotExist(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID));
     }
 
 
@@ -66,7 +67,7 @@ public class WarehouseProductService {
      */
     @Transactional
     public WarehouseProductResponse saveWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
-        throwIfRequestIsInvalid(warehouseProductRequest);
+        serviceValidator.throwIfRequestIsNull(warehouseProductRequest, ErrorMessages.INVALID_WAREHOUSE_REQUEST);
         return WarehouseProductResponse.fromEntity
                 (warehouseRepository.save(buildWarehouseProduct(warehouseProductRequest)));
     }
@@ -91,8 +92,8 @@ public class WarehouseProductService {
      * @throws WarehouseProductNotFoundException If the warehouse product does not exist.
      */
     public void deleteWarehouseProduct(Long warehouseId) {
-        throwIfIdIsInvalid(warehouseId, ErrorMessages.WAREHOUSE_ID_IS_INVALID);
-        warehouseRepository.delete(getWarehouseProductOrThrow(warehouseId, ErrorMessages.WAREHOUSE_NOT_FOUND));
+        serviceValidator.throwIfIdIsNotValid(warehouseId, ErrorMessages.WAREHOUSE_ID_IS_INVALID);
+        warehouseRepository.delete(getWarehouseProductByProductIdOrThrowIfNotExist(warehouseId, ErrorMessages.WAREHOUSE_NOT_FOUND));
     }
 
     /**
@@ -105,8 +106,8 @@ public class WarehouseProductService {
      */
     @Transactional
     public WarehouseProductResponse updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
-        throwIfRequestIsInvalid(warehouseProductRequest);
-        WarehouseProduct existingWarehouseProduct = getWarehouseProductOrThrow(warehouseProductRequest.getProductId(),
+        serviceValidator.throwIfRequestIsNull(warehouseProductRequest, ErrorMessages.INVALID_WAREHOUSE_REQUEST);
+        WarehouseProduct existingWarehouseProduct = getWarehouseProductByProductIdOrThrowIfNotExist(warehouseProductRequest.getProductId(),
                 ErrorMessages.WAREHOUSE_NOT_FOUND);
 
         Product product = productService.getProductEntity(warehouseProductRequest.getProductId());
@@ -127,11 +128,12 @@ public class WarehouseProductService {
      */
     @Transactional
     public WarehouseProductResponse updateQuantityByProductId(Long productId, Integer quantity) {
-        throwIfIdIsInvalid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+
         if (quantity == null || quantity < 0) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_QUANTITY));
         }
-        WarehouseProduct existingWarehouseProduct = getWarehouseProductOrThrow
+        WarehouseProduct existingWarehouseProduct = getWarehouseProductByProductIdOrThrowIfNotExist
                 (productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID);
 
         existingWarehouseProduct.setQuantity(quantity);
@@ -147,7 +149,7 @@ public class WarehouseProductService {
      * @throws ProductNotFoundException If the specified product does not exist.
      */
     private WarehouseProduct buildWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
-        throwIfRequestIsInvalid(warehouseProductRequest);
+        serviceValidator.throwIfRequestIsNull(warehouseProductRequest, ErrorMessages.INVALID_WAREHOUSE_REQUEST);
 
         Product product = productService.getProductEntity(warehouseProductRequest.getProductId());
         return WarehouseProduct.builder()
@@ -157,34 +159,21 @@ public class WarehouseProductService {
                 .build();
     }
 
-    /**
-     * Validates whether the provided ID is non-null and positive.
-     *
-     * @param id      The ID to validate.
-     * @param message The message key to use in the exception.
-     * @throws IllegalArgumentException If the ID is null or invalid.
-     */
-    private void throwIfIdIsInvalid(Long id, String message) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
-    }
-
-    /**
-     * Validates the provided WarehouseProductRequest object.
-     *
-     * @param warehouseProductRequest The request to validate.
-     * @throws IllegalArgumentException If the request is null or contains invalid fields.
-     */
-    private void throwIfRequestIsInvalid(WarehouseProductRequest warehouseProductRequest) {
-        if (warehouseProductRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.WAREHOUSE_IS_NULL));
-        }
-        if (warehouseProductRequest.getProductId() == null || warehouseProductRequest.getProductId() <= 0
-                || warehouseProductRequest.getQuantity() == null || warehouseProductRequest.getQuantity() < 0) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_FIELDS_IN_REQUEST));
-        }
-    }
+//    /**
+//     * Validates the provided WarehouseProductRequest object.
+//     *
+//     * @param warehouseProductRequest The request to validate.
+//     * @throws IllegalArgumentException If the request is null or contains invalid fields.
+//     */
+//    private void throwIfRequestIsInvalid(WarehouseProductRequest warehouseProductRequest) {
+//        if (warehouseProductRequest == null) {
+//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_WAREHOUSE_REQUEST));
+//        }
+//        if (warehouseProductRequest.getProductId() == null || warehouseProductRequest.getProductId() <= 0
+//                || warehouseProductRequest.getQuantity() == null || warehouseProductRequest.getQuantity() < 0) {
+//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_FIELDS_IN_REQUEST));
+//        }
+//    }
 
     /**
      * Retrieves a WarehouseProduct entity by ID or throws an exception.
@@ -194,8 +183,8 @@ public class WarehouseProductService {
      * @return The corresponding WarehouseProduct entity.
      * @throws WarehouseProductNotFoundException If the product is not found.
      */
-    private WarehouseProduct getWarehouseProductOrThrow(Long id, String message) {
-        return warehouseRepository.findById(id)
+    private WarehouseProduct getWarehouseProductByProductIdOrThrowIfNotExist(Long id, String message) {
+        return warehouseRepository.findByProduct_ProductId(id)
                 .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(message, id)));
     }
 }

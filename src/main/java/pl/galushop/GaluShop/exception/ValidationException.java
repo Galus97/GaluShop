@@ -7,6 +7,6 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class ValidationException extends Exception {
+public class ValidationException extends RuntimeException {
     private final List<String> validationErrors;
 }

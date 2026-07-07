@@ -13,6 +13,7 @@ import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
+import pl.galushop.GaluShop.util.ServiceValidator;
 
 /**
  * Service class responsible for managing user data operations,
@@ -24,20 +25,7 @@ public class UserDataService {
     private final UserDataRepository userDataRepository;
     private final UserRepository userRepository;
     private final MessageService messageService;
-
-    /**
-     * Saves new user data based on the provided request.
-     *
-     * @param userDataRequest The request containing user data details.
-     * @return A response DTO with the saved user data.
-     * @throws IllegalArgumentException If the request is null.
-     * @throws UserNotFoundException    If the user associated with the data is not found.
-     */
-    @Transactional
-    public UserDataResponse saveUserData(UserDataRequest userDataRequest) {
-        throwIfRequestIsInvalid(userDataRequest);
-        return UserDataResponse.fromEntity(userDataRepository.save(buildUserData(userDataRequest)));
-    }
+    private final ServiceValidator serviceValidator;
 
     /**
      * Retrieves user data by its unique ID.
@@ -48,7 +36,7 @@ public class UserDataService {
      * @throws UserDataNotFoundException If no user data is found with the given ID.
      */
     public UserDataResponse getUserDataResponse(Long userDataId) {
-        throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
+        serviceValidator.throwIfIdIsNotValid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
         return UserDataResponse.fromEntity(getUserDataOrThrow(userDataId, ErrorMessages.USER_DATA_NOT_FOUND));
     }
 
@@ -61,10 +49,24 @@ public class UserDataService {
      * @throws UserDataNotFoundException If no data is found for the given user.
      */
     public UserDataResponse getUserDataByUserId(Long userId) {
-        throwIfIdIsInvalid(userId, ErrorMessages.INVALID_USER_ID);
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
         return UserDataResponse.fromEntity(userDataRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
                         ErrorMessages.USER_DATA_NOT_FOUND_BY_USER_ID, userId))));
+    }
+
+    /**
+     * Saves new user data based on the provided request.
+     *
+     * @param userDataRequest The request containing user data details.
+     * @return A response DTO with the saved user data.
+     * @throws IllegalArgumentException If the request is null.
+     * @throws UserNotFoundException    If the user associated with the data is not found.
+     */
+    @Transactional
+    public UserDataResponse saveUserData(UserDataRequest userDataRequest) {
+        serviceValidator.throwIfRequestIsNull(userDataRequest, ErrorMessages.INVALID_USER_DATA_REQUEST);
+        return UserDataResponse.fromEntity(userDataRepository.save(buildUserData(userDataRequest)));
     }
 
     /**
@@ -75,7 +77,7 @@ public class UserDataService {
      * @throws UserDataNotFoundException If no user data is found with the given ID.
      */
     public void deleteUserData(Long userDataId) {
-        throwIfIdIsInvalid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
+        serviceValidator.throwIfIdIsNotValid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
         UserData userData = getUserDataOrThrow(userDataId, ErrorMessages.USER_DATA_NOT_FOUND);
 
         userDataRepository.delete(userData);
@@ -91,7 +93,8 @@ public class UserDataService {
      */
     @Transactional
     public UserDataResponse updateUserData(UserDataRequest userDataRequest) {
-        throwIfIdIsInvalid(userDataRequest.getUserId(), ErrorMessages.INVALID_USER_DATA_ID);
+        serviceValidator.throwIfRequestIsNull(userDataRequest, ErrorMessages.INVALID_USER_DATA_REQUEST);
+        serviceValidator.throwIfIdIsNotValid(userDataRequest.getUserDataId(), ErrorMessages.INVALID_USER_DATA_ID);
 
         UserData existingUserData = getUserDataOrThrow(userDataRequest.getUserDataId(), ErrorMessages.USER_DATA_NOT_FOUND);
 
@@ -115,7 +118,7 @@ public class UserDataService {
     private UserData buildUserData(UserDataRequest userDataRequest) {
         User user = userRepository.findById(userDataRequest.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(messageService.getMessage(
-                        ErrorMessages.USER_DATA_NOT_FOUND, userDataRequest.getUserId())));
+                        ErrorMessages.USER_NOT_FOUND, userDataRequest.getUserId())));
 
         return UserData.builder()
                 .userDataId(null)
@@ -127,31 +130,6 @@ public class UserDataService {
                 .zipCode(userDataRequest.getZipCode())
                 .phoneNumber(userDataRequest.getPhoneNumber())
                 .build();
-    }
-
-    /**
-     * Validates whether the request is not null.
-     *
-     * @param userDataRequest The request to validate.
-     * @throws IllegalArgumentException If the request is null.
-     */
-    private void throwIfRequestIsInvalid(UserDataRequest userDataRequest) {
-        if (userDataRequest == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_USER_DATA_REQUEST));
-        }
-    }
-
-    /**
-     * Validates whether the given ID is not null and greater than zero.
-     *
-     * @param id      The ID to validate.
-     * @param message The error message key to use in case of invalid ID.
-     * @throws IllegalArgumentException If the ID is invalid.
-     */
-    private void throwIfIdIsInvalid(Long id, String message) {
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage(message, id));
-        }
     }
 
     /**

@@ -88,7 +88,7 @@ public class OrderService {
         serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_ORDER_ID);
 
         //Throws exception if user doesn't exist in database
-        userService.throwIfUserDoesntExist(userId);
+        userService.getUserEntity(userId);
 
         return orderRepository.findAllByUser_UserId(userId)
                 .stream()

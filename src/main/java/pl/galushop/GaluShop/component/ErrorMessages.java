@@ -52,7 +52,7 @@ public final class ErrorMessages {
     public static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";
     public static final String WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID = "error.warehouseProductNotFoundByProductId";
     public static final String WAREHOUSE_NOT_FOUND = "error.warehouseProductNotFound";
-    public static final String WAREHOUSE_IS_NULL = "error.warehouseProductIsNull";
+    public static final String INVALID_WAREHOUSE_REQUEST = "error.warehouseProductIsNull";
     public static final String INVALID_FIELDS_IN_REQUEST = "error.invalidFieldsWarehouseProduct";
 
     //Payment
