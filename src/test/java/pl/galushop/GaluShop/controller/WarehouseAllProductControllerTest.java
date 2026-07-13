@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
+import pl.galushop.GaluShop.controller.all.WarehouseAllProductController;
 import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
