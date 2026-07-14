@@ -1,6 +1,6 @@
 package pl.galushop.GaluShop.dto.response;
 
-import pl.galushop.GaluShop.entity.OrderProduct;
+import pl.galushop.GaluShop.model.OrderProduct;
 
 public record OrderProductResponse(Long orderId, Long productId, Integer quantity) {
 

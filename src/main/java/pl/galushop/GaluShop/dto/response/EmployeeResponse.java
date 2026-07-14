@@ -1,6 +1,6 @@
 package pl.galushop.GaluShop.dto.response;
 
-import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.model.Employee;
 
 public record EmployeeResponse(Long employeeId, String firstName, String lastName, String email,
                                boolean enabled, String emailCode) {

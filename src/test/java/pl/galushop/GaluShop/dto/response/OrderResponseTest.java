@@ -2,10 +2,10 @@ package pl.galushop.GaluShop.dto.response;
 
 import org.junit.jupiter.api.Test;
 import pl.galushop.GaluShop.component.OrderStatus;
-import pl.galushop.GaluShop.entity.Order;
-import pl.galushop.GaluShop.entity.OrderProduct;
-import pl.galushop.GaluShop.entity.Product;
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.Order;
+import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.Product;
+import pl.galushop.GaluShop.model.User;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

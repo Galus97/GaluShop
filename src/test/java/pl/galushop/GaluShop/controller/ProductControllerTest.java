@@ -14,7 +14,7 @@ import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
-import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.service.ProductFacadeService;
 import pl.galushop.GaluShop.service.ProductService;

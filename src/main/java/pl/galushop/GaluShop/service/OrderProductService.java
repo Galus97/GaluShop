@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.util.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
-import pl.galushop.GaluShop.entity.OrderProduct;
+import pl.galushop.GaluShop.model.OrderProduct;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
 
 import java.util.List;

@@ -1,29 +1,38 @@
-package pl.galushop.GaluShop.entity;
+package pl.galushop.GaluShop.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import pl.galushop.GaluShop.component.PaymentStatus;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "warehouseProduct")
-public class WarehouseProduct {
+@Table(name = "payments")
+public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long warehouseProductId;
+    private Long paymentId;
+
+    @Min(1)
+    private Double totalAmount;
+
+    @NotNull
+    private PaymentStatus paymentStatus;
 
     @OneToOne
-    private Product product;
+    private Order order;
 
-    @Min(0)
-    private Integer quantity;
+    @ManyToOne
+    private User user;
 }

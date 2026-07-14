@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.galushop.GaluShop.util.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
-import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.model.Employee;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
 
 import static org.junit.jupiter.api.Assertions.*;

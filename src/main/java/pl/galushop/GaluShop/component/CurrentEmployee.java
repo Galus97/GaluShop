@@ -3,7 +3,7 @@ package pl.galushop.GaluShop.component;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.model.Employee;
 
 /**
  * Custom implementation of Spring Security's {@link User} class

@@ -1,6 +1,6 @@
 package pl.galushop.GaluShop.dto.response;
 
-import pl.galushop.GaluShop.entity.UserData;
+import pl.galushop.GaluShop.model.UserData;
 
 public record UserDataResponse(Long userDataId, String city, String street, Integer streetNumber,
                                Integer apartmentNumber, String zipCode, Integer phoneNumber, Long userId) {

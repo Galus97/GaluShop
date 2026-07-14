@@ -9,7 +9,7 @@ import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
-import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.model.Employee;
 import pl.galushop.GaluShop.exception.EmployeeNotFoundException;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
 

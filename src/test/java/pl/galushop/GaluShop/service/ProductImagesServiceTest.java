@@ -9,12 +9,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
-import pl.galushop.GaluShop.entity.Product;
-import pl.galushop.GaluShop.entity.ProductImages;
+import pl.galushop.GaluShop.model.Product;
+import pl.galushop.GaluShop.model.ProductImages;
 import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.repository.ProductImagesRepository;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

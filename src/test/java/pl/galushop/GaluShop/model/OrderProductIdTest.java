@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.entity;
+package pl.galushop.GaluShop.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

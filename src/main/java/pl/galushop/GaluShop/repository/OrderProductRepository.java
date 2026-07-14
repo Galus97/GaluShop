@@ -2,8 +2,8 @@ package pl.galushop.GaluShop.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.galushop.GaluShop.entity.OrderProduct;
-import pl.galushop.GaluShop.entity.OrderProductId;
+import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderProductId;
 
 import java.util.List;
 

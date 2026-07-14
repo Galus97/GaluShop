@@ -1,8 +1,8 @@
 package pl.galushop.GaluShop.dto.response;
 
 import org.junit.jupiter.api.Test;
-import pl.galushop.GaluShop.entity.User;
-import pl.galushop.GaluShop.entity.UserData;
+import pl.galushop.GaluShop.model.User;
+import pl.galushop.GaluShop.model.UserData;
 
 import static org.junit.jupiter.api.Assertions.*;
 

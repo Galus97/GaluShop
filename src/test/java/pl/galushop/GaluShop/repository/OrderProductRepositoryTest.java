@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.component.OrderStatus;
-import pl.galushop.GaluShop.entity.*;
+import pl.galushop.GaluShop.model.*;
 
 import java.time.LocalDateTime;
 import java.util.List;

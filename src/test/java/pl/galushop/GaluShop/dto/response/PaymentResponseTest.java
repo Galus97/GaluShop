@@ -2,9 +2,9 @@ package pl.galushop.GaluShop.dto.response;
 
 import org.junit.jupiter.api.Test;
 import pl.galushop.GaluShop.component.PaymentStatus;
-import pl.galushop.GaluShop.entity.Order;
-import pl.galushop.GaluShop.entity.Payment;
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.Order;
+import pl.galushop.GaluShop.model.Payment;
+import pl.galushop.GaluShop.model.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 

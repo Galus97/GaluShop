@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.entity.Employee;
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.Employee;
+import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 

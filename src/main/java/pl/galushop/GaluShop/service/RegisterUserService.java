@@ -8,7 +8,7 @@ import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.util.RegisterValidator;
 import pl.galushop.GaluShop.dto.request.UserRequest;
 import pl.galushop.GaluShop.dto.response.UserResponse;
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.exception.ValidationException;
 import pl.galushop.GaluShop.repository.UserRepository;
 import pl.galushop.GaluShop.util.ServiceValidator;
