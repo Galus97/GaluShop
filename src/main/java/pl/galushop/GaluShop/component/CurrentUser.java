@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
  */
 @Getter
 public class CurrentUser extends User {
-    private final pl.galushop.GaluShop.entity.User user;
+    private final pl.galushop.GaluShop.model.User user;
 
     /**
      * Constructs a {@code CurrentEmployee} instance with the given details.
@@ -21,7 +21,7 @@ public class CurrentUser extends User {
      * @param user        The employee entity associated with this user.
      */
     public CurrentUser(String username, String password, java.util.Collection<?
-            extends GrantedAuthority> authorities, pl.galushop.GaluShop.entity.User user) {
+            extends GrantedAuthority> authorities, pl.galushop.GaluShop.model.User user) {
 
         super(username, password, authorities);
         this.user = user;

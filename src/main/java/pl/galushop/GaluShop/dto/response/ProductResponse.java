@@ -1,6 +1,6 @@
 package pl.galushop.GaluShop.dto.response;
 
-import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.model.Product;
 
 import java.util.List;
 

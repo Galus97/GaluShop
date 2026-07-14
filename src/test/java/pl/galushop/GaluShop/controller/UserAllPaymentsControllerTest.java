@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.component.PaymentStatus;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
+import pl.galushop.GaluShop.controller.all.UserAllPaymentsController;
 import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.service.PaymentService;
 

@@ -11,10 +11,10 @@ import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.dto.request.OrderRequest;
 import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
-import pl.galushop.GaluShop.entity.Order;
-import pl.galushop.GaluShop.entity.OrderProduct;
-import pl.galushop.GaluShop.entity.Product;
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.Order;
+import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.Product;
+import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.repository.OrderRepository;
 

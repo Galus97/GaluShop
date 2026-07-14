@@ -9,8 +9,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.entity.Employee;
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.Employee;
+import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 
@@ -18,13 +18,11 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)

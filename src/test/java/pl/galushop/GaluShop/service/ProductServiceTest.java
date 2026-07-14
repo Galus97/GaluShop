@@ -9,10 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
-import pl.galushop.GaluShop.entity.Order;
-import pl.galushop.GaluShop.entity.OrderProduct;
-import pl.galushop.GaluShop.entity.OrderProductId;
-import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.model.Order;
+import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderProductId;
+import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
 

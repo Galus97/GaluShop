@@ -1,7 +1,7 @@
 package pl.galushop.GaluShop.dto.response;
 
 import pl.galushop.GaluShop.component.OrderStatus;
-import pl.galushop.GaluShop.entity.Order;
+import pl.galushop.GaluShop.model.Order;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.entity;
+package pl.galushop.GaluShop.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,28 +8,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Table(name = "employee")
-public class Employee {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long employeeId;
+    private Long userId;
 
     @Size(min = 3)
     private String firstName;
@@ -49,7 +40,7 @@ public class Employee {
 
     private String emailCode;
 
-    public Employee(String firstName, String lastName, String email, String password, String emailCode) {
+    public User(String firstName, String lastName, String email, String password, String emailCode) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

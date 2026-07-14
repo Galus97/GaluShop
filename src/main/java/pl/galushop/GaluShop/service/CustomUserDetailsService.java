@@ -11,8 +11,8 @@ import pl.galushop.GaluShop.component.CurrentEmployee;
 import pl.galushop.GaluShop.component.CurrentUser;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.entity.Employee;
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.Employee;
+import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.repository.EmployeeRepository;
 import pl.galushop.GaluShop.repository.UserRepository;
 

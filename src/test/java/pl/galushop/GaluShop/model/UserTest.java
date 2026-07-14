@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.entity;
+package pl.galushop.GaluShop.model;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
     private static Validator validator;

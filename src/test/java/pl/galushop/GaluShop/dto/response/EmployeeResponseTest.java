@@ -1,7 +1,7 @@
 package pl.galushop.GaluShop.dto.response;
 
 import org.junit.jupiter.api.Test;
-import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.model.Employee;
 
 import static org.junit.jupiter.api.Assertions.*;
 

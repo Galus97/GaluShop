@@ -1,7 +1,7 @@
 package pl.galushop.GaluShop.dto.response;
 
 import pl.galushop.GaluShop.component.PaymentStatus;
-import pl.galushop.GaluShop.entity.Payment;
+import pl.galushop.GaluShop.model.Payment;
 
 public record PaymentResponse(Long paymentId, Double totalAmount, PaymentStatus paymentStatus, Long orderId,
                               Long userId) {

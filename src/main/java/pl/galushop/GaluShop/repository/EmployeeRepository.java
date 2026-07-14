@@ -1,7 +1,7 @@
 package pl.galushop.GaluShop.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.galushop.GaluShop.entity.Employee;
+import pl.galushop.GaluShop.model.Employee;
 
 import java.util.Optional;
 

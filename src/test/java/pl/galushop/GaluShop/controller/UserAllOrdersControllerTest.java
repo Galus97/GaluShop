@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
+import pl.galushop.GaluShop.controller.all.UserAllOrdersController;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.service.OrderService;

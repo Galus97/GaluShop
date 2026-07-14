@@ -1,6 +1,6 @@
 package pl.galushop.GaluShop.dto.response;
 
-import pl.galushop.GaluShop.entity.User;
+import pl.galushop.GaluShop.model.User;
 
 public record UserResponse(Long userId, String firstName, String lastName, String email,
                            boolean enabled, String emailCode) {

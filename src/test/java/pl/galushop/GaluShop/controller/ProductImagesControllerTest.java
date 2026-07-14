@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
-import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.exception.ProductImagesNotFoundException;
 import pl.galushop.GaluShop.service.ProductImagesService;
 

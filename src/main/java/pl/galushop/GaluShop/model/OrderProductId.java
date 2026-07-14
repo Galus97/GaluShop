@@ -1,4 +1,4 @@
-package pl.galushop.GaluShop.entity;
+package pl.galushop.GaluShop.model;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

@@ -7,7 +7,7 @@ import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
-import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.model.Product;
 
 import java.util.List;
 

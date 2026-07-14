@@ -2,7 +2,7 @@ package pl.galushop.GaluShop.dto.request;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.galushop.GaluShop.entity.Product;
+import pl.galushop.GaluShop.model.Product;
 
 @Data
 @Builder
