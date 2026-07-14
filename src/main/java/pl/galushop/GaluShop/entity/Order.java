@@ -9,26 +9,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import pl.galushop.GaluShop.component.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "orders")
 public class Order {
 
