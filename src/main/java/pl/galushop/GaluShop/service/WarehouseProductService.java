@@ -159,22 +159,6 @@ public class WarehouseProductService {
                 .build();
     }
 
-//    /**
-//     * Validates the provided WarehouseProductRequest object.
-//     *
-//     * @param warehouseProductRequest The request to validate.
-//     * @throws IllegalArgumentException If the request is null or contains invalid fields.
-//     */
-//    private void throwIfRequestIsInvalid(WarehouseProductRequest warehouseProductRequest) {
-//        if (warehouseProductRequest == null) {
-//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_WAREHOUSE_REQUEST));
-//        }
-//        if (warehouseProductRequest.getProductId() == null || warehouseProductRequest.getProductId() <= 0
-//                || warehouseProductRequest.getQuantity() == null || warehouseProductRequest.getQuantity() < 0) {
-//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_FIELDS_IN_REQUEST));
-//        }
-//    }
-
     /**
      * Retrieves a WarehouseProduct entity by ID or throws an exception.
      *
