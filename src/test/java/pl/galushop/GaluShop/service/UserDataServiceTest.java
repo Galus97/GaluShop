@@ -139,7 +139,7 @@ class UserDataServiceTest {
         //given
         when(repository.findByUser_UserId(anyLong())).thenReturn(Optional.of(userData));
         //when
-        UserDataResponse response = service.getUserDataByUserId(1L);
+        UserDataResponse response = service.getUserDataByUser(1L);
         //then
         assertNotNull(response);
         assertEquals(userData.getUserDataId(), response.userDataId());
@@ -153,7 +153,7 @@ class UserDataServiceTest {
         //given
         when(repository.findByUser_UserId(anyLong())).thenReturn(Optional.empty());
         //then
-        assertThrows(UserDataNotFoundException.class, () -> service.getUserDataByUserId(1L));
+        assertThrows(UserDataNotFoundException.class, () -> service.getUserDataByUser(1L));
         verify(repository, times(1)).findByUser_UserId(anyLong());
     }
 

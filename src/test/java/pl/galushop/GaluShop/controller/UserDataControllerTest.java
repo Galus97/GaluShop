@@ -63,7 +63,7 @@ class UserDataControllerTest {
     @Test
     void givenExistingId_whenShowUserDataByUserId_thenReturnsUserData() throws Exception{
         //given
-        when(service.getUserDataByUserId(anyLong())).thenReturn(response);
+        when(service.getUserDataByUser(anyLong())).thenReturn(response);
         //then
         mockMvc.perform(get("/userData/user/1"))
                 .andExpect(status().isOk())
@@ -76,7 +76,7 @@ class UserDataControllerTest {
                 .andExpect(jsonPath("$.zipCode").value("00-001"))
                 .andExpect(jsonPath("$.phoneNumber").value(666777888))
                 .andExpect(jsonPath("$.userId").value(1L));
-        verify(service, times(1)).getUserDataByUserId(1L);
+        verify(service, times(1)).getUserDataByUser(1L);
     }
 
     @Test

@@ -12,7 +12,6 @@ import pl.galushop.GaluShop.model.UserData;
 import pl.galushop.GaluShop.exception.UserDataNotFoundException;
 import pl.galushop.GaluShop.exception.UserNotFoundException;
 import pl.galushop.GaluShop.repository.UserDataRepository;
-import pl.galushop.GaluShop.repository.UserRepository;
 import pl.galushop.GaluShop.util.ServiceValidator;
 
 /**
@@ -48,11 +47,9 @@ public class UserDataService {
      * @throws IllegalArgumentException  If the user ID is null or invalid.
      * @throws UserDataNotFoundException If no data is found for the given user.
      */
-    public UserDataResponse getUserDataByUserId(Long userId) {
+    public UserDataResponse getUserDataByUser(Long userId) {
         serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
-        return UserDataResponse.fromEntity(userDataRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
-                        ErrorMessages.USER_DATA_NOT_FOUND_BY_USER_ID, userId))));
+        return UserDataResponse.fromEntity(getUserDataByUserOrThrow(userId));
     }
 
     /**
