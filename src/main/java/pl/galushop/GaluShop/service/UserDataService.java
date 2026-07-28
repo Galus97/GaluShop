@@ -23,7 +23,7 @@ import pl.galushop.GaluShop.util.ServiceValidator;
 @RequiredArgsConstructor
 public class UserDataService {
     private final UserDataRepository userDataRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final MessageService messageService;
     private final ServiceValidator serviceValidator;
 
@@ -116,9 +116,7 @@ public class UserDataService {
      * @throws UserNotFoundException If the user is not found.
      */
     private UserData buildUserData(UserDataRequest userDataRequest) {
-        User user = userRepository.findById(userDataRequest.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(messageService.getMessage(
-                        ErrorMessages.USER_NOT_FOUND, userDataRequest.getUserId())));
+        User user = userService.getUserEntity(userDataRequest.getUserId());
 
         return UserData.builder()
                 .userDataId(null)
@@ -143,5 +141,11 @@ public class UserDataService {
     private UserData getUserDataOrThrow(Long userDataId, String message) {
         return userDataRepository.findById(userDataId)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(message, userDataId)));
+    }
+
+    private UserData getUserDataByUserOrThrow(Long userId) {
+        return userDataRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
+                        ErrorMessages.USER_DATA_NOT_FOUND_BY_USER_ID, userId)));
     }
 }
