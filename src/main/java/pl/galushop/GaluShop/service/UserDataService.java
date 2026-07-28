@@ -36,7 +36,7 @@ public class UserDataService {
      */
     public UserDataResponse getUserDataResponse(Long userDataId) {
         serviceValidator.throwIfIdIsNotValid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
-        return UserDataResponse.fromEntity(getUserDataOrThrow(userDataId, ErrorMessages.USER_DATA_NOT_FOUND));
+        return UserDataResponse.fromEntity(getUserDataOrThrow(userDataId));
     }
 
     /**
@@ -75,7 +75,7 @@ public class UserDataService {
      */
     public void deleteUserData(Long userDataId) {
         serviceValidator.throwIfIdIsNotValid(userDataId, ErrorMessages.INVALID_USER_DATA_ID);
-        UserData userData = getUserDataOrThrow(userDataId, ErrorMessages.USER_DATA_NOT_FOUND);
+        UserData userData = getUserDataOrThrow(userDataId);
 
         userDataRepository.delete(userData);
     }
@@ -93,7 +93,7 @@ public class UserDataService {
         serviceValidator.throwIfRequestIsNull(userDataRequest, ErrorMessages.INVALID_USER_DATA_REQUEST);
         serviceValidator.throwIfIdIsNotValid(userDataRequest.getUserDataId(), ErrorMessages.INVALID_USER_DATA_ID);
 
-        UserData existingUserData = getUserDataOrThrow(userDataRequest.getUserDataId(), ErrorMessages.USER_DATA_NOT_FOUND);
+        UserData existingUserData = getUserDataOrThrow(userDataRequest.getUserDataId());
 
         existingUserData.setCity(userDataRequest.getCity());
         existingUserData.setStreet(userDataRequest.getStreet());
@@ -131,13 +131,13 @@ public class UserDataService {
      * Retrieves user data or throws an exception if not found.
      *
      * @param userDataId The ID of the user data.
-     * @param message    The error message key for the exception.
      * @return The found UserData entity.
      * @throws UserDataNotFoundException If no user data is found with the given ID.
      */
-    private UserData getUserDataOrThrow(Long userDataId, String message) {
+    private UserData getUserDataOrThrow(Long userDataId) {
         return userDataRepository.findById(userDataId)
-                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(message, userDataId)));
+                .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
+                        ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
     }
 
     private UserData getUserDataByUserOrThrow(Long userId) {
