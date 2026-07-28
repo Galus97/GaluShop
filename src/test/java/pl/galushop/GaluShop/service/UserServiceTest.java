@@ -143,7 +143,7 @@ class UserServiceTest {
         //given
         when(repository.existsById(any())).thenReturn(false);
         //then
-        assertThrows(UserNotFoundException.class, () -> service.throwIfUserDoesntExist(any()));
+        assertThrows(UserNotFoundException.class, () -> service.getUserEntity(any()));
         verify(repository, times(1)).existsById(any());
     }
 }

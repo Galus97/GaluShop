@@ -24,6 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final MessageService messageService;
     private final ServiceValidator serviceValidator;
+
     /**
      * Retrieves a user entity by its ID.
      *
@@ -98,7 +99,7 @@ public class UserService {
      * @throws UserNotFoundException If the user is not found.
      */
     private User getUserOrThrowIfNotExist(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
+        return userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(messageService.getMessage(ErrorMessages.USER_NOT_FOUND, userId)));
     }
 }
