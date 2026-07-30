@@ -52,18 +52,6 @@ public class EmployeeService {
     }
 
     /**
-     * Deletes an employee by their ID.
-     *
-     * @param employeeId The ID of the employee to delete.
-     * @throws IllegalArgumentException  If the ID is {@code null} or invalid.
-     * @throws EmployeeNotFoundException If no employee is found with the given ID.
-     */
-    public void deleteEmployee(Long employeeId) {
-        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
-        employeeRepository.delete(getEmployeeOrThrowIfNotFound(employeeId));
-    }
-
-    /**
      * Updates an existing employee's information.
      * If a new password is provided, it is securely encoded.
      *
@@ -74,8 +62,8 @@ public class EmployeeService {
      */
     @Transactional
     public EmployeeResponse updateEmployee(EmployeeRequest employeeRequest) {
-        serviceValidator.throwIfIdIsNotValid(employeeRequest.getEmployeeId(), ErrorMessages.INVALID_EMPLOYEE_ID);
         serviceValidator.throwIfRequestIsNull(employeeRequest, ErrorMessages.EMPLOYEE_REQUEST_IS_NULL);
+        serviceValidator.throwIfIdIsNotValid(employeeRequest.getEmployeeId(), ErrorMessages.INVALID_EMPLOYEE_ID);
 
         Employee existingEmployee = getEmployeeOrThrowIfNotFound(employeeRequest.getEmployeeId());
 
@@ -89,6 +77,19 @@ public class EmployeeService {
     }
 
     /**
+     * Deletes an employee by their ID.
+     *
+     * @param employeeId The ID of the employee to delete.
+     * @throws IllegalArgumentException  If the ID is {@code null} or invalid.
+     * @throws EmployeeNotFoundException If no employee is found with the given ID.
+     */
+    @Transactional
+    public void deleteEmployee(Long employeeId) {
+        serviceValidator.throwIfIdIsNotValid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
+        employeeRepository.delete(getEmployeeOrThrowIfNotFound(employeeId));
+    }
+
+    /**
      * Retrieves an {@link Employee} entity by ID or throws an exception if not found.
      *
      * @param id The ID of the employee.
@@ -96,7 +97,8 @@ public class EmployeeService {
      * @throws EmployeeNotFoundException If no employee is found with the given ID.
      */
     private Employee getEmployeeOrThrowIfNotFound(Long id) {
-        return employeeRepository.findById(id)
-                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, id)));
+        return employeeRepository.findById(id).orElseThrow(
+                () -> new EmployeeNotFoundException(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, id)));
+
     }
 }
