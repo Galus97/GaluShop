@@ -77,38 +77,6 @@ public class OrderService {
     }
 
     /**
-     * Retrieves all orders made by a specific user.
-     *
-     * @param userId The ID of the user.
-     * @return A list of orders associated with the user.
-     * @throws IllegalArgumentException if the user ID is null or invalid.
-     * @throws UserNotFoundException    if the user is not found.
-     */
-    public List<OrderResponse> getAllOrdersByUser(Long userId) {
-        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_ORDER_ID);
-
-        //Throws exception if user doesn't exist in database
-        userService.getUserEntity(userId);
-
-        return orderRepository.findAllByUser_UserId(userId)
-                .stream()
-                .map(OrderResponse::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Deletes an order by its ID.
-     *
-     * @param orderId The ID of the order to delete.
-     * @throws IllegalArgumentException if the order ID is null or invalid.
-     * @throws OrderNotFoundException   if no order is found with the given ID.
-     */
-    public void deleteOrder(Long orderId) {
-        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
-        orderRepository.delete(getOrderOrThrowIfNotExist(orderId));
-    }
-
-    /**
      * Updates an existing order's details.
      *
      * @param orderRequest The request object containing updated order details.
@@ -128,6 +96,39 @@ public class OrderService {
         updatedOrder.setOrderId(existingOrder.getOrderId());
 
         return OrderResponse.fromEntity(orderRepository.save(updatedOrder));
+    }
+
+    /**
+     * Deletes an order by its ID.
+     *
+     * @param orderId The ID of the order to delete.
+     * @throws IllegalArgumentException if the order ID is null or invalid.
+     * @throws OrderNotFoundException   if no order is found with the given ID.
+     */
+    @Transactional
+    public void deleteOrder(Long orderId) {
+        serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
+        orderRepository.delete(getOrderOrThrowIfNotExist(orderId));
+    }
+
+    /**
+     * Retrieves all orders made by a specific user.
+     *
+     * @param userId The ID of the user.
+     * @return A list of orders associated with the user.
+     * @throws IllegalArgumentException if the user ID is null or invalid.
+     * @throws UserNotFoundException    if the user is not found.
+     */
+    public List<OrderResponse> getAllOrdersByUser(Long userId) {
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_ORDER_ID);
+
+        //Throws exception if user doesn't exist in database
+        userService.getUserEntity(userId);
+
+        return orderRepository.findAllByUser_UserId(userId)
+                .stream()
+                .map(OrderResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /**
