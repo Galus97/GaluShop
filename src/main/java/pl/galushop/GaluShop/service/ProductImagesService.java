@@ -28,18 +28,6 @@ public class ProductImagesService {
     private final ServiceValidator serviceValidator;
 
     /**
-     * Saves a new product image to the database.
-     *
-     * @param productImageRequest The request object containing product image details.
-     * @return The created product image as a response DTO.
-     * @throws IllegalArgumentException If the request object is null or contains invalid data.
-     */
-    @Transactional
-    public ProductImagesResponse saveProductImages(ProductImageRequest productImageRequest) {
-        return ProductImagesResponse.fromEntity(productImagesRepository.save(buildProductImages(productImageRequest)));
-    }
-
-    /**
      * Retrieves a product image by its ID.
      *
      * @param imagesId The ID of the product image to retrieve.
@@ -50,6 +38,18 @@ public class ProductImagesService {
     public ProductImagesResponse getProductImages(Long imagesId) {
         serviceValidator.throwIfIdIsNotValid(imagesId, ErrorMessages.INVALID_PRODUCT_IMAGES_ID);
         return ProductImagesResponse.fromEntity(getImagesOrThrow(imagesId));
+    }
+
+    /**
+     * Saves a new product image to the database.
+     *
+     * @param productImageRequest The request object containing product image details.
+     * @return The created product image as a response DTO.
+     * @throws IllegalArgumentException If the request object is null or contains invalid data.
+     */
+    @Transactional
+    public ProductImagesResponse saveProductImages(ProductImageRequest productImageRequest) {
+        return ProductImagesResponse.fromEntity(productImagesRepository.save(buildProductImages(productImageRequest)));
     }
 
     /**
@@ -80,6 +80,7 @@ public class ProductImagesService {
      * @throws IllegalArgumentException       If the image ID is null or invalid.
      * @throws ProductImagesNotFoundException If no image is found with the given ID.
      */
+    @Transactional
     public void deleteProductImages(Long imagesId) {
         serviceValidator.throwIfIdIsNotValid(imagesId, ErrorMessages.INVALID_PRODUCT_IMAGES_ID);
         productImagesRepository.delete(getImagesOrThrow(imagesId));
