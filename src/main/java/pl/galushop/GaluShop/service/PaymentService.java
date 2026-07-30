@@ -43,7 +43,7 @@ public class PaymentService {
      */
     public PaymentResponse getPaymentResponse(Long paymentId) {
         serviceValidator.throwIfIdIsNotValid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
-        return PaymentResponse.fromEntity(getPaymentOrThrow(paymentId, ErrorMessages.PAYMENT_NOT_FOUND));
+        return PaymentResponse.fromEntity(getPaymentOrThrow(paymentId));
     }
 
     /**
@@ -62,24 +62,6 @@ public class PaymentService {
     }
 
     /**
-     * Retrieves all payments associated with a specific user ID.
-     *
-     * @param userId The ID of the user.
-     * @return A list of response DTOs representing the user's payments.
-     * @throws IllegalArgumentException if the user ID is null or invalid.
-     */
-    public List<PaymentResponse> getAllPaymentResponseByUserId(Long userId) {
-        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
-        //Throws exception if user doesn't exist in database
-        userService.getUserEntity(userId);
-
-        return paymentRepository.findAllByUser_UserId(userId)
-                .stream()
-                .map(PaymentResponse::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Saves a new payment associated with an order and a user.
      *
      * @param paymentRequest The request object containing payment details.
@@ -93,18 +75,6 @@ public class PaymentService {
         return PaymentResponse.fromEntity(paymentRepository.save(buildPayment(paymentRequest)));
     }
 
-
-    /**
-     * Deletes a payment by its ID.
-     *
-     * @param paymentId The ID of the payment to delete.
-     * @throws IllegalArgumentException if the payment ID is null or invalid.
-     * @throws PaymentNotFoundException if no payment is found with the given ID.
-     */
-    public void deletePayment(Long paymentId) {
-        serviceValidator.throwIfIdIsNotValid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
-        paymentRepository.delete(getPaymentOrThrow(paymentId, ErrorMessages.INVALID_PAYMENT_ID));
-    }
 
     /**
      * Updates an existing payment with new details.
@@ -121,12 +91,43 @@ public class PaymentService {
 
         Order order = orderService.getOrderEntity(paymentRequest.getOrderId());
 
-        Payment existingPayment = getPaymentOrThrow(paymentRequest.getPaymentId(), ErrorMessages.PAYMENT_NOT_FOUND);
+        Payment existingPayment = getPaymentOrThrow(paymentRequest.getPaymentId());
         existingPayment.setPaymentStatus(paymentRequest.getPaymentStatus());
         existingPayment.setTotalAmount(paymentRequest.getTotalAmount());
         existingPayment.setOrder(order);
 
         return PaymentResponse.fromEntity(paymentRepository.save(existingPayment));
+    }
+
+    /**
+     * Deletes a payment by its ID.
+     *
+     * @param paymentId The ID of the payment to delete.
+     * @throws IllegalArgumentException if the payment ID is null or invalid.
+     * @throws PaymentNotFoundException if no payment is found with the given ID.
+     */
+    @Transactional
+    public void deletePayment(Long paymentId) {
+        serviceValidator.throwIfIdIsNotValid(paymentId, ErrorMessages.INVALID_PAYMENT_ID);
+        paymentRepository.delete(getPaymentOrThrow(paymentId));
+    }
+
+    /**
+     * Retrieves all payments associated with a specific user ID.
+     *
+     * @param userId The ID of the user.
+     * @return A list of response DTOs representing the user's payments.
+     * @throws IllegalArgumentException if the user ID is null or invalid.
+     */
+    public List<PaymentResponse> getAllPaymentResponseByUserId(Long userId) {
+        serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
+        //Throws exception if user doesn't exist in database
+        userService.getUserEntity(userId);
+
+        return paymentRepository.findAllByUser_UserId(userId)
+                .stream()
+                .map(PaymentResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -154,12 +155,11 @@ public class PaymentService {
      * Retrieves a Payment entity by ID or throws an exception if not found.
      *
      * @param id      The ID of the payment to retrieve.
-     * @param message The message key used if the payment is not found.
      * @return The retrieved Payment entity.
      * @throws PaymentNotFoundException if no payment is found with the given ID.
      */
-    private Payment getPaymentOrThrow(Long id, String message) {
-        return paymentRepository.findById(id)
-                .orElseThrow(() -> new PaymentNotFoundException(messageService.getMessage(message, id)));
+    private Payment getPaymentOrThrow(Long id) {
+        return paymentRepository.findById(id).orElseThrow(
+                () -> new PaymentNotFoundException(messageService.getMessage(ErrorMessages.PAYMENT_NOT_FOUND, id)));
     }
 }
