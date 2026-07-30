@@ -143,30 +143,6 @@ public class ProductService {
                 .categoryId(productRequest.getCategoryId())
                 .build();
     }
-//
-//    /**
-//     * Validates whether the request is null.
-//     *
-//     * @param productRequest The product request.
-//     * @throws IllegalArgumentException If the request is null.
-//     */
-//    private void throwIfRequestIsNull(ProductRequest productRequest) {
-//        if (productRequest == null) {
-//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_REQUEST));
-//        }
-//    }
-//
-//    /**
-//     * Validates whether the provided ID is non-null and positive.
-//     *
-//     * @param id The product ID to validate.
-//     * @throws IllegalArgumentException If the ID is null or invalid.
-//     */
-//    private void throwIfIdIsInvalid(Long id) {
-//        if (id == null || id <= 0) {
-//            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_PRODUCT_ID, id));
-//        }
-//    }
 
     /**
      * Retrieves a product entity by ID or throws an exception.
@@ -177,6 +153,7 @@ public class ProductService {
      */
     private Product getProductOrThrow(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, productId)));
+                .orElseThrow(() -> new ProductNotFoundException(
+                        messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, productId)));
     }
 }
