@@ -30,7 +30,7 @@ class OrderProductRepositoryTest {
         User persistedUser = testEntityManager.persistAndFlush(new User());
 
         Order persistedOrder = testEntityManager.persistAndFlush(Order.builder()
-                .localDateTime(LocalDateTime.of(2025, 3, 10, 12, 12))
+                .createdAt(LocalDateTime.of(2025, 3, 10, 12, 12))
                 .status(OrderStatus.PROCESSED)
                 .user(persistedUser)
                 .build());

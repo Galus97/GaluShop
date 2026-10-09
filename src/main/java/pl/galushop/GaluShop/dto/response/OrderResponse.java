@@ -11,7 +11,7 @@ public record OrderResponse(Long orderId, LocalDateTime localDateTime, OrderStat
     public static OrderResponse fromEntity(Order order) {
         return new OrderResponse(
                 order.getOrderId(),
-                order.getLocalDateTime(),
+                order.getCreatedAt(),
                 order.getStatus(),
                 order.getUser().getUserId(),
                 order.getOrderProducts().stream().map(OrderProductResponse::fromEntity).toList()

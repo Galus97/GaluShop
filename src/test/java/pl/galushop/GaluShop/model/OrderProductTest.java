@@ -30,7 +30,7 @@ class OrderProductTest {
         fixedDateTime = LocalDateTime.of(2023, 10, 10, 12, 30);
         order = Order.builder()
                 .orderId(1L)
-                .localDateTime(fixedDateTime)
+                .createdAt(fixedDateTime)
                 .status(OrderStatus.PLACED)
                 .user(user)
                 .orderProducts(Collections.emptyList())

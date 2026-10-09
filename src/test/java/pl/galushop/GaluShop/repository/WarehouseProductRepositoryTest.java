@@ -41,7 +41,7 @@ class WarehouseProductRepositoryTest {
     void givenExistingProductId_whenFindByProductId_thenReturnWarehouseProduct(){
         //when
         Optional<WarehouseProduct> optionalWarehouseProduct =
-                warehouseProductRepository.findByProduct_ProductId(warehouseProduct.getProduct().getProductId());
+                warehouseProductRepository.findByProduct(warehouseProduct.getProduct());
         //then
         assertEquals(warehouseProduct, optionalWarehouseProduct.get());
     }

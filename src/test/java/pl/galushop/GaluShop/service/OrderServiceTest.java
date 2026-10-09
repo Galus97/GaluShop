@@ -55,7 +55,7 @@ class OrderServiceTest {
         user.setUserId(1L);
         order = Order.builder()
                 .orderId(1L)
-                .localDateTime(LocalDateTime.of(2025, 3, 26, 12, 12))
+                .createdAt(LocalDateTime.of(2025, 3, 26, 12, 12))
                 .status(OrderStatus.PROCESSED)
                 .user(user)
                 .build();
@@ -72,7 +72,7 @@ class OrderServiceTest {
         orderRequest = OrderRequest.builder()
                 .orderId(1L)
                 .userId(1L)
-                .localDateTime(LocalDateTime.of(2025, 3, 30, 12, 12))
+                .createdAt(LocalDateTime.of(2025, 3, 30, 12, 12))
                 .orderStatus(OrderStatus.PROCESSED)
                 .productQuantityRequests(productQuantityRequests)
                 .build();

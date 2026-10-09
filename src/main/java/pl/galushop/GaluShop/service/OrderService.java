@@ -163,7 +163,7 @@ public class OrderService {
                 }).toList();
 
         Order order = Order.builder()
-                .localDateTime(orderRequest.getLocalDateTime())
+                .createdAt(orderRequest.getCreatedAt())
                 .status(orderRequest.getOrderStatus())
                 .user(user)
                 .orderProducts(orderProducts)

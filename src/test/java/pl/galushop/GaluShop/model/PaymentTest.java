@@ -32,7 +32,7 @@ class PaymentTest {
 
         order = Order.builder()
                 .orderId(1L)
-                .localDateTime(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .status(OrderStatus.PLACED)
                 .user(user)
                 .orderProducts(Collections.emptyList())

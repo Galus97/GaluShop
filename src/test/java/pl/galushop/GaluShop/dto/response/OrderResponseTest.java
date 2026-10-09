@@ -30,7 +30,7 @@ class OrderResponseTest {
         OrderProduct orderProduct = new OrderProduct(order, product, 15);
         List<OrderProduct> orderProducts = Arrays.asList(orderProduct);
 
-        order.setLocalDateTime(LocalDateTime.of(2025, 4, 6, 10, 10));
+        order.setCreatedAt(LocalDateTime.of(2025, 4, 6, 10, 10));
         order.setStatus(OrderStatus.PROCESSED);
         order.setUser(user);
         order.setOrderProducts(orderProducts);

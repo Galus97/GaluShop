@@ -33,7 +33,7 @@ class OrderTest {
 
         order = Order.builder()
                 .orderId(1L)
-                .localDateTime(fixedDateTime)
+                .createdAt(fixedDateTime)
                 .status(OrderStatus.PLACED)
                 .user(user)
                 .orderProducts(Collections.emptyList())
@@ -55,7 +55,7 @@ class OrderTest {
             assertThat(constructedOrder)
                     .satisfies(o -> {
                         assertThat(o.getOrderId()).isEqualTo(2L);
-                        assertThat(o.getLocalDateTime()).isEqualTo(fixedDateTime);
+                        assertThat(o.getCreatedAt()).isEqualTo(fixedDateTime);
                         assertThat(o.getStatus()).isEqualTo(OrderStatus.PAID);
                         assertThat(o.getUser()).isEqualTo(user);
                         assertThat(o.getOrderProducts()).isEmpty();
@@ -70,7 +70,7 @@ class OrderTest {
                     .isNotNull()
                     .satisfies(o -> {
                         assertThat(o.getOrderId()).isNull();
-                        assertThat(o.getLocalDateTime()).isNull();
+                        assertThat(o.getCreatedAt()).isNull();
                         assertThat(o.getStatus()).isNull();
                         assertThat(o.getUser()).isNull();
                         assertThat(o.getOrderProducts()).isNull();
@@ -85,7 +85,7 @@ class OrderTest {
             assertThat(order)
                     .satisfies(o -> {
                         assertThat(o.getOrderId()).isEqualTo(1L);
-                        assertThat(o.getLocalDateTime()).isEqualTo(fixedDateTime);
+                        assertThat(o.getCreatedAt()).isEqualTo(fixedDateTime);
                         assertThat(o.getStatus()).isEqualTo(OrderStatus.PLACED);
                         assertThat(o.getUser()).isEqualTo(user);
                         assertThat(o.getOrderProducts()).isEmpty();
@@ -96,14 +96,14 @@ class OrderTest {
         void shouldUseLombokSettersCorrectly() {
             order.setOrderId(2L);
             order.setStatus(OrderStatus.SENT);
-            order.setLocalDateTime(null);
+            order.setCreatedAt(null);
             order.setUser(null);
 
             assertThat(order)
                     .satisfies(o -> {
                         assertThat(o.getOrderId()).isEqualTo(2L);
                         assertThat(o.getStatus()).isEqualTo(OrderStatus.SENT);
-                        assertThat(o.getLocalDateTime()).isNull();
+                        assertThat(o.getCreatedAt()).isNull();
                         assertThat(o.getUser()).isNull();
                     });
         }
@@ -115,7 +115,7 @@ class OrderTest {
         void shouldFailValidationWhenStatusIsNull() {
             Order invalidOrder = Order.builder()
                     .orderId(2L)
-                    .localDateTime(fixedDateTime)
+                    .createdAt(fixedDateTime)
                     .user(user)
                     .build();
 
@@ -129,7 +129,7 @@ class OrderTest {
         void shouldFailValidationWhenUserIsNull() {
             Order invalidOrder = Order.builder()
                     .orderId(2L)
-                    .localDateTime(fixedDateTime)
+                    .createdAt(fixedDateTime)
                     .status(OrderStatus.PAID)
                     .build();
 
@@ -158,7 +158,7 @@ class OrderTest {
     void shouldHandleEqualityCorrectly() {
         Order sameOrder = Order.builder()
                 .orderId(1L)
-                .localDateTime(fixedDateTime)
+                .createdAt(fixedDateTime)
                 .status(OrderStatus.PLACED)
                 .user(user)
                 .orderProducts(Collections.emptyList())
@@ -166,7 +166,7 @@ class OrderTest {
 
         Order differentOrder = Order.builder()
                 .orderId(2L)
-                .localDateTime(LocalDateTime.now())
+                .createdAt(LocalDateTime.now())
                 .status(OrderStatus.PAID)
                 .user(new User())
                 .build();

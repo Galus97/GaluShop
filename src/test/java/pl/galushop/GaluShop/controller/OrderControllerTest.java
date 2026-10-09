@@ -63,7 +63,7 @@ class OrderControllerTest {
         request = OrderRequest.builder()
                 .orderId(1L)
                 .userId(1L)
-                .localDateTime(LocalDateTime.of(2025, 3, 30, 12, 12))
+                .createdAt(LocalDateTime.of(2025, 3, 30, 12, 12))
                 .orderStatus(OrderStatus.PROCESSED)
                 .productQuantityRequests(productQuantityRequests)
                 .build();

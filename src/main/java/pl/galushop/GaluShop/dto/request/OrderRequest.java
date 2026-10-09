@@ -12,7 +12,7 @@ import java.util.List;
 public class OrderRequest {
     private Long orderId;
     private Long userId;
-    private LocalDateTime localDateTime;
+    private LocalDateTime createdAt;
     private OrderStatus orderStatus;
     private List<ProductQuantityRequest> productQuantityRequests;
 }

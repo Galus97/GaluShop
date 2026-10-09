@@ -40,7 +40,7 @@ class PaymentRepositoryTest {
                 .emailCode("1111")
                 .build());
         Order persistedOrder = entityManager.persistAndFlush(Order.builder()
-                .localDateTime(LocalDateTime.of(2025, 3, 10, 12, 12))
+                .createdAt(LocalDateTime.of(2025, 3, 10, 12, 12))
                 .status(OrderStatus.PROCESSED)
                 .user(persistedUser)
                 .build());

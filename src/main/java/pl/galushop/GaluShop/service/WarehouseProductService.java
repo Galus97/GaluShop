@@ -15,7 +15,6 @@ import pl.galushop.GaluShop.repository.WarehouseProductRepository;
 import pl.galushop.GaluShop.util.ServiceValidator;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Service class responsible for managing warehouse product operations.
@@ -29,18 +28,6 @@ public class WarehouseProductService {
     private final ProductService productService;
     private final MessageService messageService;
     private final ServiceValidator serviceValidator;
-    /**
-     * Retrieves a warehouse product entity by its product ID.
-     *
-     * @param productId The ID of the product in the warehouse.
-     * @return The corresponding WarehouseProduct entity.
-     * @throws IllegalArgumentException          If the product ID is null or invalid.
-     * @throws WarehouseProductNotFoundException If no warehouse product is found for the given ID.
-     */
-    public WarehouseProduct getWarehouseProductEntityByProductId(Long productId) {
-        serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
-        return getWarehouseProductByProductIdOrThrowIfNotExist(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID);
-    }
 
     /**
      * Retrieves a warehouse product as a response DTO by its product ID.
@@ -52,8 +39,9 @@ public class WarehouseProductService {
      */
     public WarehouseProductResponse getWarehouseProductResponse(Long productId) {
         serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_PRODUCT_ID);
+        Product product = productService.getProductEntity(productId);
         return WarehouseProductResponse.fromEntity
-                (getWarehouseProductByProductIdOrThrowIfNotExist(productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID));
+                (getWarehouseProductByProduct(product, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT));
     }
 
 
@@ -81,7 +69,7 @@ public class WarehouseProductService {
         return warehouseRepository.findAll()
                 .stream()
                 .map(WarehouseProductResponse::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -93,7 +81,7 @@ public class WarehouseProductService {
      */
     public void deleteWarehouseProduct(Long warehouseId) {
         serviceValidator.throwIfIdIsNotValid(warehouseId, ErrorMessages.WAREHOUSE_ID_IS_INVALID);
-        warehouseRepository.delete(getWarehouseProductByProductIdOrThrowIfNotExist(warehouseId, ErrorMessages.WAREHOUSE_NOT_FOUND));
+        warehouseRepository.delete(getWarehouseProduct(warehouseId, ErrorMessages.WAREHOUSE_NOT_FOUND));
     }
 
     /**
@@ -107,8 +95,8 @@ public class WarehouseProductService {
     @Transactional
     public WarehouseProductResponse updateWarehouseProduct(WarehouseProductRequest warehouseProductRequest) {
         serviceValidator.throwIfRequestIsNull(warehouseProductRequest, ErrorMessages.INVALID_WAREHOUSE_REQUEST);
-        WarehouseProduct existingWarehouseProduct = getWarehouseProductByProductIdOrThrowIfNotExist(warehouseProductRequest.getProductId(),
-                ErrorMessages.WAREHOUSE_NOT_FOUND);
+        WarehouseProduct existingWarehouseProduct = getWarehouseProduct(
+                warehouseProductRequest.getWarehouseProductId(), ErrorMessages.WAREHOUSE_NOT_FOUND);
 
         Product product = productService.getProductEntity(warehouseProductRequest.getProductId());
         existingWarehouseProduct.setProduct(product);
@@ -133,8 +121,9 @@ public class WarehouseProductService {
         if (quantity == null || quantity < 0) {
             throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.INVALID_QUANTITY));
         }
-        WarehouseProduct existingWarehouseProduct = getWarehouseProductByProductIdOrThrowIfNotExist
-                (productId, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID);
+        Product product = productService.getProductEntity(productId);
+        WarehouseProduct existingWarehouseProduct = getWarehouseProductByProduct
+                (product, ErrorMessages.WAREHOUSE_NOT_FOUND_BY_PRODUCT);
 
         existingWarehouseProduct.setQuantity(quantity);
         return WarehouseProductResponse.fromEntity(warehouseRepository.save(existingWarehouseProduct));
@@ -159,16 +148,14 @@ public class WarehouseProductService {
                 .build();
     }
 
-    /**
-     * Retrieves a WarehouseProduct entity by ID or throws an exception.
-     *
-     * @param id      The warehouse product ID.
-     * @param message The message key to use in the exception.
-     * @return The corresponding WarehouseProduct entity.
-     * @throws WarehouseProductNotFoundException If the product is not found.
-     */
-    private WarehouseProduct getWarehouseProductByProductIdOrThrowIfNotExist(Long id, String message) {
-        return warehouseRepository.findByProduct_ProductId(id)
-                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(message, id)));
+    private WarehouseProduct getWarehouseProductByProduct(Product product, String message) {
+        return warehouseRepository.findByProduct(product)
+                .orElseThrow(() -> new WarehouseProductNotFoundException(
+                        messageService.getMessage(message, product.getProductId())));
+    }
+
+    private WarehouseProduct getWarehouseProduct(Long id, String message) {
+        return warehouseRepository.findById(id)
+                .orElseThrow(() -> new WarehouseProductNotFoundException(messageService.getMessage(message)));
     }
 }
