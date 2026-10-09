@@ -7,7 +7,5 @@ import pl.galushop.GaluShop.model.UserData;
 import java.util.Optional;
 
 public interface UserDataRepository extends JpaRepository<UserData, Long> {
-    Optional<UserData> findByUser_UserId(Long id);
-
     Optional<UserData> findByUser(User user);
 }
