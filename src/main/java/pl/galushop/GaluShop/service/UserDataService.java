@@ -49,7 +49,8 @@ public class UserDataService {
      */
     public UserDataResponse getUserDataByUser(Long userId) {
         serviceValidator.throwIfIdIsNotValid(userId, ErrorMessages.INVALID_USER_ID);
-        return UserDataResponse.fromEntity(getUserDataByUserOrThrow(userId));
+        UserData userData = getUserDataByUserOrThrow(userService.getUserEntity(userId));
+        return UserDataResponse.fromEntity(userData);
     }
 
     /**
@@ -140,9 +141,9 @@ public class UserDataService {
                         ErrorMessages.USER_DATA_NOT_FOUND, userDataId)));
     }
 
-    private UserData getUserDataByUserOrThrow(Long userId) {
-        return userDataRepository.findByUser_UserId(userId)
+    private UserData getUserDataByUserOrThrow(User user) {
+        return userDataRepository.findByUser(user)
                 .orElseThrow(() -> new UserDataNotFoundException(messageService.getMessage(
-                        ErrorMessages.USER_DATA_NOT_FOUND_BY_USER_ID, userId)));
+                        ErrorMessages.USER_DATA_NOT_FOUND, user.getUserId())));
     }
 }
