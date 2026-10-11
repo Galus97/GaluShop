@@ -1,10 +1,17 @@
 package pl.galushop.GaluShop.mapper;
 
-import pl.galushop.GaluShop.dto.request.WarehouseProductRequest;
+import org.springframework.stereotype.Component;
+import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.model.WarehouseProduct;
 
+@Component
 public class WarehouseProductMapper {
-    public static WarehouseProduct toModel(WarehouseProductRequest request) {
 
+    public static WarehouseProductResponse toWarehouseProductResponse(WarehouseProduct warehouseProduct) {
+        return new WarehouseProductResponse(
+                warehouseProduct.getWarehouseProductId(),
+                warehouseProduct.getProduct().getProductId(),
+                warehouseProduct.getQuantity()
+        );
     }
 }
