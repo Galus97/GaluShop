@@ -59,7 +59,7 @@ class WarehouseProductServiceTest {
         //given
         when(repository.findById(1L)).thenReturn(Optional.of(warehouseProduct));
         //when
-        WarehouseProduct foundWarehouseProduct = service.getWarehouseProductEntityByProductId(1L);
+        WarehouseProduct foundWarehouseProduct = service.getWarehouseProductByProductId(1L);
         //then
         assertNotNull(foundWarehouseProduct);
         assertEquals(1L, foundWarehouseProduct.getWarehouseProductId());
@@ -71,21 +71,21 @@ class WarehouseProductServiceTest {
         //given
         when(repository.findById(any())).thenReturn(Optional.empty());
         //then
-        assertThrows(WarehouseProductNotFoundException.class, () -> service.getWarehouseProductEntityByProductId(1L));
+        assertThrows(WarehouseProductNotFoundException.class, () -> service.getWarehouseProductByProductId(1L));
         verify(repository, times(1)).findById(1L);
     }
 
     @Test
     void givenInvalidId_whenGetWarehouseProductEntity_ByProductId_thenThrowsException(){
         //then
-        assertThrows(IllegalArgumentException.class, () -> service.getWarehouseProductEntityByProductId(-1L));
+        assertThrows(IllegalArgumentException.class, () -> service.getWarehouseProductByProductId(-1L));
         verify(repository, times(0)).findById(any());
     }
 
     @Test
     void givenNullId_whenGetWarehouseProductEntity_ByProductId_thenThrowsException(){
         //then
-        assertThrows(IllegalArgumentException.class, () -> service.getWarehouseProductEntityByProductId(null));
+        assertThrows(IllegalArgumentException.class, () -> service.getWarehouseProductByProductId(null));
         verify(repository, times(0)).findById(any());
     }
 
