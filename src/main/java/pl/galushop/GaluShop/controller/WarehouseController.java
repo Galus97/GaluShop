@@ -50,4 +50,9 @@ public class WarehouseController {
     public ResponseEntity<List<WarehouseProductResponse>> showAllProductInWarehouse() {
         return ResponseEntity.ok(warehouseProductService.getAllProductInWarehouse());
     }
+
+    @PutMapping("/update-quantity/{id}/{quantity}")
+    public ResponseEntity<WarehouseProductResponse> updateQuantity(@PathVariable Long id, @PathVariable Integer quantity) {
+        return ResponseEntity.ok(warehouseProductService.updateQuantityByProductId(id, quantity));
+    }
 }
