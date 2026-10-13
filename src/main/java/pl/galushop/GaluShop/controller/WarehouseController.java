@@ -15,6 +15,7 @@ import pl.galushop.GaluShop.dto.response.WarehouseProductResponse;
 import pl.galushop.GaluShop.service.WarehouseProductService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,5 +44,10 @@ public class WarehouseController {
     public ResponseEntity<Void> deleteWarehouseProduct(@PathVariable Long id) {
         warehouseProductService.deleteWarehouseProduct(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/allProduct")
+    public ResponseEntity<List<WarehouseProductResponse>> showAllProductInWarehouse() {
+        return ResponseEntity.ok(warehouseProductService.getAllProductInWarehouse());
     }
 }
