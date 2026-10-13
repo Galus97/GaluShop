@@ -15,6 +15,7 @@ import pl.galushop.GaluShop.dto.response.PaymentResponse;
 import pl.galushop.GaluShop.service.PaymentService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,5 +44,10 @@ public class PaymentsController {
     public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<PaymentResponse>> showAllUserPayments(@PathVariable Long id) {
+        return ResponseEntity.ok(paymentService.getAllPaymentResponseByUserId(id));
     }
 }

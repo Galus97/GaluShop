@@ -12,15 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.ProductImageRequest;
 import pl.galushop.GaluShop.dto.response.ProductImagesResponse;
+import pl.galushop.GaluShop.service.ProductFacadeService;
 import pl.galushop.GaluShop.service.ProductImagesService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/images")
 public class ProductImagesController {
     private final ProductImagesService productImagesService;
+    private final ProductFacadeService productFacadeService;
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductImagesResponse> showProductImages(@PathVariable Long id) {
@@ -43,5 +46,10 @@ public class ProductImagesController {
     public ResponseEntity<Void> deleteProductImages(@PathVariable Long id) {
         productImagesService.deleteProductImages(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<List<ProductImagesResponse>> getAllImagesFromProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(productFacadeService.getAllImagesByProductId(id));
     }
 }
