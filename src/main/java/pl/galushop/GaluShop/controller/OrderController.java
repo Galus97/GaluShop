@@ -15,6 +15,7 @@ import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.service.OrderService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,5 +44,10 @@ public class OrderController {
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<OrderResponse>> showAllUserOrders(@PathVariable Long id) {
+        return ResponseEntity.ok(orderService.getAllOrdersByUser(id));
     }
 }
