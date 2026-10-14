@@ -1,24 +1,24 @@
 package pl.galushop.GaluShop.model;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE orders_product SET is_deleted = true WHERE order_product_id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "orders_product")
 public class OrderProduct {
 
     @EmbeddedId
-    private OrderProductId id = new OrderProductId();
+    @Column(name = "order_product_id")
+    private OrderProductId orderProductId = new OrderProductId();
 
     @ManyToOne
     @MapsId("orderId")
@@ -33,10 +33,13 @@ public class OrderProduct {
     @Min(0)
     private Integer quantity;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     public OrderProduct(Order order, Product product, Integer quantity) {
         this.order = order;
         this.product = product;
         this.quantity = quantity;
-        this.id = new OrderProductId(order.getOrderId(), product.getProductId());
+        this.orderProductId = new OrderProductId(order.getOrderId(), product.getProductId());
     }
 }
