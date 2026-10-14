@@ -1,28 +1,26 @@
 package pl.galushop.GaluShop.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "productImages")
+@SQLDelete(sql = "UPDATE product_images SET is_deleted = true WHERE image_id = ?")
+@SQLRestriction("is_deleted = false")
+@Table(name = "product_images")
 public class ProductImages {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long imagesId;
+    @Column(name = "image_id")
+    private Long imageId;
 
     @NotBlank
     private String imgSrc;
@@ -31,7 +29,10 @@ public class ProductImages {
     private String altImg;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId")
+    @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }
