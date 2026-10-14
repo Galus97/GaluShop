@@ -43,7 +43,7 @@ class ProductImagesServiceTest {
         Product product = new Product();
         product.setProductId(1L);
         productImages = ProductImages.builder()
-                .imagesId(1L)
+                .imageId(1L)
                 .imgSrc("Image src")
                 .altImg("Image alt")
                 .product(product)
