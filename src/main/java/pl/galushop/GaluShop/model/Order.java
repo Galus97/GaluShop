@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import pl.galushop.GaluShop.component.OrderStatus;
 
 import java.time.LocalDateTime;
@@ -14,11 +16,14 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE orders SET is_deleted = true WHERE order_id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "orders")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long orderId;
 
     @CreationTimestamp
@@ -34,4 +39,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderProduct> orderProducts;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

@@ -1,15 +1,11 @@
 package pl.galushop.GaluShop.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import pl.galushop.GaluShop.component.PaymentStatus;
 
 @Entity
@@ -17,11 +13,14 @@ import pl.galushop.GaluShop.component.PaymentStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE payments SET is_deleted = true WHERE payment_id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "payments")
 public class Payment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "payment_id")
     private Long paymentId;
 
     @Min(1)
@@ -35,4 +34,7 @@ public class Payment {
 
     @ManyToOne
     private User user;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

@@ -15,7 +15,7 @@ class ProductImagesResponseTest {
         product.setProductId(1L);
 
         ProductImages productImages = ProductImages.builder()
-                .imagesId(1L)
+                .imageId(1L)
                 .imgSrc("Img src")
                 .altImg("Img alt")
                 .product(product)

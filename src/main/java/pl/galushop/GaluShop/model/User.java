@@ -9,17 +9,22 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE user_id = ?")
+@SQLRestriction("is_deleted = false")
 @Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userId;
 
     @Size(min = 3)
@@ -39,6 +44,9 @@ public class User {
     private boolean enabled;
 
     private String emailCode;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     public User(String firstName, String lastName, String email, String password, String emailCode) {
         this.firstName = firstName;
