@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Data
@@ -38,7 +39,7 @@ public class User {
     @Email
     private String email;
 
-    @Size(min = 5)
+    @Length(min = 5)
     private String password;
 
     private boolean enabled;
