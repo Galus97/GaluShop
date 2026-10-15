@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Data
@@ -33,26 +34,23 @@ public class Employee {
     @Size(min = 3)
     private String lastName;
 
-    @Size(min = 5)
+    @Length(min = 5)
     @Column(unique = true)
     @Email
     private String email;
 
-    @Size(min = 5)
+    @Length(min = 5)
     private String password;
 
     private boolean enabled;
 
-    private String emailCode;
-
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
-    public Employee(String firstName, String lastName, String email, String password, String emailCode) {
+    public Employee(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.emailCode = emailCode;
     }
 }
