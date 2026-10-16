@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.util.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
-import pl.galushop.GaluShop.dto.response.OrderProductResponse;
+import pl.galushop.GaluShop.dto.response.OrderItemResponse;
 import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
 
@@ -28,9 +28,9 @@ public class OrderProductService {
      * @return A response DTO representing the saved order product.
      * @throws IllegalArgumentException If the orderProduct is {@code null}.
      */
-    public OrderProductResponse saveOrderProduct(OrderItem orderItem) {
+    public OrderItemResponse saveOrderProduct(OrderItem orderItem) {
         serviceValidator.throwIfRequestIsNull(orderItem, ErrorMessages.ORDER_PRODUCT_IS_NULL);
-        return OrderProductResponse.fromEntity(orderProductRepository.save(orderItem));
+        return OrderItemResponse.fromEntity(orderProductRepository.save(orderItem));
     }
 
     /**
@@ -40,11 +40,11 @@ public class OrderProductService {
      * @return A list of response DTOs representing the products in the order.
      * @throws IllegalArgumentException If the order ID is {@code null} or invalid.
      */
-    public List<OrderProductResponse> getOrderProductsByOrderId(Long orderId) {
+    public List<OrderItemResponse> getOrderProductsByOrderId(Long orderId) {
         serviceValidator.throwIfIdIsNotValid(orderId, ErrorMessages.INVALID_ORDER_ID);
         return orderProductRepository.findByOrder_OrderId(orderId)
                 .stream()
-                .map(OrderProductResponse::fromEntity)
+                .map(OrderItemResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -55,11 +55,11 @@ public class OrderProductService {
      * @return A list of response DTOs representing the orders containing the product.
      * @throws IllegalArgumentException If the product ID is {@code null} or invalid.
      */
-    public List<OrderProductResponse> getOrderProductsByProductId(Long productId) {
+    public List<OrderItemResponse> getOrderProductsByProductId(Long productId) {
         serviceValidator.throwIfIdIsNotValid(productId, ErrorMessages.INVALID_ORDER_ID);
         return orderProductRepository.findByProduct_ProductId(productId)
                 .stream()
-                .map(OrderProductResponse::fromEntity)
+                .map(OrderItemResponse::fromEntity)
                 .collect(Collectors.toList());
     }
 }

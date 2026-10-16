@@ -18,7 +18,7 @@ class OrderItemResponseTest {
         product.setProductId(2L);
         OrderItem orderItem = new OrderItem(order, product, 15);
         //when
-        OrderProductResponse response = OrderProductResponse.fromEntity(orderItem);
+        OrderItemResponse response = OrderItemResponse.fromEntity(orderItem);
         //then
         assertEquals(1L, response.orderId());
         assertEquals(2L, response.productId());

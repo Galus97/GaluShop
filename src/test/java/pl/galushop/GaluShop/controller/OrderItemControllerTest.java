@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
-import pl.galushop.GaluShop.dto.response.OrderProductResponse;
+import pl.galushop.GaluShop.dto.response.OrderItemResponse;
 import pl.galushop.GaluShop.service.OrderProductService;
 
 import java.util.Arrays;
@@ -37,8 +37,8 @@ class OrderItemControllerTest {
     @Test
     void givenExistingId_whenShowProductInOrder_thenReturnsOrderProductResponseList() throws Exception{
         //given
-        OrderProductResponse orderProductResponse = new OrderProductResponse(1L, 1L, 15);
-        List<OrderProductResponse> responseList = Arrays.asList(orderProductResponse);
+        OrderItemResponse orderItemResponse = new OrderItemResponse(1L, 1L, 15);
+        List<OrderItemResponse> responseList = Arrays.asList(orderItemResponse);
         when(orderProductService.getOrderProductsByOrderId(anyLong())).thenReturn(responseList);
         //then
         mockMvc.perform(get("/order/products/1"))

@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record OrderResponse(Long orderId, LocalDateTime localDateTime, OrderStatus status, Long userId,
-                            List<OrderProductResponse> products) {
+                            List<OrderItemResponse> products) {
     public static OrderResponse fromEntity(Order order) {
         return new OrderResponse(
                 order.getOrderId(),
                 order.getLocalDateTime(),
                 order.getStatus(),
                 order.getUser().getUserId(),
-                order.getOrderItems().stream().map(OrderProductResponse::fromEntity).toList()
+                order.getOrderItems().stream().map(OrderItemResponse::fromEntity).toList()
         );
     }
 }

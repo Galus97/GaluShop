@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.response.OrderProductResponse;
+import pl.galushop.GaluShop.dto.response.OrderItemResponse;
 import pl.galushop.GaluShop.model.Order;
 import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
@@ -51,10 +51,10 @@ class OrderItemServiceTest {
         //given
         when(repository.save(orderItem)).thenReturn(orderItem);
         //when
-        OrderProductResponse orderProductResponse = service.saveOrderProduct(orderItem);
+        OrderItemResponse orderItemResponse = service.saveOrderProduct(orderItem);
         //then
-        assertEquals(1L, orderProductResponse.orderId());
-        assertEquals(1L, orderProductResponse.productId());
+        assertEquals(1L, orderItemResponse.orderId());
+        assertEquals(1L, orderItemResponse.productId());
         verify(repository, times(1)).save(orderItem);
     }
 
@@ -70,7 +70,7 @@ class OrderItemServiceTest {
         //given
         when(repository.findByOrder_OrderId(1L)).thenReturn(List.of(orderItem));
         //when
-        List<OrderProductResponse> result = service.getOrderProductsByOrderId(1L);
+        List<OrderItemResponse> result = service.getOrderProductsByOrderId(1L);
         //then
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).orderId());
@@ -90,7 +90,7 @@ class OrderItemServiceTest {
         //given
         when(repository.findByOrder_OrderId(1L)).thenReturn(Collections.emptyList());
         //when
-        List<OrderProductResponse> result = service.getOrderProductsByOrderId(1L);
+        List<OrderItemResponse> result = service.getOrderProductsByOrderId(1L);
         //then
         assertTrue(result.isEmpty());
     }
@@ -100,7 +100,7 @@ class OrderItemServiceTest {
         // given
         when(repository.findByProduct_ProductId(1L)).thenReturn(List.of(orderItem));
         //when
-        List<OrderProductResponse> result = service.getOrderProductsByProductId(1L);
+        List<OrderItemResponse> result = service.getOrderProductsByProductId(1L);
         //then
         assertEquals(1, result.size());
         assertEquals(1L, result.get(0).orderId());
@@ -120,7 +120,7 @@ class OrderItemServiceTest {
         //given
         when(repository.findByProduct_ProductId(1L)).thenReturn(Collections.emptyList());
         //when
-        List<OrderProductResponse> result = service.getOrderProductsByProductId(1L);
+        List<OrderItemResponse> result = service.getOrderProductsByProductId(1L);
         //then
         assertTrue(result.isEmpty());
     }

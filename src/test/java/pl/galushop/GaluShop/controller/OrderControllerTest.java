@@ -14,7 +14,7 @@ import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
 import pl.galushop.GaluShop.dto.request.OrderRequest;
 import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
-import pl.galushop.GaluShop.dto.response.OrderProductResponse;
+import pl.galushop.GaluShop.dto.response.OrderItemResponse;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.service.OrderService;
@@ -68,7 +68,7 @@ class OrderControllerTest {
                 .productQuantityRequests(productQuantityRequests)
                 .build();
 
-        List<OrderProductResponse> products = Arrays.asList(new OrderProductResponse(1L, 1L, 10));
+        List<OrderItemResponse> products = Arrays.asList(new OrderItemResponse(1L, 1L, 10));
         response = new OrderResponse(
                 1L,
                 LocalDateTime.of(2025, 3, 30, 12, 12),
