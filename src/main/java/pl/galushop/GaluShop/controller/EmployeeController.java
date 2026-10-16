@@ -2,9 +2,9 @@ package pl.galushop.GaluShop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.galushop.GaluShop.dto.request.EmployeeRequest;
 import pl.galushop.GaluShop.dto.response.EmployeeResponse;
 import pl.galushop.GaluShop.exception.ValidationException;
+import pl.galushop.GaluShop.model.Employee;
 import pl.galushop.GaluShop.service.EmployeeService;
 import pl.galushop.GaluShop.service.RegisterEmployeeService;
 
@@ -25,9 +26,9 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final RegisterEmployeeService registerEmployeeService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EmployeeResponse> showEmployee(@PathVariable Long id) {
-        return ResponseEntity.ok(employeeService.getEmployeeResponse(id));
+    @GetMapping
+    public ResponseEntity<EmployeeResponse> showEmployee(@AuthenticationPrincipal Employee employee) {
+        return ResponseEntity.ok(employeeService.getEmployeeResponse(employee));
     }
 
     @PostMapping
@@ -42,13 +43,15 @@ public class EmployeeController {
     }
 
     @PutMapping
-    public ResponseEntity<EmployeeResponse> updateEmployee(@RequestBody EmployeeRequest employeeRequest) {
-        return ResponseEntity.ok(employeeService.updateEmployee(employeeRequest));
+    public ResponseEntity<EmployeeResponse> updateEmployee(
+            @RequestBody EmployeeRequest employeeRequest,
+            @AuthenticationPrincipal Employee employee) {
+        return ResponseEntity.ok(employeeService.updateEmployee(employeeRequest, employee));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
-        employeeService.deleteEmployee(id);
+    public ResponseEntity<Void> deleteEmployee(@AuthenticationPrincipal Employee employee) {
+        employeeService.deleteEmployee(employee);
         return ResponseEntity.noContent().build();
     }
 }
