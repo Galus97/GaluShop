@@ -10,7 +10,7 @@ import pl.galushop.GaluShop.dto.request.OrderRequest;
 import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
@@ -148,7 +148,7 @@ public class OrderService {
                         .toList()
         ).stream().collect(Collectors.toMap(Product::getProductId, product -> product));
 
-        List<OrderProduct> orderProducts = orderRequest.getProductQuantityRequests().stream()
+        List<OrderItem> orderItems = orderRequest.getProductQuantityRequests().stream()
                 .map(pq -> {
                     Product product = productsMap.get(pq.getProductId());
                     if (product == null) {
@@ -156,7 +156,7 @@ public class OrderService {
                                 messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, pq.getProductId())
                         );
                     }
-                    return OrderProduct.builder()
+                    return OrderItem.builder()
                             .product(product)
                             .quantity(pq.getQuantity())
                             .build();
@@ -166,10 +166,10 @@ public class OrderService {
                 .localDateTime(orderRequest.getLocalDateTime())
                 .status(orderRequest.getOrderStatus())
                 .user(user)
-                .orderProducts(orderProducts)
+                .orderProducts(orderItems)
                 .build();
 
-        orderProducts.forEach(op -> op.setOrder(order));
+        orderItems.forEach(op -> op.setOrder(order));
 
         return order;
     }

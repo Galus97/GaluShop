@@ -38,7 +38,7 @@ public class Order {
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderProduct> orderProducts;
+    private List<OrderItem> orderItems;
 
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;

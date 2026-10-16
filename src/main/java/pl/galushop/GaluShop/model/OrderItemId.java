@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class OrderProductId implements Serializable {
+public class OrderItemId implements Serializable {
     private Long orderId;
     private Long productId;
 }

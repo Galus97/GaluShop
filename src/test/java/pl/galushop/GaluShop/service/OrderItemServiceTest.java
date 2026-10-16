@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
 
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class OrderProductServiceTest {
+class OrderItemServiceTest {
     @Mock
     private OrderProductRepository repository;
 
@@ -34,7 +34,7 @@ class OrderProductServiceTest {
 
     private Order order;
     private Product product;
-    private OrderProduct orderProduct;
+    private OrderItem orderItem;
 
     @BeforeEach
     void setUp() {
@@ -44,18 +44,18 @@ class OrderProductServiceTest {
         product = new Product();
         product.setProductId(1L);
 
-        orderProduct = new OrderProduct(order, product, 2);
+        orderItem = new OrderItem(order, product, 2);
     }
     @Test
     void givenExistingOrderProduct_whenSaveOrderProduct_thenSaveCorrectly() {
         //given
-        when(repository.save(orderProduct)).thenReturn(orderProduct);
+        when(repository.save(orderItem)).thenReturn(orderItem);
         //when
-        OrderProductResponse orderProductResponse = service.saveOrderProduct(orderProduct);
+        OrderProductResponse orderProductResponse = service.saveOrderProduct(orderItem);
         //then
         assertEquals(1L, orderProductResponse.orderId());
         assertEquals(1L, orderProductResponse.productId());
-        verify(repository, times(1)).save(orderProduct);
+        verify(repository, times(1)).save(orderItem);
     }
 
     @Test
@@ -68,7 +68,7 @@ class OrderProductServiceTest {
     @Test
     void givenExistingId_whenGetOrderProductsByOrderId_thenReturnOrderProductDtoList() {
         //given
-        when(repository.findByOrder_OrderId(1L)).thenReturn(List.of(orderProduct));
+        when(repository.findByOrder_OrderId(1L)).thenReturn(List.of(orderItem));
         //when
         List<OrderProductResponse> result = service.getOrderProductsByOrderId(1L);
         //then
@@ -98,7 +98,7 @@ class OrderProductServiceTest {
     @Test
     void givenExistingId_whenOrderProductsByProductId_thenReturnOrderProductDtoList() {
         // given
-        when(repository.findByProduct_ProductId(1L)).thenReturn(List.of(orderProduct));
+        when(repository.findByProduct_ProductId(1L)).thenReturn(List.of(orderItem));
         //when
         List<OrderProductResponse> result = service.getOrderProductsByProductId(1L);
         //then

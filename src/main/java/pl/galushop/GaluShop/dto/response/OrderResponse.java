@@ -14,7 +14,7 @@ public record OrderResponse(Long orderId, LocalDateTime localDateTime, OrderStat
                 order.getLocalDateTime(),
                 order.getStatus(),
                 order.getUser().getUserId(),
-                order.getOrderProducts().stream().map(OrderProductResponse::fromEntity).toList()
+                order.getOrderItems().stream().map(OrderProductResponse::fromEntity).toList()
         );
     }
 }

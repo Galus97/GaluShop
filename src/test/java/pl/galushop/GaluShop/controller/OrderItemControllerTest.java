@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(OrderProductController.class)
 @Import(SpringSecurity.class)
 @AutoConfigureMockMvc(addFilters = false)
-class OrderProductControllerTest {
+class OrderItemControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean

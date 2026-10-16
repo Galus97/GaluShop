@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.util.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.dto.response.OrderProductResponse;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.repository.OrderProductRepository;
 
 import java.util.List;
@@ -22,15 +22,15 @@ public class OrderProductService {
     private final ServiceValidator serviceValidator;
 
     /**
-     * Saves an {@link OrderProduct} entity to the database.
+     * Saves an {@link OrderItem} entity to the database.
      *
-     * @param orderProduct The {@link OrderProduct} entity to be saved.
+     * @param orderItem The {@link OrderItem} entity to be saved.
      * @return A response DTO representing the saved order product.
      * @throws IllegalArgumentException If the orderProduct is {@code null}.
      */
-    public OrderProductResponse saveOrderProduct(OrderProduct orderProduct) {
-        serviceValidator.throwIfRequestIsNull(orderProduct, ErrorMessages.ORDER_PRODUCT_IS_NULL);
-        return OrderProductResponse.fromEntity(orderProductRepository.save(orderProduct));
+    public OrderProductResponse saveOrderProduct(OrderItem orderItem) {
+        serviceValidator.throwIfRequestIsNull(orderItem, ErrorMessages.ORDER_PRODUCT_IS_NULL);
+        return OrderProductResponse.fromEntity(orderProductRepository.save(orderItem));
     }
 
     /**

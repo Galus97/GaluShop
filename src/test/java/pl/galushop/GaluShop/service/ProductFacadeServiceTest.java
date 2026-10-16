@@ -39,7 +39,7 @@ class ProductFacadeServiceTest {
     void setUp() {
         product = new Product();
         product.setProductId(1L);
-        product.setOrderProducts(new ArrayList<>());
+        product.setOrderItems(new ArrayList<>());
 
         productImageRequest = ProductImageRequest.builder().build();
         productRequest = ProductRequest.builder()

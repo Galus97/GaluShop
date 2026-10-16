@@ -15,7 +15,7 @@ public record ProductResponse(Long productId, String productName, String descrip
                 product.getPrice(),
                 product.getCategory(),
                 product.getCategoryId(),
-                product.getOrderProducts().stream().map(OrderProductResponse::fromEntity).toList()
+                product.getOrderItems().stream().map(OrderProductResponse::fromEntity).toList()
         );
     }
 }

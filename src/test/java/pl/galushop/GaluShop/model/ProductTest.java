@@ -29,7 +29,7 @@ class ProductTest {
                 .price(100.0)
                 .category("Electronics")
                 .categoryId(2)
-                .orderProducts(Collections.emptyList())
+                .orderItems(Collections.emptyList())
                 .build();
     }
 
@@ -39,8 +39,8 @@ class ProductTest {
         assertNotNull(product.getProductName());
         assertNotNull(product.getDescription());
         assertNotNull(product.getCategory());
-        assertNotNull(product.getOrderProducts());
-        assertTrue(product.getOrderProducts().isEmpty());
+        assertNotNull(product.getOrderItems());
+        assertTrue(product.getOrderItems().isEmpty());
     }
 
     @Test
@@ -54,7 +54,7 @@ class ProductTest {
                     assertNull(p.getProductName());
                     assertNull(p.getDescription());
                     assertNull(p.getCategory());
-                    assertNull(p.getOrderProducts());
+                    assertNull(p.getOrderItems());
                 });
     }
 
@@ -78,7 +78,7 @@ class ProductTest {
                     assertEquals(1200.0, p.getPrice());
                     assertEquals("Electronics", p.getCategory());
                     assertEquals(3, p.getCategoryId());
-                    assertTrue(p.getOrderProducts().isEmpty());
+                    assertTrue(p.getOrderItems().isEmpty());
                 });
     }
 

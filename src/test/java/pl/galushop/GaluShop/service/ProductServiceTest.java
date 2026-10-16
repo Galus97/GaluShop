@@ -10,8 +10,8 @@ import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.dto.request.ProductRequest;
 import pl.galushop.GaluShop.dto.response.ProductResponse;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
-import pl.galushop.GaluShop.model.OrderProductId;
+import pl.galushop.GaluShop.model.OrderItem;
+import pl.galushop.GaluShop.model.OrderItemId;
 import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.exception.ProductNotFoundException;
 import pl.galushop.GaluShop.repository.ProductRepository;
@@ -41,13 +41,13 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp(){
-        OrderProduct orderProduct = OrderProduct.builder()
-                .id(new OrderProductId())
+        OrderItem orderItem = OrderItem.builder()
+                .id(new OrderItemId())
                 .order(new Order())
                 .product(new Product())
                 .quantity(10)
                 .build();
-        List<OrderProduct> orderProductList = Arrays.asList(orderProduct);
+        List<OrderItem> orderItemList = Arrays.asList(orderItem);
         product = Product.builder()
                 .productId(1L)
                 .productName("Product name")
@@ -55,7 +55,7 @@ class ProductServiceTest {
                 .price(10.0)
                 .category("Electronic")
                 .categoryId(1)
-                .orderProducts(orderProductList)
+                .orderItems(orderItemList)
                 .build();
         productRequest = ProductRequest.builder()
                 .productId(null)

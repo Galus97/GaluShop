@@ -58,7 +58,7 @@ class OrderTest {
                         assertThat(o.getLocalDateTime()).isEqualTo(fixedDateTime);
                         assertThat(o.getStatus()).isEqualTo(OrderStatus.PAID);
                         assertThat(o.getUser()).isEqualTo(user);
-                        assertThat(o.getOrderProducts()).isEmpty();
+                        assertThat(o.getOrderItems()).isEmpty();
                     });
         }
 
@@ -73,7 +73,7 @@ class OrderTest {
                         assertThat(o.getLocalDateTime()).isNull();
                         assertThat(o.getStatus()).isNull();
                         assertThat(o.getUser()).isNull();
-                        assertThat(o.getOrderProducts()).isNull();
+                        assertThat(o.getOrderItems()).isNull();
                     });
         }
     }
@@ -88,7 +88,7 @@ class OrderTest {
                         assertThat(o.getLocalDateTime()).isEqualTo(fixedDateTime);
                         assertThat(o.getStatus()).isEqualTo(OrderStatus.PLACED);
                         assertThat(o.getUser()).isEqualTo(user);
-                        assertThat(o.getOrderProducts()).isEmpty();
+                        assertThat(o.getOrderItems()).isEmpty();
                     });
         }
 

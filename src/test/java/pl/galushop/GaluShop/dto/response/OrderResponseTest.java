@@ -3,7 +3,7 @@ package pl.galushop.GaluShop.dto.response;
 import org.junit.jupiter.api.Test;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.model.User;
 
@@ -27,13 +27,13 @@ class OrderResponseTest {
         Product product = new Product();
         product.setProductId(2L);
 
-        OrderProduct orderProduct = new OrderProduct(order, product, 15);
-        List<OrderProduct> orderProducts = Arrays.asList(orderProduct);
+        OrderItem orderItem = new OrderItem(order, product, 15);
+        List<OrderItem> orderItems = Arrays.asList(orderItem);
 
         order.setLocalDateTime(LocalDateTime.of(2025, 4, 6, 10, 10));
         order.setStatus(OrderStatus.PROCESSED);
         order.setUser(user);
-        order.setOrderProducts(orderProducts);
+        order.setOrderItems(orderItems);
         //when
         OrderResponse response = OrderResponse.fromEntity(order);
         //then
