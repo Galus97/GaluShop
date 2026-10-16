@@ -6,11 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.galushop.GaluShop.util.ServiceValidator;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.dto.request.OrderRequest;
-import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
+import pl.galushop.GaluShop.dto.request.NewOrderRequest;
+import pl.galushop.GaluShop.dto.request.ItemQuantityRequest;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
@@ -65,21 +65,21 @@ public class OrderService {
     /**
      * Saves a new order to the database.
      *
-     * @param orderRequest The request object containing order details.
+     * @param newOrderRequest The request object containing order details.
      * @return The created order as a response DTO.
      * @throws UserNotFoundException    if the user associated with the order is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
-    public OrderResponse saveOrder(OrderRequest orderRequest) {
-        serviceValidator.throwIfRequestIsNull(orderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
-        return OrderResponse.fromEntity(orderRepository.save(buildOrder(orderRequest)));
+    public OrderResponse saveOrder(NewOrderRequest newOrderRequest) {
+        serviceValidator.throwIfRequestIsNull(newOrderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
+        return OrderResponse.fromEntity(orderRepository.save(buildOrder(newOrderRequest)));
     }
 
     /**
      * Updates an existing order's details.
      *
-     * @param orderRequest The request object containing updated order details.
+     * @param newOrderRequest The request object containing updated order details.
      * @return The updated order as a response DTO.
      * @throws IllegalArgumentException if the request contains an invalid order ID.
      * @throws OrderNotFoundException   if no order is found with the given ID.
@@ -87,12 +87,12 @@ public class OrderService {
      * @throws ProductNotFoundException if any product in the order is not found.
      */
     @Transactional
-    public OrderResponse updateOrder(OrderRequest orderRequest) {
-        serviceValidator.throwIfRequestIsNull(orderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
-        serviceValidator.throwIfIdIsNotValid(orderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
+    public OrderResponse updateOrder(NewOrderRequest newOrderRequest) {
+        serviceValidator.throwIfRequestIsNull(newOrderRequest, ErrorMessages.ORDER_REQUEST_IS_NULL);
+        serviceValidator.throwIfIdIsNotValid(newOrderRequest.getOrderId(), ErrorMessages.INVALID_ORDER_ID);
 
-        Order existingOrder = getOrderOrThrowIfNotExist(orderRequest.getOrderId());
-        Order updatedOrder = buildOrder(orderRequest);
+        Order existingOrder = getOrderOrThrowIfNotExist(newOrderRequest.getOrderId());
+        Order updatedOrder = buildOrder(newOrderRequest);
         updatedOrder.setOrderId(existingOrder.getOrderId());
 
         return OrderResponse.fromEntity(orderRepository.save(updatedOrder));
@@ -134,21 +134,21 @@ public class OrderService {
     /**
      * Builds an Order entity from the given request.
      *
-     * @param orderRequest The request object containing order details.
+     * @param newOrderRequest The request object containing order details.
      * @return The constructed Order entity.
      * @throws UserNotFoundException    if the user is not found.
      * @throws ProductNotFoundException if any product in the order is not found.
      */
-    private Order buildOrder(OrderRequest orderRequest) {
-        User user = userService.getUserEntity(orderRequest.getUserId());
+    private Order buildOrder(NewOrderRequest newOrderRequest) {
+        User user = userService.getUserEntity(newOrderRequest.getUserId());
 
         Map<Long, Product> productsMap = productService.getAllProductByIds(
-                orderRequest.getProductQuantityRequests().stream()
-                        .map(ProductQuantityRequest::getProductId)
+                newOrderRequest.getItemQuantityRequests().stream()
+                        .map(ItemQuantityRequest::getProductId)
                         .toList()
         ).stream().collect(Collectors.toMap(Product::getProductId, product -> product));
 
-        List<OrderProduct> orderProducts = orderRequest.getProductQuantityRequests().stream()
+        List<OrderItem> orderItems = newOrderRequest.getItemQuantityRequests().stream()
                 .map(pq -> {
                     Product product = productsMap.get(pq.getProductId());
                     if (product == null) {
@@ -156,20 +156,20 @@ public class OrderService {
                                 messageService.getMessage(ErrorMessages.PRODUCT_NOT_FOUND, pq.getProductId())
                         );
                     }
-                    return OrderProduct.builder()
+                    return OrderItem.builder()
                             .product(product)
                             .quantity(pq.getQuantity())
                             .build();
                 }).toList();
 
         Order order = Order.builder()
-                .localDateTime(orderRequest.getLocalDateTime())
-                .status(orderRequest.getOrderStatus())
+                .localDateTime(newOrderRequest.getLocalDateTime())
+                .status(newOrderRequest.getOrderStatus())
                 .user(user)
-                .orderProducts(orderProducts)
+                .orderProducts(orderItems)
                 .build();
 
-        orderProducts.forEach(op -> op.setOrder(order));
+        orderItems.forEach(op -> op.setOrder(order));
 
         return order;
     }

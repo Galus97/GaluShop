@@ -12,9 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.galushop.GaluShop.component.OrderStatus;
 import pl.galushop.GaluShop.configuration.SpringSecurity;
-import pl.galushop.GaluShop.dto.request.OrderRequest;
-import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
-import pl.galushop.GaluShop.dto.response.OrderProductResponse;
+import pl.galushop.GaluShop.dto.request.NewOrderRequest;
+import pl.galushop.GaluShop.dto.request.ItemQuantityRequest;
+import pl.galushop.GaluShop.dto.response.OrderItemResponse;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
 import pl.galushop.GaluShop.service.OrderService;
@@ -50,25 +50,25 @@ class OrderControllerTest {
     MockMvc mockMvc;
     @MockBean
     OrderService service;
-    private OrderRequest request;
+    private NewOrderRequest request;
     private OrderResponse response;
 
     @BeforeEach
     void setUp(){
-        ProductQuantityRequest productQuantityRequest = new ProductQuantityRequest();
-        productQuantityRequest.setProductId(1L);
-        productQuantityRequest.setQuantity(10);
-        List<ProductQuantityRequest> productQuantityRequests = Arrays.asList(productQuantityRequest);
+        ItemQuantityRequest itemQuantityRequest = new ItemQuantityRequest();
+        itemQuantityRequest.setProductId(1L);
+        itemQuantityRequest.setQuantity(10);
+        List<ItemQuantityRequest> itemQuantityRequests = Arrays.asList(itemQuantityRequest);
 
-        request = OrderRequest.builder()
+        request = NewOrderRequest.builder()
                 .orderId(1L)
                 .userId(1L)
                 .localDateTime(LocalDateTime.of(2025, 3, 30, 12, 12))
                 .orderStatus(OrderStatus.PROCESSED)
-                .productQuantityRequests(productQuantityRequests)
+                .productQuantityRequests(itemQuantityRequests)
                 .build();
 
-        List<OrderProductResponse> products = Arrays.asList(new OrderProductResponse(1L, 1L, 10));
+        List<OrderItemResponse> products = Arrays.asList(new OrderItemResponse(1L, 1L, 10));
         response = new OrderResponse(
                 1L,
                 LocalDateTime.of(2025, 3, 30, 12, 12),
@@ -121,7 +121,7 @@ class OrderControllerTest {
     @Test
     void givenCorrectRequest_whenSaveOrder_thenReturnsOrder() throws Exception{
         //given
-        when(service.saveOrder(any(OrderRequest.class))).thenReturn(response);
+        when(service.saveOrder(any(NewOrderRequest.class))).thenReturn(response);
         //then
         mockMvc.perform(post("/order")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -135,7 +135,7 @@ class OrderControllerTest {
     @Test
     void givenCorrectRequest_whenUpdateOrder_thenReturnsOrder() throws Exception{
         //given
-        when(service.updateOrder(any(OrderRequest.class))).thenReturn(response);
+        when(service.updateOrder(any(NewOrderRequest.class))).thenReturn(response);
         //then
         mockMvc.perform(put("/order")
                         .contentType(MediaType.APPLICATION_JSON)

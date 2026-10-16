@@ -15,8 +15,8 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class OrderProductTest {
-    private OrderProduct orderProduct;
+class OrderItemTest {
+    private OrderItem orderItem;
     private Order order;
     private Product product;
     private User user;
@@ -45,8 +45,8 @@ class OrderProductTest {
                 .categoryId(1)
                 .build();
 
-        orderProduct = OrderProduct.builder()
-                .id(new OrderProductId())
+        orderItem = OrderItem.builder()
+                .id(new OrderItemId())
                 .order(order)
                 .product(product)
                 .quantity(5)
@@ -55,18 +55,18 @@ class OrderProductTest {
 
     @Test
     void shouldCreateOrderProductUsingBuilder() {
-        assertNotNull(orderProduct);
-        assertNotNull(orderProduct.getOrder());
-        assertNotNull(orderProduct.getProduct());
-        assertNotNull(orderProduct.getId());
-        assertEquals(5, orderProduct.getQuantity());
+        assertNotNull(orderItem);
+        assertNotNull(orderItem.getOrder());
+        assertNotNull(orderItem.getProduct());
+        assertNotNull(orderItem.getId());
+        assertEquals(5, orderItem.getQuantity());
     }
 
     @Test
     void shouldCreateOrderProductWithAllArgsConstructor() {
-        OrderProduct constructedOrderProduct = new OrderProduct(order, product, 10);
+        OrderItem constructedOrderItem = new OrderItem(order, product, 10);
 
-        assertThat(constructedOrderProduct)
+        assertThat(constructedOrderItem)
                 .satisfies(op -> {
                     assertThat(op.getOrder()).isEqualTo(order);
                     assertThat(op.getProduct()).isEqualTo(product);
@@ -76,9 +76,9 @@ class OrderProductTest {
 
     @Test
     void shouldCreateOrderProductWithNoArgsConstructor() {
-        OrderProduct emptyOrderProduct = new OrderProduct();
+        OrderItem emptyOrderItem = new OrderItem();
 
-        assertThat(emptyOrderProduct)
+        assertThat(emptyOrderItem)
                 .isNotNull()
                 .satisfies(op -> {
                     assertThat(op.getOrder()).isNull();
@@ -89,43 +89,43 @@ class OrderProductTest {
 
     @Test
     void shouldSetQuantityCorrectly() {
-        orderProduct.setQuantity(8);
-        assertThat(orderProduct.getQuantity()).isEqualTo(8);
+        orderItem.setQuantity(8);
+        assertThat(orderItem.getQuantity()).isEqualTo(8);
     }
 
     @Test
     void shouldHandleEqualityCorrectly() {
-        OrderProduct sameOrderProduct = OrderProduct.builder()
+        OrderItem sameOrderItem = OrderItem.builder()
                 .order(order)
                 .product(product)
                 .quantity(5)
                 .build();
 
-        OrderProduct differentOrderProduct = OrderProduct.builder()
+        OrderItem differentOrderItem = OrderItem.builder()
                 .order(order)
                 .product(new Product())
                 .quantity(3)
                 .build();
 
-        assertThat(orderProduct)
+        assertThat(orderItem)
                 .usingRecursiveComparison()
                 .ignoringExpectedNullFields()
-                .isEqualTo(sameOrderProduct);
+                .isEqualTo(sameOrderItem);
 
-        assertThat(orderProduct)
+        assertThat(orderItem)
                 .usingRecursiveComparison()
                 .ignoringExpectedNullFields()
-                .isNotEqualTo(differentOrderProduct);
+                .isNotEqualTo(differentOrderItem);
     }
 
     @Test
     void shouldDetectInvalidQuantity(){
-        orderProduct.setQuantity(-1);
+        orderItem.setQuantity(-1);
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
 
-        Set<ConstraintViolation<OrderProduct>> violations = validator.validate(orderProduct);
+        Set<ConstraintViolation<OrderItem>> violations = validator.validate(orderItem);
 
         assertThat(violations).isNotEmpty();
         assertThat(violations).extracting(ConstraintViolation::getMessage)

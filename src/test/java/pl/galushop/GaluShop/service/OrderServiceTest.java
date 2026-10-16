@@ -8,11 +8,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.component.OrderStatus;
-import pl.galushop.GaluShop.dto.request.OrderRequest;
-import pl.galushop.GaluShop.dto.request.ProductQuantityRequest;
+import pl.galushop.GaluShop.dto.request.NewOrderRequest;
+import pl.galushop.GaluShop.dto.request.ItemQuantityRequest;
 import pl.galushop.GaluShop.dto.response.OrderResponse;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
 import pl.galushop.GaluShop.model.User;
 import pl.galushop.GaluShop.exception.OrderNotFoundException;
@@ -45,7 +45,7 @@ class OrderServiceTest {
     @InjectMocks
     OrderService service;
     private Order order;
-    private OrderRequest orderRequest;
+    private NewOrderRequest newOrderRequest;
     private User user;
     private Product product;
 
@@ -62,19 +62,19 @@ class OrderServiceTest {
 
         product = new Product();
         product.setProductId(1L);
-        List<OrderProduct> orderProducts = Arrays.asList(new OrderProduct(order, product, 10));
-        order.setOrderProducts(orderProducts);
+        List<OrderItem> orderItems = Arrays.asList(new OrderItem(order, product, 10));
+        order.setOrderItems(orderItems);
 
-        ProductQuantityRequest productQuantityRequest = new ProductQuantityRequest();
-        productQuantityRequest.setProductId(1L);
-        productQuantityRequest.setQuantity(10);
-        List<ProductQuantityRequest> productQuantityRequests = Arrays.asList(productQuantityRequest);
-        orderRequest = OrderRequest.builder()
+        ItemQuantityRequest itemQuantityRequest = new ItemQuantityRequest();
+        itemQuantityRequest.setProductId(1L);
+        itemQuantityRequest.setQuantity(10);
+        List<ItemQuantityRequest> itemQuantityRequests = Arrays.asList(itemQuantityRequest);
+        newOrderRequest = NewOrderRequest.builder()
                 .orderId(1L)
                 .userId(1L)
                 .localDateTime(LocalDateTime.of(2025, 3, 30, 12, 12))
                 .orderStatus(OrderStatus.PROCESSED)
-                .productQuantityRequests(productQuantityRequests)
+                .productQuantityRequests(itemQuantityRequests)
                 .build();
     }
 
@@ -136,12 +136,12 @@ class OrderServiceTest {
         when(productService.getAllProductByIds(any())).thenReturn(Arrays.asList(product));
         when(repository.save(any(Order.class))).thenReturn(order);
         //when
-        OrderResponse response = service.saveOrder(orderRequest);
+        OrderResponse response = service.saveOrder(newOrderRequest);
         //then
         assertNotNull(response);
-        assertEquals(orderRequest.getUserId(), response.userId());
-        assertEquals(orderRequest.getOrderStatus(), response.status());
-        assertEquals(orderRequest.getProductQuantityRequests().size(), response.products().size());
+        assertEquals(newOrderRequest.getUserId(), response.userId());
+        assertEquals(newOrderRequest.getOrderStatus(), response.status());
+        assertEquals(newOrderRequest.getItemQuantityRequests().size(), response.products().size());
     }
 
     @Test
@@ -163,11 +163,11 @@ class OrderServiceTest {
         when(productService.getAllProductByIds(any())).thenReturn(Arrays.asList(product));
         when(repository.save(any(Order.class))).thenReturn(order);
         //when
-        OrderResponse response = service.updateOrder(orderRequest);
+        OrderResponse response = service.updateOrder(newOrderRequest);
         //then
         assertNotNull(response);
-        assertEquals(orderRequest.getUserId(), response.userId());
-        assertEquals(orderRequest.getOrderStatus(), response.status());
-        assertEquals(orderRequest.getProductQuantityRequests().size(), response.products().size());
+        assertEquals(newOrderRequest.getUserId(), response.userId());
+        assertEquals(newOrderRequest.getOrderStatus(), response.status());
+        assertEquals(newOrderRequest.getItemQuantityRequests().size(), response.products().size());
     }
 }

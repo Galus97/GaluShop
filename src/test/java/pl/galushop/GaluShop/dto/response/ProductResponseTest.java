@@ -2,7 +2,7 @@ package pl.galushop.GaluShop.dto.response;
 
 import org.junit.jupiter.api.Test;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
 
 import java.util.Arrays;
@@ -21,15 +21,15 @@ class ProductResponseTest {
         Product product = new Product();
         product.setProductId(1L);
 
-        OrderProduct orderProduct = new OrderProduct(order, product, 15);
-        List<OrderProduct> orderProducts = Arrays.asList(orderProduct);
+        OrderItem orderItem = new OrderItem(order, product, 15);
+        List<OrderItem> orderItems = Arrays.asList(orderItem);
 
         product.setProductName("Product name");
         product.setDescription("Description of the product");
         product.setPrice(10d);
         product.setCategory("Category of the product");
         product.setCategoryId(1);
-        product.setOrderProducts(orderProducts);
+        product.setOrderItems(orderItems);
         //when
         ProductResponse response = ProductResponse.fromEntity(product);
         //then

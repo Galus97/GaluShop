@@ -2,12 +2,12 @@ package pl.galushop.GaluShop.dto.response;
 
 import org.junit.jupiter.api.Test;
 import pl.galushop.GaluShop.model.Order;
-import pl.galushop.GaluShop.model.OrderProduct;
+import pl.galushop.GaluShop.model.OrderItem;
 import pl.galushop.GaluShop.model.Product;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class OrderProductResponseTest {
+class OrderItemResponseTest {
 
     @Test
     void givenOrderProduct_whenFromEntity_thenReturnsCorrectResponse(){
@@ -16,9 +16,9 @@ class OrderProductResponseTest {
         order.setOrderId(1L);
         Product product = new Product();
         product.setProductId(2L);
-        OrderProduct orderProduct = new OrderProduct(order, product, 15);
+        OrderItem orderItem = new OrderItem(order, product, 15);
         //when
-        OrderProductResponse response = OrderProductResponse.fromEntity(orderProduct);
+        OrderItemResponse response = OrderItemResponse.fromEntity(orderItem);
         //then
         assertEquals(1L, response.orderId());
         assertEquals(2L, response.productId());

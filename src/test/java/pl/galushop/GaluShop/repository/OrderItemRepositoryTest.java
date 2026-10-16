@@ -16,14 +16,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @Transactional
-class OrderProductRepositoryTest {
+class OrderItemRepositoryTest {
 
     @Autowired
     TestEntityManager testEntityManager;
     @Autowired
     OrderProductRepository orderProductRepository;
 
-    private OrderProduct orderProduct;
+    private OrderItem orderItem;
 
     @BeforeEach
     void setUp(){
@@ -43,76 +43,76 @@ class OrderProductRepositoryTest {
                 .categoryId(1)
                 .build());
 
-        orderProduct = OrderProduct.builder()
-                .id(new OrderProductId(persistedOrder.getOrderId(), persistedProduct.getProductId()))
+        orderItem = OrderItem.builder()
+                .id(new OrderItemId(persistedOrder.getOrderId(), persistedProduct.getProductId()))
                 .order(persistedOrder)
                 .product(persistedProduct)
                 .quantity(1)
                 .build();
-        testEntityManager.persistAndFlush(orderProduct);
+        testEntityManager.persistAndFlush(orderItem);
     }
 
     @Test
     void givenExistingOrder_whenFindByOrderId_thenReturnOrderProductList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByOrder_OrderId(orderProduct.getOrder().getOrderId());
+        List<OrderItem> orderItemList = orderProductRepository.findByOrder_OrderId(orderItem.getOrder().getOrderId());
         //then
-        assertThat(orderProductList).hasSize(1).contains(orderProduct);
+        assertThat(orderItemList).hasSize(1).contains(orderItem);
     }
 
     @Test
     void givenNonExistentOrder_whenFindByOrderId_thenReturnEmptyList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByOrder_OrderId(9999L);
+        List<OrderItem> orderItemList = orderProductRepository.findByOrder_OrderId(9999L);
         //then
-        assertThat(orderProductList).isEmpty();
+        assertThat(orderItemList).isEmpty();
     }
 
     @Test
     void givenInvalidOrderId_whenFindByOrderId_thenReturnEmptyList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByOrder_OrderId(-1L);
+        List<OrderItem> orderItemList = orderProductRepository.findByOrder_OrderId(-1L);
         //then
-        assertThat(orderProductList).isEmpty();
+        assertThat(orderItemList).isEmpty();
     }
 
     @Test
     void givenNullOrderId_whenFindByOrderId_thenReturnEmptyList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByOrder_OrderId(null);
+        List<OrderItem> orderItemList = orderProductRepository.findByOrder_OrderId(null);
         //then
-        assertThat(orderProductList).isEmpty();
+        assertThat(orderItemList).isEmpty();
     }
 
     @Test
     void givenExistingProduct_whenFindByProductId_thenReturnOrderProductList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByProduct_ProductId(orderProduct.getProduct().getProductId());
+        List<OrderItem> orderItemList = orderProductRepository.findByProduct_ProductId(orderItem.getProduct().getProductId());
         //then
-        assertThat(orderProductList).hasSize(1).contains(orderProduct);
+        assertThat(orderItemList).hasSize(1).contains(orderItem);
     }
 
     @Test
     void givenNonExistentProduct_whenFindByProductId_thenReturnEmptyList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByProduct_ProductId(9999L);
+        List<OrderItem> orderItemList = orderProductRepository.findByProduct_ProductId(9999L);
         //then
-        assertThat(orderProductList).isEmpty();
+        assertThat(orderItemList).isEmpty();
     }
 
     @Test
     void givenInvalidProductId_whenFindByProductId_thenReturnEmptyList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByProduct_ProductId(-1L);
+        List<OrderItem> orderItemList = orderProductRepository.findByProduct_ProductId(-1L);
         //then
-        assertThat(orderProductList).isEmpty();
+        assertThat(orderItemList).isEmpty();
     }
 
     @Test
     void givenNullProductId_whenFindByProductId_thenReturnEmptyList(){
         //when
-        List<OrderProduct> orderProductList = orderProductRepository.findByProduct_ProductId(null);
+        List<OrderItem> orderItemList = orderProductRepository.findByProduct_ProductId(null);
         //then
-        assertThat(orderProductList).isEmpty();
+        assertThat(orderItemList).isEmpty();
     }
 }

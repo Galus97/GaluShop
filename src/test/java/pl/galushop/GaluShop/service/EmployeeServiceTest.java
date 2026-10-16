@@ -51,7 +51,7 @@ class EmployeeServiceTest {
         //given
         when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
         //when
-        Employee foundEmployee = employeeService.getEmployeeEntity(1L);
+        Employee foundEmployee = employeeService.getEmployeeOrThrow(1L);
         //then
         assertNotNull(foundEmployee);
         assertEquals(1L, foundEmployee.getEmployeeId());
@@ -64,7 +64,7 @@ class EmployeeServiceTest {
         when(employeeRepository.findById(1L)).thenReturn(Optional.empty());
         when(messageService.getMessage(any(), any())).thenReturn("Employee not found");
         //then
-        assertThrows(EmployeeNotFoundException.class, () -> employeeService.getEmployeeEntity(1L));
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.getEmployeeOrThrow(1L));
         verify(employeeRepository, times(1)).findById(1L);
     }
 
