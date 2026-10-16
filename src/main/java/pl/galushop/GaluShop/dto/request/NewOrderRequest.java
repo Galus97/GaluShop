@@ -9,10 +9,9 @@ import java.util.List;
 
 @Data
 @Builder
-public class OrderRequest {
-    private Long orderId;
+public class NewOrderRequest {
     private Long userId;
-    private LocalDateTime localDateTime;
+    private LocalDateTime createdAt;
     private OrderStatus orderStatus;
-    private List<ProductQuantityRequest> productQuantityRequests;
+    private List<ItemQuantityRequest> itemQuantityRequests;
 }
