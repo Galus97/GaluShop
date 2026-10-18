@@ -1,0 +1,63 @@
+package pl.galushop.component;
+
+public final class ErrorMessages {
+    public static final String USER_OR_EMPLOYEE_NOT_FOUND = "error.userOrEmployeeNotFound";
+    public static final String ERROR = "error";
+    public static final String INVALID_QUANTITY = "error.invalidQuantity";
+    public static final String LIST_IS_INVALID = "error.listIsNullOrEmpty";
+
+    //Email
+    public static final String VERIFICATION_CODE = "verificationCodes";
+    public static final String EMAIL_TEXT = "email.text";
+    public static final String EMAIL_FORM = "email.form";
+    public static final String EMAIL_SUBJECT = "email.subject";
+    public static final String EMAIL_IS_INVALID = "error.invalidEmail";
+    public static final String EMAIL_IS_ALREADY_USED = "error.emailAlreadyUsed";
+
+    //Employee
+    public static final String EMPLOYEE_NOT_FOUND = "error.employeeNotFound";
+    public static final String INVALID_EMPLOYEE_ID = "error.invalidEmployeeId";
+    public static final String EMPLOYEE_REQUEST_IS_NULL = "error.invalidEmployeeRequest";
+
+    //Order
+    public static final String INVALID_ORDER_ID = "error.invalidOrderId";
+    public static final String ORDER_NOT_FOUND = "error.orderNotFound";
+    public static final String ORDER_REQUEST_IS_NULL = "error.orderRequestIsNull";
+
+    //OrderProduct
+    public static final String ORDER_PRODUCT_IS_NULL = "error.orderProductIsNull";
+
+    //Product
+    public static final String PRODUCT_NOT_FOUND = "error.productNotFound";
+    public static final String INVALID_PRODUCT_ID = "error.invalidProductId";
+    public static final String INVALID_PRODUCT_REQUEST = "error.productRequestIsNull";
+
+    //ProductImages
+    public static final String INVALID_PRODUCT_IMAGES_ID = "error.invalidProductImagesId";
+    public static final String PRODUCT_IMAGES_NOT_FOUND = "error.productImagesNotFoundException";
+    public static final String PRODUCT_IMAGES_REQUEST_IS_NULL = "error.productImagesRequestIsNull";
+
+    //User
+    public static final String INVALID_USER_ID = "error.invalidUserId";
+    public static final String USER_NOT_FOUND = "error.userNotFound";
+    public static final String INVALID_USER_REQUEST = "error.invalidUserRequest";
+
+    //UserData
+    public static final String INVALID_USER_DATA_ID = "error.invalidUserDataId";
+    public static final String USER_DATA_NOT_FOUND = "error.userDataNotFound";
+    public static final String USER_DATA_NOT_FOUND_BY_USER_ID = "error.userDataNotFoundByUserId";
+    public static final String INVALID_USER_DATA_REQUEST = "error.invalidUserDataRequest";
+
+    //WarehouseProduct
+    public static final String WAREHOUSE_ID_IS_INVALID = "error.invalidWarehouseProductId";
+    public static final String WAREHOUSE_NOT_FOUND_BY_PRODUCT_ID = "error.warehouseProductNotFoundByProductId";
+    public static final String WAREHOUSE_NOT_FOUND = "error.warehouseProductNotFound";
+    public static final String INVALID_WAREHOUSE_REQUEST = "error.warehouseProductIsNull";
+    public static final String INVALID_FIELDS_IN_REQUEST = "error.invalidFieldsWarehouseProduct";
+
+    //Payment
+    public static final String INVALID_PAYMENT_ID = "error.invalidPaymentId";
+    public static final String PAYMENT_NOT_FOUND = "error.paymentNotFound";
+    public static final String PAYMENT_NOT_FOUND_BY_ORDER = "error.paymentsNotFoundByOrderId";
+    public static final String PAYMENT_REQUEST_IS_NULL = "error.paymentsRequestIsNull";
+}
