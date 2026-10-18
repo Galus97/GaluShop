@@ -1,6 +1,6 @@
 package pl.galushop.mapper;
 
-import pl.galushop.dto.request.UserRegisterRequest;
+import pl.galushop.dto.request.UserRequest;
 import pl.galushop.dto.response.UserResponse;
 import pl.galushop.model.User;
 
@@ -18,7 +18,7 @@ public class UserMapper {
         );
     }
 
-    public static User toUserModelFromRegister(UserRegisterRequest request) {
+    public static User toUserModelFromRegister(UserRequest request) {
         return User.builder()
                 .firstName(request.firstName())
                 .lastName(request.lastName())
