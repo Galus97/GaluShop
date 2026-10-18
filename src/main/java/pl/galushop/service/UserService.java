@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.ErrorMessages;
 import pl.galushop.component.MessageService;
 import pl.galushop.component.Role;
-import pl.galushop.dto.request.UserRegisterRequest;
+import pl.galushop.dto.request.UserRequest;
 import pl.galushop.dto.response.UserResponse;
 import pl.galushop.mapper.UserMapper;
 import pl.galushop.model.User;
@@ -25,12 +25,26 @@ public class UserService {
         return UserMapper.toUserResponse(user);
     }
 
-    public UserResponse saveNewUser(UserRegisterRequest request) {
+    public UserResponse saveNewUser(UserRequest request) {
         serviceValidator.throwIfRequestIsNull(request, messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
 
         User user = UserMapper.toUserModelFromRegister(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(Role.ROLE_USER);
+
+        return UserMapper.toUserResponse(userRepository.save(user));
+    }
+
+    public UserResponse updateUser(UserRequest request, User user) {
+        serviceValidator.throwIfRequestIsNull(request, messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
+
+        user.setFirstName(request.firstName());
+        user.setLastName(request.lastName());
+        user.setEmail(request.email());
+
+        if (request.password() != null && !request.password().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
 
         return UserMapper.toUserResponse(userRepository.save(user));
     }
