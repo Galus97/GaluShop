@@ -48,4 +48,8 @@ public class UserService {
 
         return UserMapper.toUserResponse(userRepository.save(user));
     }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
 }
