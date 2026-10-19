@@ -28,4 +28,10 @@ public class UserController {
             ) {
         return ResponseEntity.ok(userService.updateUser(userRequest, user));
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal User user) {
+        userService.deleteUser(user);
+        return ResponseEntity.noContent().build();
+    }
 }
