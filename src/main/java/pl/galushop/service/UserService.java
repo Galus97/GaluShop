@@ -52,4 +52,9 @@ public class UserService {
     public void deleteUser(User user) {
         userRepository.delete(user);
     }
+
+    public UserResponse enableUser(User user) {
+        user.setEnabled(true);
+        return UserMapper.toUserResponse(userRepository.save(user));
+    }
 }
