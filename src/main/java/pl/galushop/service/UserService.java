@@ -3,7 +3,7 @@ package pl.galushop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.galushop.GaluShop.exception.ValidationException;
+import pl.galushop.exception.ValidationException;
 import pl.galushop.component.ErrorMessages;
 import pl.galushop.util.RegisterValidator;
 import pl.galushop.component.MessageService;
@@ -30,7 +30,7 @@ public class UserService {
         return UserMapper.toUserResponse(user);
     }
 
-    public UserResponse saveNewUser(UserRequest request) {
+    public UserResponse saveNewUser(UserRequest request) throws ValidationException{
         serviceValidator.throwIfRequestIsNull(request, messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
 
         User user = UserMapper.toUserModelFromRegister(request);
