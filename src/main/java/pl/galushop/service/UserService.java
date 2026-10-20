@@ -3,7 +3,9 @@ package pl.galushop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.galushop.GaluShop.component.ErrorMessages;
+import pl.galushop.GaluShop.exception.ValidationException;
+import pl.galushop.component.ErrorMessages;
+import pl.galushop.util.RegisterValidator;
 import pl.galushop.component.MessageService;
 import pl.galushop.component.Role;
 import pl.galushop.dto.request.UserRequest;
@@ -13,12 +15,15 @@ import pl.galushop.model.User;
 import pl.galushop.repository.UserRepository;
 import pl.galushop.util.ServiceValidator;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ServiceValidator serviceValidator;
+    private final RegisterValidator registerValidator;
     private final MessageService messageService;
 
     public UserResponse getUserResponse(User user) {
@@ -32,7 +37,12 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(Role.ROLE_USER);
 
-        return UserMapper.toUserResponse(userRepository.save(user));
+        List<String> validationFailures = registerValidator.validateErrors(user);
+        if (validationFailures.isEmpty()) {
+            return UserMapper.toUserResponse(userRepository.save(user));
+        } else {
+            throw new ValidationException(validationFailures);
+        }
     }
 
     public UserResponse updateUser(UserRequest request, User user) {
