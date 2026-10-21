@@ -34,4 +34,9 @@ public class UserController {
         userService.deleteUser(user);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/enable")
+    public ResponseEntity<UserResponse> enableUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.enableUser(user));
+    }
 }
