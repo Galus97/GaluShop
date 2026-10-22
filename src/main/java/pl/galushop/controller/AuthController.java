@@ -18,7 +18,7 @@ import java.net.URI;
 public class AuthController {
     private final AuthService authService;
 
-    @PostMapping("/user")
+    @PostMapping("/registration/user")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserRequest userRequest) {
         try {
             UserResponse savedUser = authService.saveNewUser(userRequest, Role.ROLE_USER);
@@ -29,7 +29,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/employee")
+    @PostMapping("/registration/employee")
     public ResponseEntity<?> registerEmployee(@RequestBody @Valid UserRequest userRequest) {
         try {
             UserResponse savedUser = authService.saveNewUser(userRequest, Role.ROLE_EMPLOYEE);
