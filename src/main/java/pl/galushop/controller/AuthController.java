@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.galushop.component.Role;
+import pl.galushop.dto.request.UserLoginRequest;
 import pl.galushop.dto.request.UserRequest;
+import pl.galushop.dto.response.UserLoginResponse;
 import pl.galushop.dto.response.UserResponse;
 import pl.galushop.exception.ValidationException;
 import pl.galushop.service.AuthService;
@@ -38,5 +40,10 @@ public class AuthController {
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(e.getValidationErrors());
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponse> loginUser(@RequestBody @Valid UserLoginRequest request) {
+        return ResponseEntity.ok(new UserLoginResponse("")); // TODO
     }
 }
