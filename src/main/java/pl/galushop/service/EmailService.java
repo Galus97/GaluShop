@@ -3,11 +3,15 @@ package pl.galushop.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import pl.galushop.GaluShop.component.MessageService;
 import pl.galushop.GaluShop.util.ServiceValidator;
+import pl.galushop.component.CacheConstants;
+import pl.galushop.component.EmailConstants;
 import pl.galushop.component.ErrorMessages;
 
 import java.security.SecureRandom;
@@ -16,24 +20,45 @@ import java.security.SecureRandom;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-    private static final String VERIFICATION_CODE_CACHE = "verificationCodes"; // Stała dedykowana do cache
 
     private final JavaMailSender javaMailSender;
     private final MessageService messageService;
     private final CacheManager cacheManager;
     private final ServiceValidator serviceValidator;
 
+    private final SecureRandom secureRandom = new SecureRandom();
+
 
     @Async
-    public void SendEmail(String email) {
+    public void sendEmail(String email) {
         String emailActiveCode = generateActiveCode();
-        // TODO
+
+        var cache = cacheManager.getCache(CacheConstants.VERIFICATION_CODE_CACHE);
+        if (cache != null) {
+            cache.put(email, emailActiveCode);
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        String text = messageService.getMessage(EmailConstants.EMAIL_TEXT, emailActiveCode);
+
+        message.setTo(email);
+        message.setFrom(messageService.getMessage(EmailConstants.EMAIL_FORM));
+        message.setSubject(messageService.getMessage(EmailConstants.EMAIL_SUBJECT));
+        message.setText(text);
+
+        try {
+            javaMailSender.send(message);
+            log.info("Verification email successfully sent to: {}", email);
+        } catch (MailException e) {
+            log.error("Failed to send verification email to {}: {}", email, e.getMessage());
+            // TODO Opcjonalnie: wyrzucenie własnego wyjątku biznesowego lub mechanizm ponowień (Retry)
+        }
     }
 
     public String getVerificationCode(String email) {
         serviceValidator.throwIfEmailIsInvalid(email, ErrorMessages.EMAIL_IS_INVALID);
 
-        var cache = cacheManager.getCache(VERIFICATION_CODE_CACHE);
+        var cache = cacheManager.getCache(CacheConstants.VERIFICATION_CODE_CACHE);
         if (cache != null) {
             return cache.get(email, String.class);
         }
@@ -42,7 +67,7 @@ public class EmailService {
 
 
     private String generateActiveCode() {
-        int activeCode = new SecureRandom().nextInt(9000) + 1000;
+        int activeCode = secureRandom.nextInt(9000) + 1000;
         return String.valueOf(activeCode);
     }
 }
