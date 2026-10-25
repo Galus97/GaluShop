@@ -8,9 +8,7 @@ public final class ErrorMessages {
 
     //Email
     public static final String VERIFICATION_CODE = "verificationCodes";
-    public static final String EMAIL_TEXT = "email.text";
-    public static final String EMAIL_FORM = "email.form";
-    public static final String EMAIL_SUBJECT = "email.subject";
+    public static final String EMAIL_SEND_EXCEPTION = "email.send.exception";
     public static final String EMAIL_IS_INVALID = "error.invalidEmail";
     public static final String EMAIL_IS_ALREADY_USED = "error.emailAlreadyUsed";
 
