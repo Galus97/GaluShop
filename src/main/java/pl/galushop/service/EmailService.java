@@ -13,6 +13,7 @@ import pl.galushop.GaluShop.util.ServiceValidator;
 import pl.galushop.component.CacheConstants;
 import pl.galushop.component.EmailConstants;
 import pl.galushop.component.ErrorMessages;
+import pl.galushop.exception.MailSendException;
 
 import java.security.SecureRandom;
 
@@ -51,7 +52,7 @@ public class EmailService {
             log.info("Verification email successfully sent to: {}", email);
         } catch (MailException e) {
             log.error("Failed to send verification email to {}: {}", email, e.getMessage());
-            // TODO Opcjonalnie: wyrzucenie własnego wyjątku biznesowego lub mechanizm ponowień (Retry)
+            throw new MailSendException(messageService.getMessage(ErrorMessages.EMAIL_SEND_EXCEPTION));
         }
     }
 
