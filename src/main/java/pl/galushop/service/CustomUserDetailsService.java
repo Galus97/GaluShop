@@ -30,7 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(messageService.getMessage(
-                        ErrorMessages.USER_OR_EMPLOYEE_NOT_FOUND, email)));
+                        ErrorMessages.USER_NOT_FOUND, email)));
 
             List<GrantedAuthority> authorities = user.getRoles().stream()
                     .map(role -> new SimpleGrantedAuthority(role.name()))
