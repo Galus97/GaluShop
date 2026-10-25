@@ -2,7 +2,7 @@ package pl.galushop.util;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.galushop.GaluShop.component.ErrorMessages;
+import pl.galushop.component.ErrorMessages;
 import pl.galushop.component.MessageService;
 import pl.galushop.repository.UserRepository;
 import pl.galushop.model.User;
