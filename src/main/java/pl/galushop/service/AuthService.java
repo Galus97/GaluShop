@@ -25,6 +25,7 @@ public class AuthService {
     private final ServiceValidator serviceValidator;
     private final RegisterValidator registerValidator;
     private final MessageService messageService;
+    private final EmailService emailService;
 
     public UserResponse saveNewUser(UserRequest request, Role role) throws ValidationException {
         serviceValidator.throwIfRequestIsNull(request, messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
@@ -35,7 +36,9 @@ public class AuthService {
 
         List<String> validationFailures = registerValidator.validateErrors(user);
         if (validationFailures.isEmpty()) {
-            return UserMapper.toUserResponse(userRepository.save(user));
+            User savedUser = userRepository.save(user);
+            emailService.sendEmail(savedUser.getEmail());
+            return UserMapper.toUserResponse(savedUser);
         } else {
             throw new ValidationException(validationFailures);
         }
