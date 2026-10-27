@@ -71,6 +71,12 @@ public class EmailService {
         return null;
     }
 
+    public void evictVerificationToken(String email) {
+        var cache = cacheManager.getCache(CacheConstants.VERIFICATION_CODE_CACHE);
+        if (cache != null) {
+            cache.evict(email);
+        }
+    }
 
     private String generateActiveCode() {
         int activeCode = secureRandom.nextInt(9000) + 1000;
