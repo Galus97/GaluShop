@@ -7,15 +7,12 @@ public final class ErrorMessages {
     public static final String LIST_IS_INVALID = "error.listIsNullOrEmpty";
 
     //Email
-    public static final String VERIFICATION_CODE = "verificationCodes";
+    public static final String TOKEN_IS_NULL = "verify.token.null";
+    public static final String TOKEN_IS_EXPIRED = "verify.token.expired";
+    public static final String ENTERED_CODE_INVALID = "verify.enteredCode.invalid";
     public static final String EMAIL_SEND_EXCEPTION = "email.send.exception";
     public static final String EMAIL_IS_INVALID = "error.invalidEmail";
     public static final String EMAIL_IS_ALREADY_USED = "error.emailAlreadyUsed";
-
-    //Employee
-    public static final String EMPLOYEE_NOT_FOUND = "error.employeeNotFound";
-    public static final String INVALID_EMPLOYEE_ID = "error.invalidEmployeeId";
-    public static final String EMPLOYEE_REQUEST_IS_NULL = "error.invalidEmployeeRequest";
 
     //Order
     public static final String INVALID_ORDER_ID = "error.invalidOrderId";

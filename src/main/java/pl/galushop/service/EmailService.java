@@ -13,9 +13,11 @@ import pl.galushop.GaluShop.util.ServiceValidator;
 import pl.galushop.component.CacheConstants;
 import pl.galushop.component.EmailConstants;
 import pl.galushop.component.ErrorMessages;
+import pl.galushop.dto.VerificationToken;
 import pl.galushop.exception.MailSendException;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -34,9 +36,12 @@ public class EmailService {
     public void sendEmail(String email) {
         String emailActiveCode = generateActiveCode();
 
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(15);
+        VerificationToken token = new VerificationToken(emailActiveCode, expiresAt);
+
         var cache = cacheManager.getCache(CacheConstants.VERIFICATION_CODE_CACHE);
         if (cache != null) {
-            cache.put(email, emailActiveCode);
+            cache.put(email, token);
         }
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -56,16 +61,22 @@ public class EmailService {
         }
     }
 
-    public String getVerificationCode(String email) {
+    public VerificationToken getVerificationCode(String email) {
         serviceValidator.throwIfEmailIsInvalid(email, ErrorMessages.EMAIL_IS_INVALID);
 
         var cache = cacheManager.getCache(CacheConstants.VERIFICATION_CODE_CACHE);
         if (cache != null) {
-            return cache.get(email, String.class);
+            return cache.get(email, VerificationToken.class);
         }
         return null;
     }
 
+    public void evictVerificationToken(String email) {
+        var cache = cacheManager.getCache(CacheConstants.VERIFICATION_CODE_CACHE);
+        if (cache != null) {
+            cache.evict(email);
+        }
+    }
 
     private String generateActiveCode() {
         int activeCode = secureRandom.nextInt(9000) + 1000;
