@@ -8,6 +8,7 @@ public final class ErrorMessages {
 
     //Email
     public static final String TOKEN_IS_NULL = "verify.token.null";
+    public static final String TOKEN_IS_EXPIRED = "verify.token.expired";
     public static final String EMAIL_SEND_EXCEPTION = "email.send.exception";
     public static final String EMAIL_IS_INVALID = "error.invalidEmail";
     public static final String EMAIL_IS_ALREADY_USED = "error.emailAlreadyUsed";
