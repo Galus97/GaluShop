@@ -8,8 +8,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import pl.galushop.GaluShop.component.MessageService;
-import pl.galushop.GaluShop.util.ServiceValidator;
+import pl.galushop.component.MessageService;
+import pl.galushop.util.ServiceValidator;
 import pl.galushop.component.CacheConstants;
 import pl.galushop.component.EmailConstants;
 import pl.galushop.component.ErrorMessages;
@@ -61,7 +61,7 @@ public class EmailService {
         }
     }
 
-    public VerificationToken getVerificationCode(String email) {
+    public VerificationToken getVerificationToken(String email) {
         serviceValidator.throwIfEmailIsInvalid(email, ErrorMessages.EMAIL_IS_INVALID);
 
         var cache = cacheManager.getCache(CacheConstants.VERIFICATION_CODE_CACHE);
