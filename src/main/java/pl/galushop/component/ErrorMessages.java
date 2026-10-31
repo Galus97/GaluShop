@@ -1,7 +1,6 @@
 package pl.galushop.component;
 
 public final class ErrorMessages {
-    public static final String USER_OR_EMPLOYEE_NOT_FOUND = "error.userOrEmployeeNotFound";
     public static final String ERROR = "error";
     public static final String INVALID_QUANTITY = "error.invalidQuantity";
     public static final String LIST_IS_INVALID = "error.listIsNullOrEmpty";
