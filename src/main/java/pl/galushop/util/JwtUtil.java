@@ -45,7 +45,9 @@ public class JwtUtil {
         }
     }
 
-
+    public String getUserName(String token) {
+        return getClaimFromToken(token, Claims::getSubject);
+    }
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = Jwts.parser()
