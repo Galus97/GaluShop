@@ -45,5 +45,14 @@ public class JwtUtil {
         }
     }
 
-    
+
+
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = Jwts.parser()
+                .verifyWith((SecretKey) secret)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claimsResolver.apply(claims);
+    }
 }
