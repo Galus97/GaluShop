@@ -31,5 +31,9 @@ public class SpringSecurity {
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }
-    
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
