@@ -10,7 +10,7 @@ import pl.galushop.dto.request.UserRequest;
 import pl.galushop.dto.response.UserLoginResponse;
 import pl.galushop.dto.response.UserResponse;
 import pl.galushop.exception.ValidationException;
-import pl.galushop.service.AuthService;
+import pl.galushop.security.AuthService;
 
 import java.net.URI;
 
