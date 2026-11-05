@@ -1,4 +1,4 @@
-package pl.galushop.service;
+package pl.galushop.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +14,7 @@ import pl.galushop.exception.ValidationException;
 import pl.galushop.mapper.UserMapper;
 import pl.galushop.model.User;
 import pl.galushop.repository.UserRepository;
+import pl.galushop.service.EmailService;
 import pl.galushop.util.RegisterValidator;
 import pl.galushop.util.ServiceValidator;
 

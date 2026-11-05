@@ -1,4 +1,4 @@
-package pl.galushop.util;
+package pl.galushop.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
