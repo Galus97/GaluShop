@@ -1,13 +1,18 @@
 package pl.galushop.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.galushop.component.ErrorMessages;
 import pl.galushop.component.MessageService;
 import pl.galushop.component.Role;
 import pl.galushop.dto.VerificationToken;
+import pl.galushop.dto.request.UserLoginRequest;
 import pl.galushop.dto.request.UserRequest;
+import pl.galushop.dto.response.UserLoginResponse;
 import pl.galushop.dto.response.UserResponse;
 import pl.galushop.exception.EntityNotFoundException;
 import pl.galushop.exception.ValidationException;
@@ -29,6 +34,8 @@ public class AuthService {
     private final RegisterValidator registerValidator;
     private final MessageService messageService;
     private final EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     public UserResponse saveNewUser(UserRequest request, Role role) throws ValidationException {
         serviceValidator.throwIfRequestIsNull(request, messageService.getMessage(ErrorMessages.INVALID_USER_REQUEST));
@@ -45,6 +52,16 @@ public class AuthService {
         } else {
             throw new ValidationException(validationFailures);
         }
+    }
+
+    public UserLoginResponse authenticate(UserLoginRequest request) {
+        Authentication authenticate = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(
+                        request.getEmail(), request.getPassword()));
+
+        String token = jwtUtil.generateToken(authenticate.getName());
+
+        return new UserLoginResponse(token);
     }
 
     public void verifyUser(String email, String enteredCode) throws ValidationException{
